@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Línea de Color Mary Kay - Tu Estilo</title>
+    <link rel="stylesheet" href="style.css?v=1.22">
+</head>
+<body class="catalogo-marykay">
+
+    <header>
+        <div class="top-bar">
+             <a href="index.html" id="top-bar-desktop-banner">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761256896/banner_4_r8x0te.jpg" alt="Banner principal de marcas">
+             </a>
+             <div id="top-bar-mobile-scroll" class="barra-logos-scroll">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761256896/banner_4_r8x0te.jpg" alt="Marcas">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761256896/banner_4_r8x0te.jpg" alt="Marcas">
+             </div>
+             <form id="search-form">
+                <input type="search" id="search-input" placeholder="Buscar productos...">
+                <button type="submit" id="search-button">Buscar</button>
+             </form>
+        </div>
+        <nav class="main-nav">
+             <div class="logo">
+                 <a href="index.html">
+                     <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761336043/Stefania_Vidal_1_qekwcc.jpg" alt="Logo Stefania Vidal" class="logo-img">
+                 </a>
+             </div>
+             <span id="user-email-mobile" style="display: none;"></span>
+             <ul class="nav-links">
+                 <li id="search-form-nav">
+                     <form>
+                        <input type="search" id="search-input-nav" placeholder="Buscar productos...">
+                        <button type="submit" id="search-button-nav">Buscar</button>
+                     </form>
+                 </li>
+                 <li class="dropdown">
+                     <a href="#">HISTORIAS</a>
+                     <div class="dropdown-content">
+                         <a href="sobre-mary-kay.html">Sobre Mary Kay</a>
+                         <a href="sobre-arbell.html">Sobre Arbell</a>
+                         <a href="sobre-biogreen.html">Sobre Biogreen</a>
+                         <a href="sobre-nexo.html">Sobre Nexo</a>
+                     </div>
+                 </li>
+                 <li class="dropdown">
+                     <a href="#">PRODUCTOS</a>
+                     <div class="dropdown-content">
+                         <a href="productos-marykay.html">Mary Kay</a>
+                         <a href="productos-biogreen.html">Biogreen</a>
+                         <a href="productos-arbell.html">Arbell</a>
+                         <a href="productos-nexo.html">Nexo (Indumentaria)</a>
+                     </div>
+                 </li>
+                 <li class="dropdown">
+                     <a href="#">EMPRENDE</a>
+                     <div class="dropdown-content">
+                         <a href="quiero-ser-consultora.html">Consultora Mary Kay</a>
+                         <a href="experta-arbell.html">Experta en Arbell</a>
+                         <a href="revendedor-biogreen.html">Revendedor Biogreen</a>
+                         <a href="revendedor-nexo.html">Revendedor Nexo</a>
+                     </div>
+                 </li>
+                 <li><a href="oportunidad-mk.html">OPORTUNIDAD MK</a></li>
+                 <li><a href="contacto.html">CONTÁCTANOS</a></li>
+                 <li id="user-logged-out-mobile" class="auth-mobile-link"><a href="login.html">Iniciar Sesión</a></li>
+                 <li id="user-logged-out-mobile-register" class="auth-mobile-link register-link-mobile"><a href="registro.html">Registrarse</a></li>
+                 <li id="user-logged-in-mobile" class="auth-mobile-link" style="display: none;"><button id="logout-button-mobile">Cerrar Sesión</button></li>
+             </ul>
+             <div class="nav-extra">
+                 <div id="user-logged-out" style="display: flex;">
+                     <a href="login.html" class="auth-link">Iniciar Sesión</a>
+                     <a href="registro.html" class="auth-link register-link">Registrarse</a>
+                 </div>
+                 <div id="user-logged-in" style="display: none;">
+                     <a id="admin-link-a" href="admin.html" class="auth-link" style="display: none; background-color: #ffc107; color: #333; margin-right: 5px;">ADMIN</a>
+                     <span id="user-email" style="margin-right: 5px;"></span>
+                     <button id="logout-button" class="auth-link">Cerrar Sesión</button>
+                 </div>
+             </div>
+             <a href="carrito.html" class="cart-link" style="margin-right: 0.5rem;">🛒 Carrito</a>
+             <div class="hamburger-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+             </div>
+         </nav>
+    </header>
+
+    <main id="catalogo-container">
+        <div id="catalogo-header" style="text-align: center;">
+            <button id="catalogo-volver-btn" class="admin-button cancel-button" style="display: none;">← Volver a Categorías</button>
+        </div>
+        <h2 style="margin-top: 1rem;">Línea de Color Mary Kay</h2>
+        <p class="detalle-subtitulo">¡Maquillaje que celebra tu belleza única!</p>
+
+        <div id="categorias-visual-container" class="linea-color-visual-grid">
+            
+            <div class="tarjeta-categoria-visual" data-category-name-safe="Compactos y Aplicadores">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761777037/foto-aplicadores_puqhtn.jpg" alt="Compactos y Aplicadores">
+                <h3>Compactos y Aplicadores</h3>
+            </div>
+            <div class="tarjeta-categoria-visual" data-category-name-safe="Mejilla">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761777037/foto-mejillas_fyyt6y.jpg" alt="Mejilla">
+                <h3>Mejilla</h3>
+            </div>
+            <div class="tarjeta-categoria-visual" data-category-name-safe="Ojos">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761777037/foto-ojos_hroj0j.jpg" alt="Ojos">
+                <h3>Ojos</h3>
+            </div>
+            <div class="tarjeta-categoria-visual" data-category-name-safe="Labios">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761777037/foto-labios_jrikux.jpg" alt="Labios">
+                <h3>Labios</h3>
+            </div>
+            <div class="tarjeta-categoria-visual" data-category-name-safe="Rostro">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761777036/foto-rostro_ozb9gx.jpg" alt="Rostro">
+                <h3>Rostro</h3>
+            </div>
+        </div>
+        <div id="productos-container" style="display: none;">
+            <h3 id="current-category-title" style="text-align: center; margin-bottom: 2rem;"></h3>
+            <p class="loading-message">Cargando productos...</p>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>© 2025 Mi Tienda Mary Kay. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCD4lBf6BA76Oz-SDr4f8eaPA-q7v5AecY", // Reemplaza con tu API Key real
+            authDomain: "consultoravidal91.firebaseapp.com",
+            projectId: "consultoravidal91",
+            storageBucket: "consultoravidal91.appspot.com",
+            messagingSenderId: "840042202477",
+            appId: "1:840042202477:web:aae77961b4bca465dc4664",
+            measurementId: "G-HP3L0WZ60V"
+        };
+      let db, auth;
+      try {
+          if (typeof firebase !== 'undefined') {
+              if (!firebase.apps.length) {
+                 console.log("Inicializando Firebase en linea-de-color-marykay.html...");
+                 firebase.initializeApp(firebaseConfig);
+                 db = firebase.firestore();
+                 auth = firebase.auth();
+                 console.log("Firebase inicializado.");
+              } else {
+                 console.log("Firebase ya inicializado en linea-de-color-marykay.html.");
+                 db = firebase.firestore();
+                 auth = firebase.auth();
+              }
+          } else {
+              console.error("Firebase SDK (firebase-app.js) no se cargó correctamente en linea-de-color-marykay.html.");
+          }
+      } catch (e) {
+          console.error("Error inicializando Firebase o servicios en linea-de-color-marykay.html:", e);
+      }
+      const ADMIN_EMAIL = 'ortolanimichael@gmail.com'; // 👉 Tu email de administrador
+    </script>
+    
+    <script src="app.js?v=1.22" defer></script>
+    <script src="auth.js" defer></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Esperar a que Firebase y app.js estén listos
+            let checkFirebaseInterval = setInterval(() => {
+                if (typeof db !== 'undefined' && typeof auth !== 'undefined' && typeof window.createProductCard === 'function' && typeof window.setupCarousels === 'function') {
+                    clearInterval(checkFirebaseInterval);
+                    console.log("Firebase y app.js (v1.21) listos. Iniciando lógica de Línea de Color.");
+                    initializeColorPageLogic();
+                } else {
+                    console.log("Esperando a Firebase y app.js...");
+                }
+            }, 100);
+
+            function initializeColorPageLogic() {
+                const visualGridContainer = document.getElementById('categorias-visual-container');
+                const productosContainer = document.getElementById('productos-container');
+                const volverBtn = document.getElementById('catalogo-volver-btn');
+
+                // Cache para IDs de categorías
+                const categoryIdCache = new Map();
+
+                // Función para mostrar los productos de una subcategoría
+                async function showProductsForSubcategory(subcategoryName) {
+                    
+                    // 1. Mostrar/Ocultar contenedores
+                    visualGridContainer.style.display = 'none';
+                    productosContainer.innerHTML = `<h3 id="current-category-title" style="text-align: center; margin-bottom: 2rem;">${subcategoryName}</h3><p class="loading-message">Cargando productos...</p>`;
+                    productosContainer.style.display = 'block';
+                    volverBtn.style.display = 'block'; // Mostrar el botón volver
+
+                    try {
+                        let categoryId = categoryIdCache.get(subcategoryName);
+
+                        // 2. Si no tenemos el ID en caché, buscarlo en Firebase
+                        if (!categoryId) {
+                            console.log(`Buscando ID para: ${subcategoryName}`);
+                            const categoriesRef = db.collection('categories');
+                            const categoryQuerySnapshot = await categoriesRef
+                                .where('name', '==', subcategoryName)
+                                .where('brand', '==', 'marykay')
+                                .limit(1)
+                                .get();
+
+                            if (!categoryQuerySnapshot.empty) {
+                                categoryId = categoryQuerySnapshot.docs[0].id;
+                                categoryIdCache.set(subcategoryName, categoryId); // Guardar en caché
+                                console.log(`ID encontrado: ${categoryId}`);
+                            } else {
+                                console.error("Subcategoría no encontrada en Firebase:", subcategoryName);
+                                productosContainer.innerHTML = `<h3 id="current-category-title" style="text-align: center; margin-bottom: 2rem;">${subcategoryName}</h3><p class="error-message">Error: Categoría no encontrada.</p>`;
+                                return;
+                            }
+                        }
+
+                        // 3. Buscar productos usando el ID de categoría
+                        console.log(`Buscando productos para categoryId: ${categoryId}`);
+                        const productsRef = db.collection('products');
+                        const querySnapshot = await productsRef
+                            .where('brand', '==', 'marykay') // Marca fija
+                            .where('categoryId', '==', categoryId)
+                            .orderBy('name')
+                            .get();
+
+                        // 4. Renderizar productos
+                        productosContainer.innerHTML = `<h3 id="current-category-title" style="text-align: center; margin-bottom: 2rem;">${subcategoryName}</h3>`;
+
+                        if (querySnapshot.empty) {
+                            productosContainer.innerHTML += '<p class="mensaje-vacio">No hay productos en esta subcategoría aún.</p>';
+                        } else {
+                            querySnapshot.forEach(doc => {
+                                const product = doc.data();
+                                // Usamos la función global de app.js
+                                const productCard = window.createProductCard(product, doc.id); 
+                                productosContainer.appendChild(productCard);
+                            });
+                            // Activamos los carruseles de las tarjetas de producto
+                            window.setupCarousels(productosContainer);
+                        }
+                    } catch (error) {
+                        console.error("Error al cargar productos de subcategoría:", error);
+                        productosContainer.innerHTML = `<h3 id="current-category-title" style="text-align: center; margin-bottom: 2rem;">${subcategoryName}</h3><p class="error-message">Error al cargar los productos. Revisa la consola (F12) y los índices de Firestore.</p>`;
+                    }
+                }
+
+                // 5. Manejar clics en las tarjetas visuales de subcategoría
+                visualGridContainer.addEventListener('click', async (event) => {
+                    const tarjeta = event.target.closest('.tarjeta-categoria-visual');
+                    if (tarjeta) {
+                        // El nombre exacto de la categoría está en el H3
+                        const subcategoryName = tarjeta.querySelector('h3').textContent.trim();
+                        if(subcategoryName) {
+                            showProductsForSubcategory(subcategoryName);
+                        }
+                    }
+                });
+
+                // 6. Manejar el botón de volver
+                volverBtn.addEventListener('click', () => {
+                    visualGridContainer.style.display = 'grid'; // Mostrar la grilla visual
+                    productosContainer.style.display = 'none';
+                    volverBtn.style.display = 'none';
+                });
+            }
+        });
+    </script>
+    </body>
+</html>

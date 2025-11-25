@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración - Mi Tienda</title>
+    <link rel="stylesheet" href="style.css?v=1.23"> 
+    <style>
+        /* Estilos inline específicos */
+        .admin-table-thumbnail {
+            width: 50px; height: 50px; object-fit: cover; border-radius: 4px;
+        }
+
+        /* --- FIX: PERMITIR SCROLL HORIZONTAL DE LA VENTANA --- */
+        /* Esto sobreescribe el bloqueo del style.css solo para esta página */
+        html, body {
+            overflow-x: auto !important; 
+            min-width: fit-content; /* Asegura que el cuerpo se expanda al ancho de la tabla */
+        }
+        /* ----------------------------------------------------- */
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="top-bar">
+             <a href="index.html" id="top-bar-desktop-banner">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761256896/banner_4_r8x0te.jpg" alt="Banner principal de marcas">
+             </a>
+
+             <div id="top-bar-mobile-scroll" class="barra-logos-scroll">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761256896/banner_4_r8x0te.jpg" alt="Marcas">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761256896/banner_4_r8x0te.jpg" alt="Marcas">
+             </div>
+
+             <form id="search-form">
+                <input type="search" id="search-input" placeholder="Buscar productos...">
+                <button type="submit" id="search-button">Buscar</button>
+             </form>
+        </div>
+
+        <nav class="main-nav">
+             <div class="logo">
+                 <a href="index.html">
+                     <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761336043/Stefania_Vidal_1_qekwcc.jpg" alt="Logo Stefania Vidal" class="logo-img">
+                 </a>
+             </div>
+
+             <span id="user-email-mobile" style="display: none;"></span>
+
+             <ul class="nav-links">
+                 <li id="search-form-nav">
+                     <form>
+                        <input type="search" id="search-input-nav" placeholder="Buscar productos...">
+                        <button type="submit" id="search-button-nav">Buscar</button>
+                     </form>
+                 </li>
+                 <li class="dropdown">
+                     <a href="#">HISTORIAS</a>
+                     <div class="dropdown-content">
+                         <a href="sobre-mary-kay.html">Sobre Mary Kay</a>
+                         <a href="sobre-arbell.html">Sobre Arbell</a>
+                         <a href="sobre-biogreen.html">Sobre Biogreen</a>
+                         <a href="sobre-nexo.html">Sobre Nexo</a>
+                     </div>
+                 </li>
+                 <li class="dropdown">
+                     <a href="#">PRODUCTOS</a>
+                     <div class="dropdown-content">
+                         <a href="productos-marykay.html">Mary Kay</a>
+                         <a href="productos-biogreen.html">Biogreen</a>
+                         <a href="productos-arbell.html">Arbell</a>
+                         <a href="productos-nexo.html">Nexo (Indumentaria)</a>
+                     </div>
+                 </li>
+                 <li class="dropdown">
+                     <a href="#">EMPRENDE</a>
+                     <div class="dropdown-content">
+                         <a href="quiero-ser-consultora.html">Consultora Mary Kay</a>
+                         <a href="experta-arbell.html">Experta en Arbell</a>
+                         <a href="revendedor-biogreen.html">Revendedor Biogreen</a>
+                         <a href="revendedor-nexo.html">Revendedor Nexo</a>
+                     </div>
+                 </li>
+                 <li><a href="oportunidad-mk.html">OPORTUNIDAD MK</a></li>
+                 <li><a href="contacto.html">CONTÁCTANOS</a></li>
+
+                 <li id="user-logged-out-mobile" class="auth-mobile-link"><a href="login.html">Iniciar Sesión</a></li>
+                 <li id="user-logged-out-mobile-register" class="auth-mobile-link register-link-mobile"><a href="registro.html">Registrarse</a></li>
+                 <li id="user-logged-in-mobile" class="auth-mobile-link" style="display: none;"><button id="logout-button-mobile">Cerrar Sesión</button></li>
+             </ul>
+
+             <div class="nav-extra">
+                 <div id="user-logged-out" style="display: flex;">
+                     <a href="login.html" class="auth-link">Iniciar Sesión</a>
+                     <a href="registro.html" class="auth-link register-link">Registrarse</a>
+                 </div>
+
+                 <div id="user-logged-in" style="display: none;">
+                     <a id="admin-link-a" href="admin.html" class="auth-link" style="display: none; background-color: #ffc107; color: #333; margin-right: 5px;">ADMIN</a>
+                     <span id="user-email" style="margin-right: 5px;"></span>
+                     <button id="logout-button" class="auth-link">Cerrar Sesión</button>
+                 </div>
+             </div>
+
+             <a href="carrito.html" class="cart-link" style="margin-right: 0.5rem;">🛒 Carrito</a>
+
+             <div class="hamburger-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+             </div>
+         </nav>
+    </header>
+
+    <main class="admin-container">
+        <h2>Panel de Administración</h2>
+
+        <section id="homepage-settings-container">
+            <h3>Administrar Página Principal (index.html)</h3>
+            <form id="homepage-settings-form" class="admin-form">
+                <h4>Carrusel de Imágenes del Banner Principal</h4>
+                <div class="form-group">
+                    <label for="hero-image-urls">URLs de las Imágenes del Carrusel (una por línea):</label>
+                    <textarea id="hero-image-urls" rows="5" placeholder="https://res.cloudinary.com/.../imagen1.jpg\nhttps://res.cloudinary.com/.../imagen2.png" required></textarea>
+                    <small>Estas son las imágenes grandes que rotan en la página de inicio.</small>
+                </div>
+                <button type="submit" class="admin-button edit-button" id="save-hero-banner-button">Guardar Cambios del Carrusel</button>
+                <p id="homepage-feedback" class="feedback-message" style="display: none;"></p>
+            </form>
+        </section>
+
+        <hr> 
+        
+        <section id="manage-banners-container">
+             <h3>Administrar Banners de Categorías</h3>
+             <form id="category-banners-form" class="admin-form">
+                 <h4>URLs de Imágenes para Banners</h4>
+                 <small>Introduce la URL completa (https://...) de la imagen que quieres mostrar como banner en cada página de categoría.</small>
+                 <div class="form-group">
+                     <label for="banner-url-marykay">Banner Mary Kay:</label>
+                     <input type="url" id="banner-url-marykay" placeholder="https://.../banner_mk.jpg">
+                 </div>
+                 <div class="form-group">
+                     <label for="banner-url-biogreen">Banner Biogreen:</label>
+                     <input type="url" id="banner-url-biogreen" placeholder="https://.../banner_bio.jpg">
+                 </div>
+                 <div class="form-group">
+                     <label for="banner-url-arbell">Banner Arbell:</label>
+                     <input type="url" id="banner-url-arbell" placeholder="https://.../banner_arbell.jpg">
+                 </div>
+                 <div class="form-group">
+                     <label for="banner-url-nexo">Banner Nexo:</label>
+                     <input type="url" id="banner-url-nexo" placeholder="https://.../banner_nexo.jpg">
+                 </div>
+                 <button type="submit" class="admin-button edit-button" id="save-category-banners-button">Guardar Cambios de Banners</button>
+                 <p id="category-banners-feedback" class="feedback-message" style="display: none;"></p>
+             </form>
+        </section>
+
+        <hr> 
+        
+        <section id="manage-page-images-container">
+            <h3>Administrar Imágenes de Páginas</h3>
+            <form id="page-images-form" class="admin-form">
+                <h4>URLs de Imágenes Principales</h4>
+                 <small>Introduce la URL completa (https://...) de la imagen principal para cada página.</small>
+                 <div class="form-group">
+                     <label for="page-image-consultora">Imagen "Quiero Ser Consultora":</label>
+                     <input type="url" id="page-image-consultora" placeholder="https://.../imagen_consultora.jpg">
+                 </div>
+                 <button type="submit" class="admin-button edit-button" id="save-page-images-button">Guardar Cambios de Imágenes</button>
+                 <p id="page-images-feedback" class="feedback-message" style="display: none;"></p>
+            </form>
+        </section>
+
+        <hr> 
+        
+        <section id="manage-categories-container">
+             <h3>Administrar Categorías de Productos</h3>
+
+             <form id="category-form" class="admin-form">
+                 <h4 id="category-form-title">Agregar Nueva Categoría</h4>
+                 <input type="hidden" id="edit-category-id"> 
+                 <div class="form-group">
+                     <label for="category-name">Nombre de la Categoría:</label>
+                     <input type="text" id="category-name" required placeholder="Ej: Perfumes, Maquillaje, Rostro">
+                 </div>
+                 
+                 <div class="form-row">
+                     <div class="form-group">
+                         <label for="category-brand">Marca Asociada:</label>
+                         <select id="category-brand" required>
+                             <option value="">-- Selecciona Marca --</option>
+                             <option value="marykay">Mary Kay</option>
+                             <option value="biogreen">Biogreen</option>
+                             <option value="arbell">Arbell</option>
+                             <option value="nexo">Nexo</option>
+                             <option value="novedades">Novedades</option>
+                             <option value="nucleo">Núcleo</option> 
+                         </select>
+                     </div>
+                     <div class="form-group">
+                         <label for="category-parent">Categoría Padre (Opcional):</label>
+                         <select id="category-parent" disabled>
+                             <option value="">-- Selecciona Marca Primero --</option>
+                         </select>
+                         <small>Déjalo en "Ninguna" para crear una categoría principal (ej: Maquillaje).</small>
+                     </div>
+                 </div>
+                 <div class="form-group">
+                     <label for="category-image-url">URL de la Imagen de Categoría:</label>
+                     <input type="text" id="category-image-url" placeholder="https://.../imagen_categoria.jpg">
+                     <small>Opcional. Imagen que representará esta categoría.</small>
+                 </div>
+                 <button type="submit" class="admin-button add-button" id="submit-category-button">Agregar Categoría</button>
+                 <button type="button" class="admin-button cancel-button" id="cancel-edit-category-button" style="display: none;">Cancelar Edición</button>
+                 <p id="category-feedback" class="feedback-message" style="display: none;"></p>
+             </form>
+
+             <div id="list-categories-container">
+                 <h4>Categorías Existentes</h4>
+                 <p id="loading-categories-admin" style="text-align:center; color:#777;">Cargando...</p>
+                 <div class="table-container"> 
+                     <table id="categories-table">
+                         <thead>
+                             <tr>
+    <th>Imagen</th>
+    <th>Nombre</th>
+    <th>Marca</th>
+    <th>Categoría</th>
+    <th>Precio</th>
+    <th>Clicks (Popularidad)</th>
+    <th>Acciones</th>
+</tr>
+                         </thead>
+                         <tbody id="categories-table-body">
+                             </tbody>
+                     </table>
+                 </div>
+             </div>
+         </section>
+
+        <hr> 
+        
+        <section id="manage-products-container">
+            <h3>Administrar Productos</h3>
+
+             <form id="add-product-form" class="admin-form">
+                <h4 id="form-title">Agregar Nuevo Producto</h4>
+                <input type="hidden" id="edit-product-id">
+                
+                <div class="form-group">
+                    <label for="product-name">Nombre del Producto:</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-subtitle">Sub-descripción (opcional):</label>
+                    <input type="text" id="product-subtitle" placeholder="Ej: (Para Piel Normal a Seca...)">
+                    <small>Texto corto que aparece debajo del nombre del producto.</small>
+                </div>
+
+                <div class="form-row">
+                     <div class="form-group">
+                         <label for="product-brand">Marca:</label>
+                         <select id="product-brand" required>
+                             <option value="">-- Selecciona Marca --</option>
+                             <option value="marykay">Mary Kay</option>
+                             <option value="biogreen">Biogreen</option>
+                             <option value="arbell">Arbell</option>
+                             <option value="nexo">Nexo</option>
+                             <option value="novedades">Novedades</option>
+                             <option value="nucleo">Núcleo</option>
+                         </select>
+                     </div>
+                     <div class="form-group">
+                         <label for="product-category">Categoría:</label>
+                         <select id="product-category" required disabled>
+                             <option value="">-- Selecciona Marca Primero --</option>
+                         </select>
+                          <small id="category-loading-msg" style="display: none; color: #007bff;">Cargando categorías...</small>
+                     </div>
+                 </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-price">Precio Normal (Minorista):</label>
+                        <input type="number" id="product-price" step="0.01" min="0" required placeholder="Ej: 1500.50">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-wholesale-price" style="color: #d4af37; font-weight: bold;">Precio Mayorista:</label>
+                        <input type="number" id="product-wholesale-price" step="0.01" min="0" placeholder="Ej: 1000.00">
+                        <small>Si lo dejas vacío, se usará el 30% de desc. automático.</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-created-at" style="color: #007bff;">📅 Fecha de Creación (Ordenamiento):</label>
+                    <input type="datetime-local" id="product-created-at">
+                    <small>Modifica esta fecha para cambiar el orden en "Más Nuevos". (Si lo dejas igual, mantiene su posición).</small>
+                </div>
+                <div class="form-group">
+                    <label for="product-image-urls">URLs de las Imágenes (una por línea, la primera es la principal):</label>
+                    <textarea id="product-image-urls" rows="5" placeholder="https://res.cloudinary.com/.../imagen1.jpg\nhttps://res.cloudinary.com/.../imagen2.png" required></textarea>
+                     <small>Pega las URLs completas (https://...). La primera se usará como miniatura.</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Secciones de Detalles Adicionales:</label>
+                    <div id="detail-sections-container">
+                        </div>
+                    <button type="button" id="add-section-btn" class="admin-button add-button" style="margin-top: 10px;">+ Agregar Sección de Detalles</button>
+                    <small>Añade secciones como Beneficios, Modo de Uso, Ingredientes, etc. Todas empezarán contraídas en la tienda.</small>
+                </div>
+                <button type="submit" class="admin-button add-button" id="submit-product-button">Agregar Producto</button>
+                <button type="button" class="admin-button cancel-button" id="cancel-edit-button" style="display: none;">Cancelar Edición</button>
+                <p id="add-product-feedback" class="feedback-message" style="display: none;"></p>
+            </form>
+
+             <div id="list-products-container">
+                 <h4>Productos Existentes</h4>
+                 <p id="loading-products-admin" style="text-align:center; color:#777;">Cargando...</p>
+                 <div class="table-container">
+                     <table id="products-table">
+                         <thead>
+                             <tr>
+                                 <th>Imagen</th>
+                                 <th>Nombre</th>
+                                 <th>Marca</th>
+                                 <th>Categoría</th>
+                                 <th>Precio Lista</th>
+                                 <th>P. Mayorista</th>
+                                 <th>Clics (Popularidad)</th> <th>Descripción</th>
+                                 <th>Acciones</th> </tr>
+                         </thead>
+                         <tbody id="products-table-body">
+                             </tbody>
+                     </table>
+                 </div>
+             </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>© 2025 Mi Tienda Mary Kay. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCD4lBf6BA76Oz-SDr4f8eaPA-q7v5AecY",
+            authDomain: "consultoravidal91.firebaseapp.com",
+            projectId: "consultoravidal91",
+            storageBucket: "consultoravidal91.appspot.com",
+            messagingSenderId: "840042202477",
+            appId: "1:840042202477:web:aae77961b4bca465dc4664",
+            measurementId: "G-HP3L0WZ60V"
+        };
+      let db, auth;
+      try {
+          if (typeof firebase !== 'undefined') {
+              if (!firebase.apps.length) {
+                 console.log("Inicializando Firebase en admin.html...");
+                 firebase.initializeApp(firebaseConfig);
+                 db = firebase.firestore();
+                 auth = firebase.auth();
+                 console.log("Firebase inicializado.");
+              } else {
+                 console.log("Firebase ya inicializado en admin.html.");
+                 db = firebase.firestore();
+                 auth = firebase.auth();
+              }
+          } else {
+              console.error("Firebase SDK (firebase-app.js) no se cargó correctamente en admin.html.");
+          }
+      } catch (e) {
+          console.error("Error inicializando Firebase o servicios en admin.html:", e);
+      }
+      const ADMIN_EMAIL = 'ortolanimichael@gmail.com';
+    </script>
+    <script src="app.js?v=1.25" defer></script> 
+    <script src="auth.js" defer></script>
+
+</body>
+</html>

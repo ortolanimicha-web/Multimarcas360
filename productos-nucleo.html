@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electrónica Núcleo - Mayorista</title>
+    
+    <link rel="stylesheet" href="style.css"> 
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ========================================= */
+        /* === ESTILOS TEMA NÚCLEO (DARK/TECH) === */
+        /* ========================================= */
+
+        .nucleo-theme { font-family: 'Roboto', sans-serif; background-color: #f5f5f5; }
+
+        /* Navbar Dark */
+        .nucleo-theme .navbar { background-color: #000; border-bottom: 3px solid #6f42c1; }
+        .nucleo-theme .logo { color: #fff; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+        .nucleo-theme .nav-links a { color: #fff; }
+        .nucleo-theme .nav-links a:hover { color: #d6b3ff; }
+        .nucleo-theme .cart-link { background: #fff; color: #000 !important; border-radius: 4px; cursor: pointer; }
+        
+        /* Botones Búsqueda */
+        .nucleo-theme #search-button, .nucleo-theme #search-button-nav {
+            background-color: #6f42c1; color: white; border: none;
+        }
+
+        /* Layout */
+        .nucleo-layout-wrapper { display: block; max-width: 100%; margin: 0; padding: 0; }
+        .nucleo-main-content { width: 100%; }
+
+        /* Hero Banner */
+        .nucleo-hero-banner {
+            border-radius: 0; margin-bottom: 0; height: 350px; background-color: #000;
+            display: flex; justify-content: space-between; overflow: hidden;
+        }
+        .nucleo-hero-text { padding: 40px; flex: 1; z-index: 2; color: white; }
+        .nucleo-hero-text h2 { margin: 0 0 10px; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.8; }
+        .nucleo-hero-text h1 { font-size: 2.2rem; margin: 0 0 15px; font-weight: 900; line-height: 1; }
+        .nucleo-btn {
+            background-color: #ffc107; color: #333; border: none; padding: 10px 25px;
+            border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase;
+        }
+
+        /* Barra Beneficios */
+        .features-bar {
+            display: flex; justify-content: space-around; background: white; padding: 2rem 1rem;
+            flex-wrap: wrap; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 2rem;
+        }
+        .feature-item { flex: 1; min-width: 200px; margin: 10px; }
+        .feature-icon { font-size: 2rem; color: #6f42c1; margin-bottom: 10px; }
+        .feature-title { font-weight: bold; color: #333; text-transform: uppercase; font-size: 0.9rem;}
+        .feature-desc { font-size: 0.85rem; color: #666; }
+
+        /* Títulos */
+        .section-title-bar { text-align: center; padding: 20px; margin: 20px 0; }
+        .section-title-bar h3 { font-size: 1.8rem; font-weight: 900; text-transform: uppercase; color: #000; }
+
+        /* Grid Productos */
+        .catalogo-grid-nucleo {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px; padding: 0 40px 40px 40px; max-width: 1400px; margin: 0 auto;
+        }
+        /* Tarjeta Producto Nucleo */
+        .nucleo-theme .tarjeta-producto {
+            border: none; border-radius: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            width: 100% !important; background: white; padding-bottom: 15px;
+            transition: transform 0.2s;
+        }
+        .nucleo-theme .tarjeta-producto:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+        .nucleo-theme .product-carousel { height: 240px; border-bottom: none; }
+        .nucleo-theme .producto-info { padding: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .nucleo-theme .producto-precio { color: #6f42c1; font-size: 1.4rem; font-weight: 900; }
+        .nucleo-theme .boton-agregar {
+            background: linear-gradient(to right, #6f42c1, #8e44ad); color: white; border-radius: 4px;
+            text-transform: uppercase; font-size: 0.8rem; padding: 10px; flex-grow: 1; width: 100%;
+        }
+
+        /* --- ESTILOS SIDEBAR (MENÚ LATERAL) --- */
+        .nucleo-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 2000;
+            opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .nucleo-overlay.active { opacity: 1; visibility: visible; }
+
+        .nucleo-offcanvas {
+            position: fixed; top: 0; left: 0; height: 100%; width: 280px;
+            background: #fff; z-index: 2001;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.77, 0, 0.175, 1);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column;
+        }
+        .nucleo-offcanvas.active { transform: translateX(0); }
+
+        .nucleo-offcanvas-header {
+            background: #000; color: #fff; padding: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 3px solid #6f42c1;
+        }
+        .nucleo-offcanvas-body { padding: 20px; overflow-y: auto; }
+        
+        /* Estilo de los links del sidebar */
+        .nucleo-cat-link {
+            display: flex; align-items: center; gap: 10px; padding: 12px;
+            text-decoration: none; color: #333; font-weight: 500; border-bottom: 1px solid #eee;
+            cursor: pointer; transition: 0.2s;
+        }
+        .nucleo-cat-link:hover { background: #f3e5f5; color: #6f42c1; padding-left: 18px; }
+        .nucleo-cat-link img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover;}
+
+    </style>
+</head>
+<body class="nucleo-theme">
+
+    <nav class="navbar">
+        <div class="logo">Electrónica Núcleo</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Volver a Inicio</a></li>
+            
+            <li id="nucleo-auth-links" style="display: flex; align-items: center; gap: 15px;">
+                <a href="admin-nucleo.html" id="nucleo-admin-link" style="color: #ffc107; font-weight: bold; display:none;">
+                    <i class="fas fa-user-shield"></i> Admin
+                </a>
+
+                <span id="nucleo-user-email" style="color: white; font-size: 0.9rem; display: none;"></span>
+
+                <a href="login.html" id="nucleo-login-link" style="color: #ffc107; font-weight: bold;">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </a>
+
+                <button id="nucleo-logout-btn" style="background: transparent; border: 1px solid #ffc107; color: #ffc107; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-weight: bold; display: none;">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </button>
+            </li>
+
+            <li id="search-form-nav">
+                <form action="busqueda.html" method="GET">
+                    <input type="text" name="q" id="search-input-nav" placeholder="Buscar...">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </li>
+            <li><a href="carrito.html" class="cart-link"><i class="fas fa-shopping-cart"></i> Carrito</a></li>
+        </ul>
+        <div class="hamburger-menu">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
+
+    <div id="nucleo-sidebar-overlay" class="nucleo-overlay"></div>
+    
+    <aside id="nucleo-sidebar-container" class="nucleo-offcanvas">
+        <div class="nucleo-offcanvas-header">
+            <h3 style="margin:0; font-size:1.1rem;">CATEGORÍAS</h3>
+            <button id="close-nucleo-sidebar" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
+        </div>
+        <div class="nucleo-offcanvas-body">
+            <ul id="nucleo-category-list" style="list-style:none; padding:0; margin:0;">
+                <li style="padding:10px; text-align:center; color:#777;"><i class="fas fa-spinner fa-spin"></i> Cargando...</li>
+            </ul>
+            <button id="btn-ver-todo-nucleo" style="width:100%; padding:10px; margin-top:20px; background:#333; color:white; border:none; cursor:pointer;">Ver Todo el Stock</button>
+        </div>
+    </aside>
+
+    <div class="nucleo-layout-wrapper">
+        <main class="nucleo-main-content">
+            
+            <div class="nucleo-hero-banner">
+                <div class="nucleo-hero-text">
+                    <h2 style="color: #cbbde2;">Tecnología Mayorista</h2>
+                    <h1>NOVEDADES 2025</h1>
+                    <p>Equipá tu negocio con lo último en gadgets y accesorios.</p>
+                    
+                    <button id="btn-open-sidebar" class="nucleo-btn" style="background: #fff; color: #6f42c1;">Ver Catálogo</button>
+                
+                </div>
+                <div class="nucleo-hero-image" style="background-image: url('https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=1200&q=80'); clip-path: none; width: 55%;"></div>
+            </div>
+
+            <div class="features-bar">
+                <div class="feature-item">
+                    <i class="fas fa-truck feature-icon"></i>
+                    <div class="feature-title">Envíos</div>
+                    <div class="feature-desc">A todo el país</div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-tags feature-icon"></i>
+                    <div class="feature-title">Descuentos</div>
+                    <div class="feature-desc">Por bulto cerrado</div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-map-marker-alt feature-icon"></i>
+                    <div class="feature-title">Rio Tercero</div>
+                    <div class="feature-desc">Entregas en el día</div>
+                </div>
+            </div>
+
+            <div class="section-title-bar">
+                <h3>¡Lleva tu negocio a otro nivel!</h3>
+                <p style="color: #777; margin-top: 5px;">Productos de alta rotación seleccionados para vos.</p>
+            </div>
+
+            <div id="catalogo-container" class="catalogo-grid-nucleo">
+                <div class="loading-spinner">
+                    <i class="fas fa-circle-notch fa-spin"></i> Cargando mercadería...
+                </div>
+            </div>
+
+            <div class="promo-banner-full" style="background-image: url('https://images.unsplash.com/photo-1512054502232-10a0a035d672?auto=format&fit=crop&w=1200&q=80'); margin-top:40px; height:200px; display:flex; align-items:center; justify-content:center; position:relative;">
+                <div style="position:relative; z-index:2; color:white; text-align:center;">
+                    <h2 style="font-size:2.5rem; font-weight:900; text-shadow:0 2px 10px rgba(0,0,0,0.5);">¡Iluminá tu espacio!</h2>
+                </div>
+                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3);"></div>
+            </div>
+
+            </main>
+    </div>
+
+    <footer class="nucleo-footer" style="background: #000; color: #fff; padding:20px; text-align:center;">
+        <p style="margin:0; color: #555;">© 2025 Electrónica Núcleo - Multimarcas 360</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCD4lBf6BA76Oz-SDr4f8eaPA-q7v5AecY",
+        authDomain: "consultoravidal91.firebaseapp.com",
+        projectId: "consultoravidal91",
+        storageBucket: "consultoravidal91.firebasestorage.app",
+        messagingSenderId: "840042202477",
+        appId: "1:840042202477:web:aae77961b4bca465dc4664",
+        measurementId: "G-HP3L0WZ60V"
+      };
+      let db, auth;
+      if (typeof firebase !== 'undefined') {
+          if (!firebase.apps.length) {
+             firebase.initializeApp(firebaseConfig);
+             db = firebase.firestore();
+             auth = firebase.auth();
+          } else {
+             db = firebase.firestore();
+             auth = firebase.auth();
+          }
+      }
+      const ADMIN_EMAIL = 'ortolanimichael@gmail.com';
+    </script>
+
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+    
+</body>
+</html>

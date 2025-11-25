@@ -1,0 +1,2870 @@
+/* --- Forzar bloqueo de scroll horizontal --- */
+html {
+    overflow-x: hidden;
+}
+
+/* --- Estilos Generales --- */
+body {
+    font-family: 'Montserrat', sans-serif; /* Por defecto */
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8; 
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* ============================================== */
+/* === TEMA ELECTRÓNICA NÚCLEO (Estilo Guti)  === */
+/* ============================================== */
+
+/* Tipografía específica para Nucleo */
+.nucleo-theme {
+    font-family: 'Roboto', sans-serif; /* Más técnica */
+    background-color: #f0f2f5;
+}
+
+/* Wrapper del Layout (Sidebar + Main) */
+.nucleo-layout-wrapper {
+    display: flex;
+    max-width: 1300px;
+    margin: 20px auto;
+    padding: 0 15px;
+    gap: 25px;
+    flex-grow: 1;
+}
+
+/* --- Sidebar (Izquierda) --- */
+.nucleo-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    height: fit-content;
+    overflow: hidden;
+}
+
+.sidebar-header {
+    background-color: #0062cc; /* Azul técnico */
+    color: white;
+    padding: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    border-bottom: 1px solid #eee;
+}
+
+.sidebar-menu li a {
+    display: block;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #555;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-menu li a:hover, .sidebar-menu li a.active {
+    background-color: #f8f9fa;
+    color: #0062cc;
+    padding-left: 20px; /* Efecto de desplazamiento */
+    font-weight: 500;
+}
+
+.sidebar-menu li a i {
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-banner {
+    margin: 15px;
+    padding: 15px;
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+}
+.sidebar-banner p { margin: 0 0 5px; font-weight: bold; font-size: 0.9rem; }
+.sidebar-banner i { font-size: 1.5rem; }
+
+/* --- Contenido Principal (Derecha) --- */
+.nucleo-main-content {
+    flex-grow: 1;
+    width: calc(100% - 285px); /* Resto del ancho */
+}
+
+/* Hero Banner Nucleo */
+.nucleo-hero-banner {
+    background-color: #004a99; /* Azul oscuro */
+    border-radius: 8px;
+    color: white;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    height: 250px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0,74,153,0.2);
+}
+
+.nucleo-hero-text {
+    padding: 40px;
+    flex: 1;
+    z-index: 2;
+}
+
+.nucleo-hero-text h2 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.8;
+    margin: 0 0 10px;
+}
+
+.nucleo-hero-text h1 {
+    font-size: 2.2rem;
+    margin: 0 0 15px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.nucleo-hero-text p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+.nucleo-btn {
+    background-color: #ffc107; /* Amarillo contraste */
+    color: #333;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.3s;
+}
+.nucleo-btn:hover { background-color: #e0a800; }
+
+.nucleo-hero-image {
+    width: 50%;
+    background-size: cover;
+    background-position: center;
+    /* Clip path para efecto diagonal */
+    clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+/* Toolbar / Filtros */
+.nucleo-toolbar {
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 5px;
+    border: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.nucleo-toolbar h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.toolbar-controls select {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #555;
+}
+
+/* --- Grilla de Productos Nucleo --- */
+/* Reutiliza .tarjeta-producto pero ajusta el contenedor para grid */
+.catalogo-grid-nucleo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    /* Sobrescribir el estilo por defecto del app.js que podría ser bloque */
+}
+
+/* Modificaciones a la tarjeta de producto SOLO dentro del tema Nucleo */
+.nucleo-theme .tarjeta-producto {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 4px; /* Bordes menos redondeados */
+    box-shadow: none; /* Sombra más sutil o nula inicial */
+    transition: box-shadow 0.2s, border-color 0.2s;
+    flex-direction: column !important; /* Forzar vertical siempre */
+    width: calc(33.333% - 15px); /* 3 columnas */
+    margin: 0; /* Quitar margenes automáticos */
+    max-width: none;
+}
+
+.nucleo-theme .tarjeta-producto:hover {
+    border-color: #0062cc;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.nucleo-theme .product-carousel {
+    width: 100%;
+    height: 200px;
+    border-right: none;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.nucleo-theme .producto-info {
+    padding: 15px;
+    text-align: left;
+}
+
+.nucleo-theme .tarjeta-producto h3 {
+    font-size: 1rem;
+    height: 2.4em; /* Limitar altura título */
+    overflow: hidden;
+    color: #004a99; /* Títulos en azul */
+}
+
+.nucleo-theme .producto-precio {
+    color: #28a745; /* Precio en verde (común en tech) */
+    font-size: 1.3rem;
+}
+
+.nucleo-theme .boton-agregar {
+    background-color: #0062cc;
+    color: white;
+    border-radius: 3px;
+    width: 100%;
+}
+.nucleo-theme .boton-agregar:hover {
+    background-color: #004a99;
+}
+
+.nucleo-footer {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+    font-size: 0.9rem;
+    border-top: 1px solid #ddd;
+    margin-top: 40px;
+}
+
+.loading-spinner {
+    width: 100%;
+    text-align: center;
+    padding: 40px;
+    color: #0062cc;
+    font-size: 1.2rem;
+}
+
+/* --- Responsive para Nucleo --- */
+@media (max-width: 900px) {
+    .nucleo-layout-wrapper {
+        flex-direction: column;
+    }
+    .nucleo-sidebar {
+        width: 100%;
+        display: none; /* Ocultar sidebar en móvil o convertir en acordeón */
+    }
+    .nucleo-main-content {
+        width: 100%;
+    }
+    .nucleo-hero-banner {
+        height: auto;
+        flex-direction: column;
+    }
+    .nucleo-hero-image {
+        width: 100%;
+        height: 150px;
+        clip-path: none;
+    }
+    .nucleo-theme .tarjeta-producto {
+        width: calc(50% - 10px); /* 2 columnas en tablet */
+    }
+}
+
+@media (max-width: 600px) {
+    .nucleo-theme .tarjeta-producto {
+        width: 100%; /* 1 columna en móvil */
+    }
+}
+
+
+/* ============================================== */
+/* === ESTILOS ORIGINALES (Mantener abajo)    === */
+/* ============================================== */
+
+/* --- Encabezado --- */
+header {
+    background-color: #fff; /* Fondo blanco */
+    border-bottom: 1px solid #eee; /* Línea sutil al final del header */
+    width: 100%; /* Ocupa todo el ancho */
+    position: sticky; /* Fija el header */
+    top: 0; /* Lo pega arriba */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Sombra sutil al header */
+}
+
+/* --- Barra Superior con Banner --- */
+.top-bar {
+    background-color: #fff;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 50px;
+    position: relative;
+}
+
+/* === REGLAS DE VISIBILIDAD PARA PC (Por defecto) === */
+
+/* 1. Ocultar el carrusel móvil en PC */
+#top-bar-mobile-scroll {
+    display: none;
+}
+
+/* 2. Mostrar el banner estático de PC */
+#top-bar-desktop-banner {
+    display: block;
+    height: 100%;
+}
+#top-bar-desktop-banner img {
+    height: 100%;
+    width: auto;
+}
+
+/* 3. Mostrar el buscador de PC */
+.top-bar #search-form {
+    display: flex;
+    margin-left: 2rem;
+}
+.top-bar #search-form input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px 0 0 20px;
+    font-size: 0.9rem;
+}
+.top-bar #search-form button {
+    padding: 8px 12px;
+    border: 1px solid #e91e63;
+    background-color: #e91e63;
+    color: white;
+    border-radius: 0 20px 20px 0;
+    cursor: pointer;
+    margin-left: -1px;
+    font-size: 0.9rem;
+}
+
+/* Estilos base para el carrusel (no afecta visibilidad) */
+.barra-logos-scroll {
+    display: flex; /* Added flex here for base alignment */
+    align-items: center;
+    width: max-content;
+    position: absolute;
+    left: 0;
+}
+.barra-logos-scroll img {
+    height: 35px; /* Altura base para la imagen del banner */
+    width: auto;
+    margin: 0 15px;
+    flex-shrink: 0;
+}
+/* --- Fin Barra Superior --- */
+
+
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative; /* Añadido para z-index del menú */
+}
+
+.logo h1 {
+    font-family: 'Times New Roman', serif;
+    font-size: 1.8rem;
+    color: #333;
+    margin: 0;
+}
+
+.logo .logo-img {
+    max-height: 50px;
+    width: auto;
+    display: block;
+}
+
+/* ================================================== */
+/* === MEJORA VISUAL DEL MENÚ Y CARRITO (NAVBAR) === */
+/* ================================================== */
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 2.5rem; /* Reducido un poco para mejor ajuste */
+    align-items: center;
+}
+
+.nav-links li {
+    position: relative;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 600; /* Un poco más grueso */
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    padding: 0.5rem 0;
+    transition: color 0.3s ease;
+    display: block;
+    position: relative; /* Para el efecto de subrayado */
+}
+
+/* Efecto de subrayado animado al pasar el mouse */
+.nav-links > li > a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #e91e63;
+    transition: width 0.3s ease;
+}
+
+.nav-links > li > a:hover {
+    color: #e91e63;
+}
+
+.nav-links > li > a:hover::after,
+.nav-links > li > a.active::after {
+    width: 100%; /* Expande la línea */
+}
+
+.nav-links li.auth-mobile-link {
+    display: none !important;
+}
+
+/* --- ESTILOS MEJORADOS PARA EL CARRITO --- */
+
+.nav-extra {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.cart-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border-radius: 30px;
+    background-color: white;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.cart-link i {
+    font-size: 1.1rem;
+    color: #e91e63; /* Icono en rosa */
+}
+
+.cart-link:hover {
+    background-color: #fff0f5; /* Rosa muy pálido */
+    border-color: #e91e63;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(233, 30, 99, 0.15);
+    color: #e91e63;
+}
+
+/* Burbuja de notificación (Badge) para el contador */
+.cart-badge {
+    background-color: #e91e63;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 2px 6px;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1;
+    display: inline-block;
+    margin-left: 2px;
+}
+
+.auth-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: 20px;
+    background-color: #f4f4f4;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    border: none;
+    cursor: pointer;
+    margin-left: 0.5rem;
+}
+
+.auth-link:hover {
+    background-color: #e91e63;
+    color: white;
+}
+.register-link {
+     background-color: #e91e63;
+     color: white;
+}
+.register-link:hover {
+    background-color: #d81b60;
+}
+
+/* Estilos específicos para mostrar/ocultar login/logout */
+#user-logged-out {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+#user-logged-in {
+    display: none; /* Hidden by default, shown by JS */
+    align-items: center;
+    gap: 0.5rem;
+}
+
+
+#user-logged-in span { /* Desktop Email */
+    margin-right: 0.5rem;
+    font-weight: normal; 
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px; 
+    color: #555; 
+}
+
+/* Specific styles for the #logout-button (the rounded one) */
+#logout-button {
+    /* No display:none needed here, inherits from .auth-link */
+}
+#logout-button:hover {
+    background-color: #e0e0e0; /* Subtle grey on hover */
+    color: #333; /* Keep text color */
+}
+
+
+/* --- Buscador en NAV (oculto en desktop) --- */
+#search-form-nav {
+    display: none; /* Oculto por defecto */
+    padding: 1rem 2rem; /* Espaciado dentro del menú */
+    background-color: #f8f8f8;
+    border-top: 1px solid #eee;
+}
+#search-form-nav input {
+    width: calc(100% - 80px); /* Ancho menos el botón */
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 20px 0 0 20px;
+    font-size: 0.9rem;
+}
+#search-form-nav button {
+    padding: 10px 15px;
+    border: 1px solid #e91e63;
+    background-color: #e91e63;
+    color: white;
+    border-radius: 0 20px 20px 0;
+    cursor: pointer;
+    margin-left: -1px; /* Superponer */
+    font-size: 0.9rem;
+}
+
+/* *** NUEVO: Estilo para el email en móvil (oculto por defecto) *** */
+#user-email-mobile {
+    display: none; /* Oculto por defecto, JS lo muestra */
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #555;
+    max-width: 120px; /* Ajusta según necesites */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-left: auto; /* Empuja hacia la derecha */
+    margin-right: 0.5rem; /* Espacio antes del carrito */
+    align-self: center; /* Centrar verticalmente */
+}
+
+
+/* --- Estilos para el Banner Héroe / Carrusel --- */
+.hero-banner {
+    width: 100%;
+    height: 400px;
+    position: relative;
+    overflow: hidden;
+    background-color: #eee;
+    background-image: url('https://picsum.photos/id/1015/1200/500');
+    background-size: cover;
+    background-position: center center;
+}
+
+.hero-carousel-slides {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hero-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    z-index: 1;
+}
+
+.hero-slide.active {
+    opacity: 1;
+    z-index: 2;
+}
+
+.hero-content {
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    max-width: 90%;
+    width: fit-content;
+}
+
+.hero-content h2 { font-size: 2.5rem; font-weight: bold; margin: 0 0 0.5rem 0; }
+.hero-content p { font-size: 1.2rem; margin: 0 0 1.5rem 0; }
+.hero-boton { background-color: #e91e63; color: white; padding: 12px 25px; text-decoration: none; border-radius: 30px; font-weight: bold; transition: background-color 0.3s ease; display: inline-block; }
+.hero-boton:hover { background-color: #d81b60; }
+
+
+/* --- Contenedor Principal --- */
+main {
+    max-width: 1200px;
+    width: 90%;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    flex-grow: 1;
+}
+
+main.contacto-container,
+main.sobre-container,
+main.consultora-container,
+main.carrito-main-container,
+main.auth-container,
+main.admin-container {
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 2.5rem;
+}
+
+/* Estilos del Catálogo de Productos (Lista - Usado por Novedades) */
+#productos-container {
+    padding: 1rem 0;
+    max-width: 800px;
+    margin: 2rem auto;
+}
+#productos-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+#productos-container .loading-message,
+#productos-container .error-message,
+#productos-container .mensaje-vacio {
+    text-align: center;
+    color: #777;
+    font-style: italic;
+    padding: 1.5rem;
+    font-size: 1.1rem;
+}
+#productos-container .error-message {
+    color: red;
+    font-style: normal;
+    font-weight: bold;
+}
+
+/* ============================================== */
+/* === ESTILOS REFORZADOS v2 PARA TARJETA PRODUCTO === */
+/* ============================================== */
+
+/* Contenedor principal de la tarjeta */
+.tarjeta-producto {
+    background-color: #fefefe;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: row !important; /* Forzar fila */
+    align-items: flex-start; /* Alinear items al inicio (arriba) */
+    width: 95%;
+    max-width: 700px;
+    margin: 1.5rem auto;
+    overflow: hidden;
+}
+.tarjeta-producto:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Contenedor de la imagen/carrusel (Izquierda) */
+.product-carousel {
+    position: relative;
+    width: 180px; /* Ancho fijo */
+    height: 180px; /* Alto fijo (cuadrado) */
+    flex-shrink: 0; /* No permitir que se encoja */
+    background-color: #f0f0f0;
+    border-right: 1px solid #eee; /* Separador */
+    overflow: hidden; /* Asegurar que las imágenes no se salgan */
+}
+
+/* Imágenes dentro del carrusel */
+.carousel-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    display: block; /* Asegurar bloque */
+}
+.carousel-image.active {
+    opacity: 1;
+}
+
+/* Botones del carrusel */
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    line-height: 1;
+    display: none; /* JS lo mostrará si hay >1 imagen */
+}
+.product-carousel:hover .carousel-button { opacity: 0.7; }
+.carousel-button:hover { opacity: 1; }
+.carousel-button.prev { left: 10px; }
+.carousel-button.next { right: 10px; }
+
+/* Contenedor de la información (Derecha) */
+.producto-info {
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column; /* Contenido interno en columna */
+    flex-grow: 1; /* Ocupa el espacio restante */
+    flex-shrink: 1; /* Puede encogerse si es necesario */
+    min-width: 0; /* Importante para evitar desbordamiento con flexbox */
+    justify-content: flex-start; /* Alinea contenido arriba */
+}
+
+/* Estilos internos de .producto-info (sin cambios importantes) */
+.producto-categoria-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem;}
+.producto-categoria-imagen { width: 24px; height: 24px; object-fit: contain; border-radius: 50%; }
+.producto-categoria { font-size: 0.8rem; color: #888; text-transform: uppercase; font-weight: bold; margin: 0; }
+.tarjeta-producto h3 { text-align: left; margin: 0 0 0.5rem 0; font-size: 1.25rem; color: #333; word-wrap: break-word; } /* Added word-wrap */
+.tarjeta-producto p.producto-precio { text-align: left; margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: bold; color: #e91e63; }
+.producto-descripcion { font-size: 0.9rem; color: #666; line-height: 1.5; margin-bottom: 1rem; white-space: pre-wrap; word-wrap: break-word; } /* Added word-wrap */
+
+.producto-acciones {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: auto; /* Empuja esto al final del contenedor .producto-info */
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+.producto-acciones label { font-size: 0.9rem; color: #555; font-weight: bold; white-space: nowrap; }
+.producto-cantidad { width: 60px; padding: 8px; font-size: 1rem; text-align: center; border: 1px solid #ddd; border-radius: 5px; }
+.boton-agregar {
+    margin: 0;
+    flex-grow: 1;
+    background-color: #f7a8b8;
+    color: #333;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease;
+    text-transform: uppercase;
+}
+.boton-agregar:hover { background-color: #e91e63; color: white; }
+.boton-agregar:active { transform: scale(0.98); }
+
+/* --- Pie de página --- */
+footer {
+    text-align: center;
+    padding: 1.5rem;
+    background-color: #f0f0f0;
+    border-top: 1px solid #eee;
+    margin-top: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+footer p { margin: 0; font-size: 0.9rem; color: #555;}
+
+/* Botones especiales del carrito */
+#finalizar-compra, #vaciar-carrito {
+    background-color: #e91e63;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    margin: 0.5rem;
+}
+#finalizar-compra:hover { background-color: #d81b60; transform: translateY(-2px); }
+#vaciar-carrito { background-color: #777; }
+#vaciar-carrito:hover { background-color: #555; transform: translateY(-2px); }
+
+
+/* --- Estilos para la Página de Contacto --- */
+.contacto-container h2 { text-align: center; font-size: 2.5rem; color: #333; margin-bottom: 1rem; }
+.contacto-container p { text-align: center; font-size: 1.1rem; margin-bottom: 2.5rem; color: #555; }
+.contact-form { display: flex; flex-direction: column; gap: 1.2rem; }
+.contact-form label { font-weight: bold; font-size: 0.9rem; color: #555; margin-bottom: -0.5rem; }
+.contact-form input, .contact-form textarea { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+.contact-form textarea { resize: vertical; min-height: 100px; }
+.boton-enviar { background-color: #e91e63; color: white; border: none; padding: 15px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 30px; cursor: pointer; transition: background-color 0.3s ease; width: fit-content; align-self: center; margin-top: 1rem; }
+.boton-enviar:hover { background-color: #d81b60; }
+
+/* --- Estilos para la Página "Sobre Mary Kay" y otras páginas "Sobre" --- */
+.sobre-container .subtitulo { text-align: center; font-size: 1.2rem; color: #555; margin-bottom: 2.5rem; font-style: italic; }
+.sobre-container img { width: 100%; height: auto; border-radius: 8px; margin-bottom: 2.5rem; max-height: 400px; object-fit: cover;}
+.sobre-container h3 { font-size: 1.8rem; color: #e91e63; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 0.5rem; }
+.sobre-container p { font-size: 1rem; line-height: 1.6; color: #444; margin-bottom: 1rem; }
+
+/* --- Estilos para la Página "Quiero ser Consultora" y otras "Emprende" --- */
+.consultora-container h2 { text-align: center; font-size: 2.5rem; color: #333; margin-bottom: 1rem; }
+.consultora-container .subtitulo { text-align: center; font-size: 1.2rem; color: #555; margin-bottom: 2.5rem; font-style: italic; }
+.consultora-container img { width: 100%; height: auto; border-radius: 8px; margin-bottom: 2.5rem; max-height: 400px; object-fit: cover; }
+.consultora-container h3 { font-size: 1.8rem; color: #e91e63; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 0.5rem; }
+.consultora-container p { font-size: 1rem; line-height: 1.6; color: #444; margin-bottom: 1rem;}
+.beneficios-lista { list-style-type: none; padding-left: 0; margin: 1.5rem 0; }
+.beneficios-lista li { font-size: 1rem; color: #333; padding-left: 2rem; margin-bottom: 0.75rem; position: relative; }
+.beneficios-lista li::before { content: '✔'; color: #e91e63; position: absolute; left: 0; top: 0; font-size: 1.2rem; }
+.boton-consultora { background-color: #e91e63; color: white; border: none; padding: 15px 30px; font-size: 1.1rem; font-weight: bold; border-radius: 30px; cursor: pointer; transition: background-color 0.3s ease; text-decoration: none; display: table; margin: 2rem auto 0 auto; }
+.boton-consultora:hover { background-color: #d81b60; }
+
+
+/* --- Estilos para la Página del Carrito --- */
+.carrito-main-container h2 { text-align: center; font-size: 2.5rem; color: #333; margin-bottom: 2rem; }
+.carrito-vacio { text-align: center; font-size: 1.2rem; color: #777; padding: 2rem; }
+.carrito-item { display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid #eee; padding: 1rem 0; }
+.carrito-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+.carrito-item-info { flex-grow: 1; }
+.carrito-item-info h4 { margin: 0 0 0.3rem 0; font-size: 1.1rem; color: #333; }
+.carrito-item-info p { margin: 0.2rem 0; font-size: 0.95rem; color: #555; }
+.boton-eliminar { background-color: #dc3545; color: white; border: none; padding: 6px 10px; font-size: 0.85rem; font-weight: bold; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease; margin-left: auto; }
+.boton-eliminar:hover { background-color: #c82333; }
+.carrito-total { text-align: right; font-size: 1.5rem; color: #333; margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid #333; }
+
+/* --- Estilos para el Menú Desplegable (Dropdown) --- */
+.dropdown-content { display: none; position: absolute; background-color: #ffffff; min-width: 220px; box-shadow: 0 8px 16px 0 rgba(0,0,0,0.1); z-index: 100; border-top: 3px solid #e91e63; left: 0; }
+.dropdown-content a { color: #333; padding: 12px 16px; text-decoration: none; display: block; font-weight: normal; font-size: 0.9rem; text-transform: none; }
+.dropdown-content a:hover { background-color: #f4f4f4; color: #e91e63; }
+.dropdown:hover .dropdown-content { display: block; }
+.dropdown:hover > a { color: #e91e63; }
+
+/* --- Estilos para Formularios de Auth --- */
+.auth-container h2 { text-align: center; font-size: 2rem; color: #333; margin-bottom: 2rem; }
+.auth-form { display: flex; flex-direction: column; gap: 1.2rem; }
+.auth-form label { font-weight: bold; font-size: 0.9rem; color: #555; margin-bottom: -0.5rem; }
+.auth-form input { width: 100%; padding: 12px; font-size: 1rem; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+.auth-button { background-color: #e91e63; color: white; border: none; padding: 15px; font-size: 1.1rem; font-weight: bold; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease; margin-top: 1rem; }
+.auth-button:hover { background-color: #d81b60; }
+.error-message { color: #dc3545; text-align: center; margin-top: 1rem; font-weight: bold; font-size: 0.9rem; }
+.auth-switch { text-align: center; margin-top: 1.5rem; font-size: 0.9rem; }
+.auth-switch a { color: #e91e63; text-decoration: none; font-weight: bold; }
+.auth-switch a:hover { text-decoration: underline; }
+
+/* --- Estilos para la Página de Admin --- */
+.admin-container h2 { text-align: center; font-size: 2.5rem; color: #333; margin-bottom: 2rem; }
+.admin-container h3 { font-size: 1.8rem; color: #e91e63; margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 0.5rem; }
+.admin-container h4 { font-size: 1.3rem; color: #555; margin-top: 1.5rem; margin-bottom: 0.8rem; }
+
+
+/* Estilos para el formulario de admin */
+.admin-form { background-color: #f9f9f9; padding: 1.5rem; border: 1px solid #eee; border-radius: 8px; margin-bottom: 2rem; }
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.9rem; color: #555; }
+.admin-form input[type="text"],
+.admin-form input[type="number"],
+.admin-form input[type="url"],
+.admin-form input[type="checkbox"], /* Added checkbox */
+.admin-form select,
+.admin-form textarea {
+    width: 100%; padding: 10px; font-size: 1rem; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;
+}
+/* Style checkbox differently */
+.admin-form input[type="checkbox"] {
+    width: auto; /* Checkbox width should be auto */
+    margin-right: 5px; /* Space before label */
+    vertical-align: middle; /* Align with label text */
+}
+.admin-form select:disabled { background-color: #e9ecef; cursor: not-allowed;}
+
+.admin-form textarea { min-height: 80px; resize: vertical; font-family: sans-serif;}
+.admin-form textarea#product-image-urls,
+.admin-form textarea#hero-image-urls {
+    font-family: monospace;
+    white-space: pre;
+    line-height: 1.4;
+}
+.admin-form small { font-size: 0.8rem; color: #666; display: block; margin-top: 0.3rem;}
+
+/* Estilo para alinear Marca y Categoría */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+/* Estilos de botones Admin (unificados) */
+.admin-button {
+     border: none;
+     padding: 10px 15px;
+     font-size: 0.9rem;
+     font-weight: bold;
+     border-radius: 5px;
+     cursor: pointer;
+     transition: background-color 0.3s ease;
+     margin-top: 1rem;
+     margin-right: 0.5rem;
+     color: white;
+}
+.admin-button.add-button { background-color: #28a745; }
+.admin-button.add-button:hover { background-color: #218838; }
+.admin-button.edit-button { background-color: #007bff; }
+.admin-button.edit-button:hover { background-color: #0056b3; }
+.admin-button.cancel-button { background-color: #6c757d; }
+.admin-button.cancel-button:hover { background-color: #5a6268; }
+
+#products-table td button,
+#categories-table td button {
+     padding: 5px 8px;
+     font-size: 0.8rem;
+     margin-bottom: 3px;
+     margin-right: 3px;
+}
+
+
+.feedback-message { margin-top: 1rem; font-weight: bold; font-size: 0.9rem; text-align: center; padding: 0.5rem; border-radius: 4px; }
+.feedback-message.success { color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb;}
+.feedback-message.error { color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb;}
+
+/* Estilos para las tablas de admin (Productos y Categorías) */
+#list-products-container,
+#list-categories-container { margin-top: 3rem; }
+
+.table-container {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+#products-table,
+#categories-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    table-layout: auto;
+    min-width: 600px;
+}
+
+#products-table th, #products-table td,
+#categories-table th, #categories-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    vertical-align: middle;
+    word-wrap: break-word;
+}
+
+#products-table th,
+#categories-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+#products-table img,
+.admin-table-thumbnail {
+    max-width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+    margin: auto;
+}
+
+
+#products-table td,
+#categories-table td { font-size: 0.85rem; }
+
+/* Anchos Sugeridos (Productos) */
+#products-table th:nth-child(1), #products-table td:nth-child(1) { width: 60px; text-align: center; } /* Imagen */
+#products-table th:nth-child(7), #products-table td:nth-child(7) { width: 130px; text-align: center; white-space: nowrap;} /* Acciones */
+
+/* Anchos Sugeridos (Categorías) - v1.19 */
+#categories-table th:nth-child(1), #categories-table td:nth-child(1) { width: 60px; text-align: center; } /* Imagen */
+#categories-table th:nth-child(5), #categories-table td:nth-child(5) { width: 130px; text-align: center; white-space: nowrap;} /* Acciones */
+
+
+#loading-products-admin,
+#loading-categories-admin { text-align: center; color: #777; font-style: italic; padding: 1rem; }
+
+
+/* --- Estilos del Buscador (Header NAV - oculto en desktop) --- */
+/* (Estilos movidos a la sección responsive) */
+
+/* Contenedor de resultados (página de búsqueda) */
+#search-results-list {
+    margin-top: 2rem;
+    text-align: left;
+}
+#search-results-title {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Estilos para el main de la página de búsqueda */
+main#search-results-page-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+}
+main#search-results-page-container .loading-message,
+main#search-results-page-container .mensaje-vacio {
+    text-align: center;
+    color: #777;
+    font-style: italic;
+    padding: 1.5rem;
+    font-size: 1.1rem;
+}
+/* --- Fin Estilos Buscador --- */
+
+/* ============================================== */
+/* === ESTILOS PARA CATÁLOGO POR CATEGORÍAS === */
+/* ============================================== */
+
+/* Contenedor principal del catálogo */
+#catalogo-container {
+    padding: 2rem 1rem;
+    max-width: 1200px;
+    margin: 1rem auto;
+    text-align: center;
+}
+
+/* Estilos para la grilla de TARJETAS DE CATEGORÍA */
+#catalogo-container .tarjeta-categoria {
+    display: inline-block;
+    width: 280px;
+    margin: 1rem;
+    padding-bottom: 1rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    vertical-align: top;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+#catalogo-container .tarjeta-categoria:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+#catalogo-container .tarjeta-categoria img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    /* border-bottom set per brand */
+}
+
+#catalogo-container .tarjeta-categoria h3 {
+    font-size: 1.25rem;
+    color: #333;
+    margin-top: 1rem;
+    padding: 0 0.5rem;
+}
+
+/* Contenedor para el botón "Volver" */
+#catalogo-header {
+    text-align: left;
+    margin-bottom: 1rem;
+}
+
+/* Estilo del botón "Volver" */
+#catalogo-volver-btn {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    /* Inherits colors from .admin-button.cancel-button */
+}
+
+/* Ajuste para que la grilla de productos funcione bien */
+#catalogo-container .tarjeta-producto {
+    /* display: inline-block; NO - Use default flex layout */
+    /* vertical-align: top; NO */
+    text-align: left; /* Reset text align */
+    margin: 1.5rem auto; /* Center cards */
+}
+
+@media (max-width: 640px) {
+    #catalogo-container .tarjeta-categoria {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+     #catalogo-container .tarjeta-producto {
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* ============================================== */
+/* === ESTILOS ESPECÍFICOS PARA MARCAS        === */
+/* ============================================== */
+
+/* Mary Kay */
+.catalogo-marykay .tarjeta-categoria img { border-bottom: 3px solid #e91e63; }
+.catalogo-marykay h2 { color: #e91e63; }
+
+/* Biogreen */
+.catalogo-biogreen .tarjeta-categoria img { border-bottom: 3px solid #28a745; }
+.catalogo-biogreen h2 { color: #28a745; }
+
+/* Arbell */
+.catalogo-arbell .tarjeta-categoria img { border-bottom: 3px solid #007bff; }
+.catalogo-arbell h2 { color: #007bff; }
+
+/* Nexo */
+.catalogo-nexo .tarjeta-categoria img { border-bottom: 3px solid #333; }
+.catalogo-nexo h2 { color: #333; }
+
+/* ============================================== */
+/* === ESTILOS PARA BANNER INTERMEDIO         === */
+/* ============================================== */
+
+.banner-intermedio {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    line-height: 0;
+    margin-bottom: 1rem;
+    display: none;
+}
+
+.banner-intermedio img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ============================================== */
+/* === ESTILOS PARA CARRUSEL OPORTUNIDAD MK   === */
+/* ============================================== */
+
+.oportunidad-mk-banner {
+    width: 100%;
+    height: 350px;
+    position: relative;
+    overflow: hidden;
+    background-color: #eee;
+    margin-bottom: 2.5rem;
+    border-radius: 8px;
+}
+
+.oportunidad-mk-slides {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.oportunidad-mk-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    z-index: 1;
+}
+
+.oportunidad-mk-slide.active {
+    opacity: 1;
+    z-index: 2;
+}
+
+/* ============================================== */
+/* === ESTILOS PARA DETALLES DESPLEGABLES     === */
+/* ============================================== */
+
+/* Botón para mostrar/ocultar */
+.toggle-details-btn {
+    background-color: #f0f0f0; /* Color de fondo suave */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #555;
+    cursor: pointer;
+    margin-top: 0.5rem; /* Espacio después de la descripción principal (si existe) */
+    margin-bottom: 0.5rem; /* Espacio antes de los detalles (cuando se muestran) */
+    transition: background-color 0.2s ease;
+    text-align: left; /* Alinear texto a la izquierda */
+    width: auto; /* Ancho automático */
+    display: inline-block; /* Permitir que esté en línea si es necesario */
+}
+
+.toggle-details-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* Contenedor de los detalles */
+.producto-detalles {
+    display: none; /* Oculto por defecto */
+    padding-top: 0.8rem; /* Espacio interior superior */
+    margin-top: 0.5rem; /* Espacio sobre el contenido */
+    border-top: 1px dashed #eee; /* Línea separadora sutil */
+}
+
+/* Clase para mostrar los detalles */
+.producto-detalles.detalles-visibles {
+    display: block; /* Mostrar el contenido */
+}
+
+/* Párrafo dentro de los detalles */
+.producto-descripcion-detalles {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Ajuste opcional para la descripción principal */
+.producto-descripcion-main {
+     font-size: 0.9rem;
+     color: #666;
+     line-height: 1.5;
+     margin-bottom: 0.5rem;
+     white-space: pre-wrap;
+     word-wrap: break-word;
+}
+
+/* ============================================== */
+/* === INICIO: CÓDIGO RESPONSIVE (HAMBURGUESA) === */
+/* ============================================== */
+
+/* --- Estilos del Icono de Hamburguesa --- */
+.hamburger-menu {
+    display: none; /* Oculto en PC por defecto */
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1002; /* Encima de todo */
+    order: 3; /* Se pone al final en el flex-container del nav */
+}
+.hamburger-menu .bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: #333;
+    transition: all 0.3s ease-in-out;
+}
+/* Animación de Hamburguesa a "X" */
+.hamburger-menu.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.hamburger-menu.active .bar:nth-child(2) { opacity: 0; }
+.hamburger-menu.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+
+/* *** NUEVO: Keyframes para la animación de scroll de logos *** */
+@keyframes scrollLogos {
+  0% { transform: translateX(0%); }
+  /* Ajusta el 100% basado en el ancho total de tus logos + márgenes */
+  /* Ejemplo: si el total es 600px y la pantalla 320px, necesitas mover -280px */
+  /* Usemos un valor grande negativo; el overflow:hidden lo cortará */
+  100% { transform: translateX(-150%); } /* Ajusta este porcentaje si es necesario */
+}
+
+
+/* --- Punto de corte principal para móviles --- */
+@media (max-width: 1024px) {
+
+    /* 1. Ajustar el header y top-bar */
+    /* *** MODIFICACIÓN: Ajustar padding main-nav y ocultar auth PC *** */
+    .main-nav { padding: 0.5rem 1rem; max-width: 100%; margin: 0; display: flex; align-items: center; justify-content: space-between; }
+    .nav-extra { display: none; } /* Ocultar contenedor Auth/Admin/Logout de PC */
+    .top-bar { padding: 0; height: 50px; }
+
+    /* === REGLAS DE VISIBILIDAD PARA MÓVIL === */
+
+    /* 1. Mostrar y animar el banner móvil */
+    #top-bar-mobile-scroll {
+        display: flex;
+        animation: scrollLogos 15s linear infinite alternate;
+    }
+    .top-bar .barra-logos-scroll img {
+        height: 30px; /* Altura de banner en móvil */
+    }
+
+    /* 2. Ocultar el banner estático de PC */
+    #top-bar-desktop-banner {
+        display: none;
+    }
+
+    /* Ocultar logos individuales de PC */
+    #top-bar-desktop-logos {
+        display: none;
+    }
+
+    /* 3. Ocultar el buscador de PC */
+    .top-bar #search-form {
+        display: none;
+    }
+    
+    /* *** MODIFICACIÓN: Mostrar Carrito y Email en Móvil *** */
+    /* Asegurar que el carrito movido sea visible y esté a la derecha */
+     .main-nav > .cart-link {
+         display: inline-block; /* Mostrar carrito */
+         margin-left: 0; /* Resetear margen izquierdo default */
+         margin-right: 0.5rem; /* Espacio antes del carrito */
+         order: 2; /* Orden: Logo(0), Email(1), Carrito(2), Hamburguesa(3) */
+     }
+     /* Mostrar email móvil y posicionarlo */
+     #user-email-mobile {
+         display: inline; /* Mostrar cuando JS lo active */
+         order: 1; /* Ponerlo después del logo */
+         margin-left: auto; /* Empujar hacia la derecha */
+         margin-right: 0.5rem; /* Espacio antes del carrito */
+     }
+     .logo { order: 0; margin-right: 0; } /* Asegurar que el logo esté primero */
+     .hamburger-menu { order: 3; } /* Asegurar que la hamburguesa esté al final */
+
+
+    /* 2. Ocultar menú horizontal */
+    .nav-links {
+        display: none; flex-direction: column; width: 100%;
+        position: absolute; top: 66px; /* Ajustar si altura de .main-nav cambia */
+        left: 0; background-color: #fff; box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        padding: 0; margin: 0; z-index: 999; gap: 0; border-top: 1px solid #f1f1f1;
+    }
+
+
+    /* 3. Mostrar el icono de hamburguesa */
+    .hamburger-menu { display: block; }
+
+    /* 4. Estilos del menú desplegable activo CON SCROLL */
+    .nav-links.active {
+        display: flex;
+        max-height: calc(100vh - 66px) !important; /* Altura máxima = pantalla - altura aprox. header */
+        overflow-y: auto !important; /* Permitir scroll vertical */
+    }
+    .nav-links li { width: 100%; text-align: left; border-bottom: 1px solid #f1f1f1;}
+    .nav-links li:last-child { border-bottom: none; } /* Quitar borde del último item */
+    .nav-links a { padding: 1rem 1.5rem; }
+
+    /* *** Mostrar el buscador DENTRO del menú activo *** */
+    .nav-links.active #search-form-nav {
+        display: flex; /* Mostrar como flex */
+        order: -1; /* Poner el buscador primero en el menú desplegable */
+        border-bottom: 1px solid #f1f1f1; /* Añadir separador */
+    }
+
+    /* *** Estilos para botones Auth en móvil *** */
+    /* La regla .nav-links li.auth-mobile-link { display: none !important; } de arriba los oculta en PC */
+    /* Aqui solo definimos como se ven CUANDO JS los muestra en movil */
+    .auth-mobile-link { border-bottom: none !important; } 
+    .auth-mobile-link a, .auth-mobile-link button {
+        display: block;
+        text-align: center;
+        background-color: #f4f4f4;
+        margin: 0.5rem 1.5rem; /* Margen similar al padding de los otros links */
+        padding: 0.8rem;
+        border-radius: 20px;
+        color: #333;
+        font-weight: bold;
+        border: none; /* Para el botón */
+        cursor: pointer; /* Para el botón */
+        width: auto; /* Ajustar ancho */
+        text-decoration: none; /* Asegurar que no haya subrayado */
+        text-transform: none; /* Quitar mayúsculas si las heredó */
+        font-size: 0.9rem; /* Tamaño similar a otros links */
+    }
+    .register-link-mobile a {
+        background-color: #e91e63;
+        color: white;
+    }
+    #logout-button-mobile {
+         background-color: #777;
+         color: white;
+         width: calc(100% - 3rem); /* Ocupar ancho menos márgenes */
+    }
+
+    /* 5. Sub-menús (dropdown) en línea */
+    .dropdown-content { position: static; display: block; box-shadow: none; border-top: none; min-width: auto; background-color: #f9f9f9;}
+    .dropdown-content a { padding-left: 2.5rem; color: #555; }
+    .dropdown > a { background-color: #f0f0f0; }
+    .dropdown:hover .dropdown-content { display: block; }
+
+    /* 6. Ajustar el resto de la página */
+    main { width: auto; margin: 1rem; padding: 1rem; }
+    main.contacto-container, main.sobre-container, main.consultora-container,
+    main.carrito-main-container, main.auth-container, main.admin-container {
+        width: auto; max-width: 100%; padding: 1.5rem 1rem; margin: 1rem; box-sizing: border-box;
+    }
+
+    /* 7. Arreglar tarjetas de producto en móvil */
+    .tarjeta-producto { flex-direction: column !important; width: 95%; max-width: 350px; }
+    .product-carousel { width: 100%; height: auto; padding-top: 100%; border-right: none; border-bottom: 1px solid #eee; }
+    .producto-info { padding: 1rem; }
+
+    /* 8. Arreglar grilla de categorías */
+    #catalogo-container .tarjeta-categoria { width: 90%; max-width: 350px; }
+
+    /* 9. Arreglar formulario admin */
+    .form-row { grid-template-columns: 1fr; }
+
+    /* 10. Ajustar Hero Banner */
+    .hero-banner { height: 250px; }
+    .hero-content h2 { font-size: 1.8rem; }
+    .hero-content p { font-size: 1rem; }
+
+    /* 11. Ajustar Carrito */
+    .carrito-item { flex-direction: column; align-items: center; text-align: center; }
+    .boton-eliminar { margin-left: 0; margin-top: 0.5rem; }
+
+} /* --- FIN de @media (max-width: 1024px) --- */
+
+
+@media (max-width: 480px) {
+    .logo .logo-img { max-height: 40px; }
+    .nav-links { top: 56px; /* Ajustar si la altura del header cambió */ }
+     /* Ajustar altura del menú si el header es más pequeño */
+    .nav-links.active { max-height: calc(100vh - 56px) !important; }
+    .hero-content { padding: 1.5rem 1rem; }
+    .hero-content h2 { font-size: 1.5rem; }
+    .tarjeta-producto { width: 100%; }
+    .top-bar { height: 40px; } /* Más pequeña */
+    .barra-logos-scroll img { height: 25px; margin: 0 10px;} /* Banner/Logos más pequeños */
+    .main-nav { padding: 0.5rem; } /* Menos padding */
+     /* Ajustar altura del menú desplegable si header es más pequeño */
+    .nav-links { top: 51px; /* Nueva altura aprox. 40px + 10px padding + 1px borde */ }
+    .nav-links.active { max-height: calc(100vh - 51px) !important; }
+
+}
+
+/* ============================================== */
+/* === FIN: CÓDIGO RESPONSIVE (HAMBURGUESA) === */
+/* ============================================== */
+
+
+/* --- INICIO: NUEVOS ESTILOS v1.18 --- */
+
+/* Estilo para el Subtítulo en la página de detalle */
+.detalle-subtitulo {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: #666;
+    margin-top: -0.25rem;
+    margin-bottom: 1rem;
+}
+
+/* --- INICIO: Estilos Acordeón Página Detalle (Estilo Imagen) --- */
+
+.detalle-acordeon-links-box {
+    border: 2px solid #e91e63; /* Borde rosa */
+    border-radius: 8px;
+    overflow: hidden; /* Para redondear las esquinas de los items */
+    margin-top: 1.5rem;
+}
+
+.acordeon-item-new {
+    border-bottom: 1px solid #f0f0f0; /* Separador sutil */
+}
+.acordeon-item-new:last-child {
+    border-bottom: none;
+}
+
+.acordeon-header-new {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.2s;
+}
+.acordeon-header-new:hover {
+    background-color: #f9f9f9;
+}
+
+.acordeon-icono-new {
+    font-size: 1.2rem;
+    margin-right: 0.75rem;
+    color: #333;
+    width: 25px; /* Ancho fijo para alinear */
+    text-align: center;
+}
+
+.acordeon-titulo-new {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #555;
+    flex-grow: 1; /* Ocupa el espacio */
+}
+
+.acordeon-arrow-new {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #e91e63; /* Flecha rosa */
+    transition: transform 0.3s ease;
+    transform: rotate(0deg);
+}
+
+.acordeon-contenido-new {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+    padding: 0 1.25rem;
+    background-color: #fcfcfc; /* Fondo ligeramente distinto */
+}
+
+.acordeon-contenido-new p {
+    margin: 0 0 1.25rem 0;
+    padding-top: 1rem; /* Espacio al abrir */
+    border-top: 1px dashed #ddd; /* Separador del contenido */
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #555;
+    /* Alinear con el texto del título, no con el icono */
+    padding-left: calc(25px + 0.75rem); 
+}
+
+/* Estado Activo */
+.acordeon-item-new.active .acordeon-header-new {
+    background-color: #fdf6f8; /* Rosa muy suave */
+}
+.acordeon-item-new.active .acordeon-arrow-new {
+    transform: rotate(90deg);
+}
+.acordeon-item-new.active .acordeon-contenido-new {
+    max-height: 1000px; /* Suficientemente grande */
+    padding: 0 1.25rem; /* Mismo padding que en la transición */
+}
+
+/* --- FIN: Estilos Acordeón --- */
+/* --- FIN: NUEVOS ESTILOS v1.18 --- */
+
+
+/* --- INICIO: NUEVOS ESTILOS v1.20 --- */
+/* --- NUEVOS ESTILOS PARA PÁGINA DE LÍNEA DE COLOR MARY KAY --- */
+
+.linea-color-visual-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* 5 columnas o se ajustan */
+    gap: 1.5rem; /* Espacio entre las tarjetas */
+    justify-content: center; /* Centrar la grilla si no llena todo el ancho */
+    max-width: 1000px; /* Ancho máximo para la grilla visual */
+    margin: 2rem auto;
+}
+
+.tarjeta-categoria-visual {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #f0f0f0; /* Borde sutil */
+}
+
+.tarjeta-categoria-visual:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tarjeta-categoria-visual img {
+    width: 100%;
+    height: 200px; /* Altura fija para las imágenes */
+    object-fit: cover; /* Recortar la imagen para que cubra el área */
+    display: block;
+    border-bottom: 3px solid #e91e63; /* Línea rosa Mary Kay */
+}
+
+.tarjeta-categoria-visual h3 {
+    font-size: 1.1rem;
+    color: #333;
+    margin: 1rem 0.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Ajustes responsive para las tarjetas visuales */
+@media (max-width: 768px) {
+    .linea-color-visual-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Más pequeñas en tablets */
+        gap: 1rem;
+    }
+    .tarjeta-categoria-visual img {
+        height: 150px;
+    }
+    .tarjeta-categoria-visual h3 {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .linea-color-visual-grid {
+        grid-template-columns: 1fr; /* Una columna en móviles pequeños */
+        gap: 1rem;
+        max-width: 300px; /* Asegurar que no sean demasiado anchas */
+    }
+    .tarjeta-categoria-visual img {
+        height: 180px;
+    }
+}
+/* --- FIN: NUEVOS ESTILOS v1.20 --- */
+/* ================================================== */
+/* === NUEVOS ESTILOS VISUALES INDEX (MEJORADO) === */
+/* ================================================== */
+
+/* 1. Tipografía Global para el index */
+.homepage-wrapper {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #fff;
+}
+
+/* 2. Header Principal Estilo Revista */
+.portal-header {
+    text-align: center;
+    padding: 4rem 1rem 2rem 1rem;
+    background: linear-gradient(to bottom, #fff 0%, #fcfcfc 100%);
+}
+
+.titulo-360 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    color: #111;
+    margin: 0;
+    letter-spacing: -1px;
+    line-height: 1.1;
+}
+
+.divider-line {
+    width: 60px;
+    height: 4px;
+    background-color: #e91e63;
+    margin: 1.5rem auto;
+    border-radius: 2px;
+}
+
+.bajada-llamativa {
+    font-size: 1.2rem;
+    color: #555;
+    line-height: 1.6;
+    font-weight: 300;
+}
+
+.subtexto {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    color: #888;
+    font-weight: 400;
+}
+
+/* Animación simple de entrada */
+.animate-fade-in {
+    animation: fadeInUp 1s ease-out;
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 3. Grid de Tarjetas (El "Portal") */
+.menu-portal-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Tarjeta Base */
+.portal-card {
+    position: relative;
+    height: 350px; /* Altura fija para uniformidad */
+    border-radius: 15px;
+    overflow: hidden;
+    text-decoration: none;
+    color: white;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+    display: flex;
+    align-items: flex-end; /* Texto abajo */
+}
+
+/* Efecto Hover en la tarjeta completa */
+.portal-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+/* Imagen de Fondo */
+.portal-card-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.8s ease; /* Zoom lento */
+    z-index: 0;
+}
+
+.portal-card:hover .portal-card-bg {
+    transform: scale(1.1); /* Zoom al pasar el mouse */
+}
+
+/* Capa oscura para que se lea el texto */
+.overlay-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 100%);
+    z-index: 1;
+}
+
+/* Contenido de texto */
+.portal-card-content {
+    position: relative;
+    z-index: 2;
+    padding: 2rem;
+    width: 100%;
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+}
+
+.portal-card:hover .portal-card-content {
+    transform: translateY(-5px);
+}
+
+.portal-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin: 0.5rem 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.portal-card p {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin: 0;
+    font-weight: 300;
+}
+
+/* Tags y Botones decorativos */
+.tag-flotante {
+    background-color: #e91e63;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.btn-arrow {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    opacity: 0; /* Oculto por defecto */
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+}
+
+.portal-card:hover .btn-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Tarjeta Grande (Ocupa 2 columnas en pantallas grandes) */
+@media (min-width: 768px) {
+    .card-large {
+        grid-column: span 2;
+    }
+}
+
+/* Estilos Especiales para Mayorista */
+.destacado-mayorista .overlay-gradient.gold-gradient {
+    background: linear-gradient(to top, rgba(50, 30, 0, 0.9) 0%, rgba(255, 193, 7, 0.2) 100%);
+}
+.tag-flotante.gold {
+    background-color: #ffc107;
+    color: #333;
+}
+.btn-fake {
+    display: inline-block;
+    margin-top: 1rem;
+    background-color: #ffc107;
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: background 0.3s;
+}
+.btn-fake:hover {
+    background-color: #fff;
+}
+
+/* 4. Sección de Marcas (Círculos) */
+.seccion-marcas {
+    padding: 4rem 1rem;
+    text-align: center;
+    background-color: #fafafa;
+    margin-top: 2rem;
+}
+
+.titulo-seccion {
+    font-size: 1.8rem;
+    font-family: 'Playfair Display', serif;
+    color: #333;
+    margin-bottom: 2rem;
+    position: relative;
+    display: inline-block;
+}
+.titulo-seccion::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: #e91e63;
+    margin: 10px auto 0;
+}
+
+.marcas-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.marca-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #555;
+    transition: transform 0.3s ease;
+}
+
+.marca-item:hover {
+    transform: translateY(-5px);
+    color: #e91e63;
+}
+
+.marca-circle {
+    width: 100px;
+    height: 100px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    margin-bottom: 1rem;
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.marca-item:hover .marca-circle {
+    border-color: #e91e63;
+    box-shadow: 0 8px 20px rgba(233, 30, 99, 0.2);
+}
+
+.marca-circle img {
+    max-width: 70%;
+    max-height: 70%;
+    filter: grayscale(100%); /* Logos en gris por defecto */
+    transition: filter 0.3s ease;
+    opacity: 0.7;
+}
+
+.marca-item:hover .marca-circle img {
+    filter: grayscale(0%); /* Color al hover */
+    opacity: 1;
+}
+
+.marca-item span {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .titulo-360 { font-size: 2.5rem; }
+    .portal-card { height: 300px; }
+    .portal-card h2 { font-size: 1.5rem; }
+}
+
+/* ========================================= */
+/* === ESTILOS DEL CARRITO LATERAL (SIDE CART) === */
+/* ========================================= */
+
+/* Fondo oscuro semi-transparente */
+.cart-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1999; /* Justo debajo del carrito */
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.cart-overlay.open {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* El panel deslizante */
+.side-cart {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    max-width: 400px; /* Ancho en PC */
+    height: 100%;
+    background: #fff;
+    z-index: 2000; /* Encima de todo */
+    transform: translateX(100%); /* Oculto a la derecha */
+    transition: transform 0.3s cubic-bezier(0.77, 0, 0.175, 1);
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.side-cart.open {
+    transform: translateX(0); /* Mostrar */
+}
+
+/* Cabecera del carrito */
+.side-cart-header {
+    padding: 20px;
+    background: #f8f8f8;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.side-cart-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.close-cart-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #555;
+}
+
+/* Cuerpo del carrito (Lista de items) */
+.side-cart-body {
+    flex-grow: 1;
+    overflow-y: auto; /* Scroll si hay muchos productos */
+    padding: 20px;
+}
+
+/* Item individual en el carrito lateral */
+.side-cart-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    align-items: center;
+}
+
+.side-cart-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.side-cart-item-info {
+    flex-grow: 1;
+}
+
+.side-cart-item-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.side-cart-item-info p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.side-cart-remove {
+    color: #dc3545;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 5px;
+}
+
+/* Pie del carrito (Total y Botones) */
+.side-cart-footer {
+    padding: 20px;
+    border-top: 1px solid #eee;
+    background: #fff;
+}
+
+.side-cart-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.side-cart-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    text-align: center;
+    border-radius: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-whatsapp {
+    background-color: #25D366;
+    color: white;
+}
+.btn-whatsapp:hover { background-color: #128C7E; }
+
+.btn-view-cart {
+    background-color: #f0f0f0;
+    color: #333;
+}
+.btn-view-cart:hover { background-color: #e0e0e0; }
+
+/* Responsivo para móviles muy angostos */
+@media (max-width: 480px) {
+    .side-cart { width: 85%; }
+}
+/* ========================================= */
+/* === ESTILOS ZONA MAYORISTA AVANZADA === */
+/* ========================================= */
+
+/* Contenedor de la barra de herramientas */
+.controls-mayorista {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto 2rem auto;
+    padding: 15px 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+}
+
+/* Grupo de botones de marca */
+.filtros-marcas {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Estilo base de los botones de filtro */
+.btn-filtro {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #555;
+    transition: all 0.3s ease;
+}
+
+.btn-filtro:hover {
+    background-color: #e9ecef;
+    color: #333;
+}
+
+.btn-filtro.active {
+    background-color: #333; /* O el color de tu marca principal */
+    color: #fff;
+    border-color: #333;
+}
+
+/* Grupo del selector de ordenamiento */
+.ordenamiento-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ordenamiento-container label {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.ordenamiento-container select {
+    padding: 8px 30px 8px 12px; /* Espacio extra a la derecha para la flecha */
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    font-size: 0.9rem;
+    outline: none;
+    appearance: none; /* Elimina estilo nativo del navegador */
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right .7em top 50%;
+    background-size: .65em auto;
+    min-width: 180px;
+    transition: border-color 0.3s;
+}
+
+.ordenamiento-container select:focus {
+    border-color: #e91e63;
+    box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.1);
+}
+
+/* Badges y precios en tarjeta */
+.mayorista-badge {
+    background: #333;
+    color: #fff;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.precio-regular-tachado {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.9rem;
+    margin-right: 8px;
+}
+
+.precio-mayorista-final {
+    color: #d4af37; /* Dorado elegante */
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .controls-mayorista {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    .filtros-marcas {
+        justify-content: center; /* Botones centrados */
+    }
+    .ordenamiento-container {
+        justify-content: space-between; /* Label a la izq, select a la derecha full */
+        border-top: 1px solid #eee;
+        padding-top: 10px;
+    }
+    .ordenamiento-container select {
+        width: 60%; /* Ocupa espacio decente */
+    }
+}/* ============================================== */
+/* === BUSCADOR MAYORISTA (NUEVO)             === */
+/* ============================================== */
+
+/* Formulario dentro de la barra de controles */
+.search-mayorista-form {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background-color: #fff;
+    overflow: hidden;
+    max-width: 300px;
+    flex-grow: 1;
+}
+
+.search-mayorista-form input {
+    border: none;
+    padding: 8px 15px;
+    outline: none;
+    font-size: 0.9rem;
+    flex-grow: 1;
+    color: #333;
+}
+
+.search-mayorista-form button {
+    background-color: #333;
+    color: #d4af37; /* Dorado */
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.search-mayorista-form button:hover {
+    background-color: #d4af37;
+    color: #333;
+}
+
+/* Ajuste responsive para la barra de controles mayorista */
+@media (max-width: 768px) {
+    .search-mayorista-form {
+        order: -1; /* Poner el buscador arriba de todo en móvil */
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 10px;
+    }
+}
+/* ========================================= */
+/* === ESTILOS SELECTOR DE VISTAS (NUEVO) === */
+/* ========================================= */
+
+.view-switcher {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.view-switcher label {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9rem;
+}
+.view-buttons {
+    display: flex;
+    background: #f0f0f0;
+    border-radius: 20px;
+    padding: 3px;
+    border: 1px solid #ddd;
+}
+.btn-view {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #777;
+    border-radius: 15px;
+    transition: all 0.3s;
+}
+.btn-view:hover { color: #333; }
+.btn-view.active {
+    background: #fff;
+    color: #d4af37; /* Dorado Mayorista */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-weight: bold;
+}
+
+/* ========================================= */
+/* === MODOS DE VISUALIZACIÓN (LOGICA)   === */
+/* ========================================= */
+
+/* --- MODO 1: LISTA DETALLADA (Default / Tipo MercadoLibre) --- */
+/* (Hereda los estilos base que ya tienes, tarjeta horizontal) */
+#mayorista-container.view-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#mayorista-container.view-list .tarjeta-producto {
+    flex-direction: row !important;
+    width: 100%;
+    max-width: 800px;
+}
+#mayorista-container.view-list .product-carousel {
+    width: 180px !important;
+    height: 180px !important;
+}
+
+/* ========================================= */
+/* === MODO 2: GRILLA (4 COLUMNAS)       === */
+/* ========================================= */
+
+#mayorista-container.view-grid {
+    display: grid;
+    /* Esto fuerza las 4 columnas */
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 25px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Estilo limpio de la tarjeta (sin bordes externos) */
+#mayorista-container.view-grid .tarjeta-producto {
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    border: none !important; /* Quitamos borde de la tarjeta */
+    box-shadow: none !important; /* Quitamos sombra */
+    background: transparent !important;
+    align-items: center;
+    text-align: center;
+}
+
+/* Contenedor de la Imagen (Cuadro con borde suave) */
+#mayorista-container.view-grid .product-carousel {
+    width: 100% !important;
+    height: 200px !important; /* Altura fija */
+    border: 1px solid #f0f0f0 !important; /* Borde sutil solo en imagen */
+    border-radius: 12px;
+    background: #fff;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Ajuste de la imagen */
+#mayorista-container.view-grid .carousel-image {
+    object-fit: contain !important; /* Imagen completa sin recortes */
+    max-height: 90%;
+    max-width: 90%;
+}
+
+/* Información del producto */
+#mayorista-container.view-grid .producto-info {
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Título del producto */
+#mayorista-container.view-grid h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+    margin: 5px 0;
+    line-height: 1.3;
+    height: 38px; /* Altura fija para alinear filas (2 líneas de texto) */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* Precios */
+#mayorista-container.view-grid .precio-regular-tachado {
+    font-size: 0.8rem;
+    margin-right: 5px;
+}
+#mayorista-container.view-grid .precio-mayorista-final {
+    font-size: 1.1rem;
+    color: #000;
+    font-weight: 800;
+}
+
+/* Elementos ocultos en esta vista para limpieza */
+#mayorista-container.view-grid .producto-descripcion,
+#mayorista-container.view-grid .producto-categoria-header { 
+    display: none; 
+}
+
+/* Botones y acciones */
+#mayorista-container.view-grid .producto-acciones {
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    margin-top: 8px;
+    align-items: center;
+}
+
+#mayorista-container.view-grid .producto-cantidad {
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 4px;
+    width: 50px;
+}
+
+#mayorista-container.view-grid .boton-agregar {
+    width: 80%;
+    font-size: 0.8rem;
+    padding: 6px 0;
+    border-radius: 15px;
+}
+
+/* === RESPONSIVE (Adaptación a pantallas) === */
+
+/* Tablet: bajamos a 3 columnas */
+@media (max-width: 1024px) {
+    #mayorista-container.view-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+}
+
+/* Celular: bajamos a 2 columnas (tipo app móvil) */
+@media (max-width: 600px) {
+    #mayorista-container.view-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    #mayorista-container.view-grid .product-carousel {
+        height: 150px !important;
+    }
+}
+
+/* --- MODO 3: FEED INSTAGRAM (Carrusel Grande) --- */
+#mayorista-container.view-feed {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+#mayorista-container.view-feed .tarjeta-producto {
+    flex-direction: column !important;
+    width: 100%;
+    max-width: 500px !important; /* Tarjeta tipo post de IG */
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+#mayorista-container.view-feed .product-carousel {
+    width: 100% !important;
+    height: 400px !important; /* Imagen GRANDE */
+    border-right: none;
+    border-bottom: 1px solid #eee;
+}
+
+#mayorista-container.view-feed .carousel-image {
+    object-fit: cover !important; /* Llenar el espacio (tipo foto) */
+}
+
+#mayorista-container.view-feed .producto-info {
+    padding: 20px;
+    text-align: center; /* Todo centrado */
+}
+
+#mayorista-container.view-feed .producto-categoria-header {
+    justify-content: center;
+}
+
+#mayorista-container.view-feed h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+#mayorista-container.view-feed .producto-acciones {
+    justify-content: center;
+}
+
+/* Responsive Ajustes */
+@media (max-width: 600px) {
+    #mayorista-container.view-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en celular */
+        gap: 10px;
+    }
+    #mayorista-container.view-grid .product-carousel {
+        height: 140px !important;
+    }
+    #mayorista-container.view-feed .product-carousel {
+        height: 300px !important;
+    }
+}
+/* --- Estilos para SIN STOCK --- */
+
+/* 1. El botón verde en el Admin */
+.btn-stock { 
+    background-color: #28a745; /* Verde */
+    color: white;
+}
+.btn-stock:hover { background-color: #218838; }
+.btn-stock.paused { 
+    background-color: #ffc107; /* Amarillo si ya está pausado */
+    color: #333; 
+}
+
+/* 2. El cartel encima de la imagen del producto */
+.stock-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.6); /* Fondo blanco semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20; /* Por encima de la imagen */
+    pointer-events: none; /* Permite ver la imagen pero indica bloqueo */
+}
+
+.stock-label {
+    background-color: #dc3545; /* Rojo */
+    color: white;
+    padding: 8px 15px;
+    font-weight: 900;
+    font-size: 1rem;
+    text-transform: uppercase;
+    transform: rotate(-10deg); /* Efecto inclinado */
+    border: 2px solid white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* 3. Estilo para el botón de agregar deshabilitado */
+.boton-agregar:disabled {
+    background-color: #cccccc !important;
+    color: #666 !important;
+    cursor: not-allowed;
+    transform: none !important;
+}/* --- ESTILOS PARA SIN STOCK (Admin y Cliente) --- */
+
+/* 1. Cartel "SIN STOCK" encima de la foto */
+.stock-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 10;
+}
+.stock-label {
+    background-color: #dc3545; color: white;
+    padding: 5px 10px; font-weight: bold; font-size: 0.9rem;
+    transform: rotate(-10deg); border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* 2. Botón deshabilitado en la tarjeta */
+.boton-agregar:disabled {
+    background-color: #ccc !important;
+    color: #666 !important;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* 3. Botón de Control de Stock en Admin */
+.btn-stock-control {
+    margin-left: 5px;
+    width: 30px; height: 30px;
+    border: none; border-radius: 4px; cursor: pointer; color: white;
+}
+.stock-active { background-color: #28a745; } /* Verde (Hay stock) */
+.stock-inactive { background-color: #ffc107; color: black; } /* Amarillo (Sin stock) */
+/* ==========================================
+   EN style.css - Agrega esto al final
+   ========================================== */
+
+/* Botón cuando hay stock (Verde) */
+.btn-stock-on {
+    background-color: #28a745 !important; /* Verde éxito */
+}
+.btn-stock-on:hover {
+    background-color: #218838 !important;
+}
+
+/* Botón cuando NO hay stock (Naranja oscuro/Rojo) */
+.btn-stock-off {
+    background-color: #ffc107 !important; /* Amarillo alerta */
+    color: #333 !important;
+}
+.btn-stock-off:hover {
+    background-color: #e0a800 !important;
+}
+
+/* Ajuste para que los botones de acciones estén alineados */
+.action-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+}
+/* ==========================================
+   AGREGAR AL FINAL DE style.css
+   ========================================== */
+
+/* Cartel SIN STOCK en la página de detalle */
+.nucleo-detail-stock-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #dc3545; /* Rojo */
+    color: white;
+    padding: 10px 20px;
+    font-weight: 900;
+    font-size: 1.2rem;
+    border-radius: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    z-index: 10;
+    transform: rotate(5deg);
+    border: 2px solid white;
+}
+
+/* Botón de Reserva (Naranja) */
+.btn-reserve {
+    flex-grow: 1;
+    background: linear-gradient(to right, #fd7e14, #e65c00) !important; /* Naranja */
+    color: white !important;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.btn-reserve:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(253, 126, 20, 0.3);
+}/* ==========================================
+   ESTILOS STOCK MAYORISTA (AGREGAR AL FINAL DE STYLE.CSS)
+   ========================================== */
+
+/* Badge SIN STOCK en listado Mayorista (Tarjeta) */
+.mayorista-stock-badge {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-10deg);
+    background-color: rgba(220, 53, 69, 0.9); /* Rojo semi-transparente */
+    color: white;
+    padding: 5px 15px;
+    font-weight: 900;
+    font-size: 1rem;
+    border: 2px solid white;
+    z-index: 20;
+    pointer-events: none;
+}
+
+/* Badge SIN STOCK en Detalle Mayorista (Foto Grande) */
+.mayorista-detail-stock-overlay {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 20px;
+    font-weight: 900;
+    font-size: 1.2rem;
+    border-radius: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    z-index: 20;
+    border: 2px solid white;
+}
+
+/* Botón de Reserva Mayorista (Naranja) */
+.btn-mayorista-reserva {
+    background-color: #fd7e14 !important; /* Naranja */
+    color: white !important;
+    border: 1px solid #e65c00 !important;
+}
+.btn-mayorista-reserva:hover {
+    background-color: #e65c00 !important;
+    color: white !important;
+}/* ================================================= */
+/* === ESTILOS PROMOCIONES POR CANTIDAD (NUEVO) === */
+/* ================================================= */
+
+/* --- En la Tarjeta (Mayorista) --- */
+.promo-mini-list {
+    margin: 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+/* Cada renglón de promoción (Diseño tipo etiqueta) */
+.promo-mini-item {
+    background-color: #333; /* Fondo oscuro para contraste */
+    color: #fff;
+    font-size: 0.75rem; /* Letra pequeña para que entre en la tarjeta */
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-align: center;
+    border-left: 3px solid #d4af37; /* Borde dorado a la izquierda */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Resaltar la cantidad (Ej: "10+") */
+.promo-mini-item strong:first-child {
+    color: #d4af37; /* Dorado */
+    font-weight: 800;
+}
+
+/* Resaltar el precio (Ej: "$3500") */
+.promo-mini-item strong:last-child {
+    color: #4cd137; /* Verde brillante para el precio */
+    font-size: 0.85rem;
+}
+
+/* Ajuste específico para la VISTA DE GRILLA (Grid View) */
+#mayorista-container.view-grid .promo-mini-list {
+    padding: 0 10px; /* Un poco de margen a los costados */
+}
+
+#mayorista-container.view-grid .promo-mini-item {
+    font-size: 0.7rem; /* Un poco más chico en grilla para que no rompa */
+    justify-content: center;
+    gap: 5px;
+}/* === ESTILOS PARA BADGES DE PORCENTAJE EN PROMOS === */
+
+/* 1. En la tarjeta (Catálogo) */
+.promo-percent-tag {
+    background-color: #e91e63; /* Rosa fuerte */
+    color: white;
+    font-size: 0.7rem;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 700;
+}
+
+/* Ajuste para que se vea bien dentro de la barrita oscura */
+.promo-mini-item {
+    /* Asegura alineación vertical correcta */
+    align-items: center; 
+}
+
+
+/* 2. En la tabla (Página Detalle) */
+.badge-ahorro-detalle {
+    background-color: #28a745; /* Verde éxito */
+    color: white;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Ajuste de la tabla para soportar 3 columnas */
+.promo-table th, .promo-table td {
+    vertical-align: middle; /* Centrar verticalmente */
+}

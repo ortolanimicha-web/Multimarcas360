@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selección de Productos - Mi Tienda</title> 
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* --- Estilos Específicos Modificados --- */
+
+        .seleccion-container {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* Padding reducido para menos espacio en los bordes */
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        .seleccion-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            /* Gap reducido significativamente (antes 4rem) */
+            gap: 1.5rem; 
+            margin-top: 2rem;
+            /* Asegurar que ocupen buen ancho */
+            width: 100%;
+            max-width: 1000px; 
+        }
+
+        /* Ajustes para los items contenedores */
+        .marca-item-large {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #555;
+            transition: transform 0.3s ease;
+            /* Hacer que los items crezcan para llenar el espacio */
+            flex: 1 1 300px; 
+            max-width: 450px; /* Límite para que no sean excesivamente anchos */
+        }
+
+        .marca-item-large:hover {
+            transform: translateY(-5px); /* Un ligero movimiento hacia arriba al pasar el mouse */
+        }
+        
+        /* --- NUEVA CLASE: Rectángulo en lugar de círculo --- */
+        .marca-rectangulo-large {
+            width: 100%; /* Ocupa todo el ancho del item padre */
+            height: 220px; /* Altura rectangular fija */
+            background: white;
+            /* Bordes redondeados suaves, NO 50% */
+            border-radius: 12px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            padding: 1rem; /* Un poco de relleno interno */
+        }
+
+        .marca-item-large:hover .marca-rectangulo-large {
+            border-color: currentColor; /* Usa el color del texto al hacer hover */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .marca-rectangulo-large img {
+            /* Logos más grandes dentro del rectángulo */
+            max-width: 85%;
+            max-height: 85%;
+            object-fit: contain;
+        }
+
+        .marca-titulo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="top-bar">
+        
+             <a href="index.html" id="top-bar-desktop-banner">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761256896/banner_4_r8x0te.jpg" alt="Banner principal de marcas">
+             </a>
+
+             <div id="top-bar-mobile-scroll" class="barra-logos-scroll">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761256896/banner_4_r8x0te.jpg" alt="Marcas">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761256896/banner_4_r8x0te.jpg" alt="Marcas">
+             </div>
+             
+             <form id="search-form">
+                <input type="search" id="search-input" placeholder="Buscar productos...">
+                <button type="submit" id="search-button">Buscar</button>
+             </form>
+             
+        </div>
+        
+        <nav class="main-nav">
+             <div class="logo">
+                 <a href="index.html">
+                     <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761336043/Stefania_Vidal_1_qekwcc.jpg" alt="Logo Stefania Vidal" class="logo-img">
+                 </a>
+             </div>
+
+             <span id="user-email-mobile" style="display: none;"></span>
+
+             <ul class="nav-links">
+                 
+                 <li id="search-form-nav">
+                     <form>
+                        <input type="search" id="search-input-nav" placeholder="Buscar productos...">
+                        <button type="submit" id="search-button-nav">Buscar</button>
+                     </form>
+                 </li>
+                 
+                 <li class="dropdown">
+                     <a href="#">HISTORIAS</a>
+                     <div class="dropdown-content">
+                         <a href="sobre-mary-kay.html">Sobre Mary Kay</a>
+                         <a href="sobre-arbell.html">Sobre Arbell</a>
+                         <a href="sobre-biogreen.html">Sobre Biogreen</a>
+                         <a href="sobre-nexo.html">Sobre Nexo</a>
+                     </div>
+                 </li>
+                 <li class="dropdown">
+                     <a href="#">PRODUCTOS</a>
+                     <div class="dropdown-content">
+                         <a href="productos-marykay.html">Mary Kay</a>
+                         <a href="productos-biogreen.html">Biogreen</a>
+                         <a href="productos-arbell.html">Arbell</a>
+                         <a href="productos-nexo.html">Nexo (Indumentaria)</a>
+                     </div>
+                 </li>
+                 <li class="dropdown">
+                     <a href="#">EMPRENDE</a>
+                     <div class="dropdown-content">
+                         <a href="quiero-ser-consultora.html">Consultora Mary Kay</a>
+                         <a href="experta-arbell.html">Experta en Arbell</a>
+                         <a href="revendedor-biogreen.html">Revendedor Biogreen</a>
+                         <a href="revendedor-nexo.html">Revendedor Nexo</a>
+                     </div>
+                 </li>
+                 <li><a href="oportunidad-mk.html">OPORTUNIDAD MK</a></li>
+                 <li><a href="contacto.html">CONTÁCTANOS</a></li>
+                 
+                 <li id="user-logged-out-mobile" class="auth-mobile-link"><a href="login.html">Iniciar Sesión</a></li>
+                 <li id="user-logged-out-mobile-register" class="auth-mobile-link register-link-mobile"><a href="registro.html">Registrarse</a></li>
+                 <li id="user-logged-in-mobile" class="auth-mobile-link" style="display: none;"><button id="logout-button-mobile">Cerrar Sesión</button></li>
+             </ul>
+             
+             <div class="nav-extra">
+                 <div id="user-logged-out" style="display: flex;">
+                     <a href="login.html" class="auth-link">Iniciar Sesión</a>
+                     <a href="registro.html" class="auth-link register-link">Registrarse</a>
+                 </div>
+                 
+                 <div id="user-logged-in" style="display: none;">
+                     <a id="admin-link-a" href="admin.html" class="auth-link" style="display: none; background-color: #ffc107; color: #333; margin-right: 5px;">ADMIN</a>
+                     <span id="user-email" style="margin-right: 5px;"></span>
+                     <button id="logout-button" class="auth-link">Cerrar Sesión</button> 
+                 </div>
+             </div>
+
+             <a href="carrito.html" class="cart-link" style="margin-right: 0.5rem;">🛒 Carrito</a>
+
+             <div class="hamburger-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+             </div>
+         </nav>
+    </header>
+
+    <main class="seleccion-container">
+        
+        <h2 style="font-size: 2.5rem; color: #333; margin-bottom: 1rem;">Nuestros Productos</h2>
+        <p style="font-size: 1.2rem; color: #666; margin-bottom: 3rem;">Selecciona una marca para ver el catálogo</p>
+        
+        <div class="seleccion-grid">
+             
+             <a href="productos-marykay.html" class="marca-item-large" style="color: #e91e63;">
+                <div class="marca-rectangulo-large">
+                    <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1763699326/503659fb3db444735dbc15f6f9f5f330_tzk2gk.jpg" alt="Logo Mary Kay">
+                </div>
+                <span class="marca-titulo">Mary Kay</span>
+             </a>
+
+             <a href="productos-arbell.html" class="marca-item-large" style="color: #007bff;">
+                 <div class="marca-rectangulo-large">
+                    <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1763699548/302234630_507868044677386_4000386057330806793_n_xi2j3b.jpg" alt="Logo Arbell">
+                </div>
+                <span class="marca-titulo">Arbell</span>
+             </a>
+
+        </div>
+        
+    </main>
+
+    <footer>
+        <p>© 2025 Mi Tienda Mary Kay. Todos los derechos reservados.</p>
+    </footer>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script> 
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCD4lBf6BA76Oz-SDr4f8eaPA-q7v5AecY",
+        authDomain: "consultoravidal91.firebaseapp.com",
+        projectId: "consultoravidal91",
+        storageBucket: "consultoravidal91.firebasestorage.app",
+        messagingSenderId: "840042202477",
+        appId: "1:840042202477:web:aae77961b4bca465dc4664",
+        measurementId: "G-HP3L0WZ60V"
+      };
+  
+      let db, auth;
+      if (typeof firebase !== 'undefined') {
+          if (!firebase.apps.length) {
+             firebase.initializeApp(firebaseConfig);
+             db = firebase.firestore();
+             auth = firebase.auth();
+          } else {
+             db = firebase.firestore();
+             auth = firebase.auth();
+          }
+      } else {
+          console.error("Firebase SDK no se cargó correctamente.");
+      }
+      const ADMIN_EMAIL = 'ortolanimichael@gmail.com'; 
+    </script>
+    
+    <script src="app.js" defer></script> 
+    <script src="auth.js" defer></script> 
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zona Mayorista - Multimarcas 360</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* === Estilos Exclusivos Mayorista (Tema Dorado) === */
+        .mayorista-theme { background-color: #fffdf5; }
+        
+        .mayorista-header {
+            background: linear-gradient(to right, #111, #333);
+            color: #d4af37; /* Dorado */
+            padding: 3rem 1rem;
+            text-align: center;
+            border-bottom: 4px solid #d4af37;
+            margin-bottom: 0;
+        }
+        .mayorista-header h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 2.5rem; }
+        .mayorista-header p { color: #fff; margin-top: 10px; font-size: 1.1rem; }
+        
+        /* === NUEVA BARRA DE CONTROLES (Filtros + Ordenar) === */
+        .controls-mayorista {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 15px 20px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 90;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Grupo de botones de marcas */
+        .filtros-marcas {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-filtro {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            color: #555;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .btn-filtro:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-filtro.active {
+            background: #d4af37; /* Dorado */
+            color: #000;
+            border-color: #d4af37;
+            box-shadow: 0 2px 5px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Grupo del selector de ordenamiento */
+        .ordenamiento-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ordenamiento-container label {
+            font-weight: bold;
+            color: #555;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .ordenamiento-container select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #fff;
+            color: #333;
+            cursor: pointer;
+            font-size: 0.9rem;
+            outline: none;
+            min-width: 160px;
+        }
+        .ordenamiento-container select:focus {
+            border-color: #d4af37;
+        }
+
+        /* Estilos de Tarjetas (Overrides para Mayorista) */
+        .mayorista-badge {
+            background-color: #d4af37;
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+
+        .precio-regular-tachado {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+        
+        .precio-mayorista-final {
+            color: #d4af37;
+            font-weight: 900;
+            font-size: 1.3rem;
+        }
+        
+        /* Botón agregar dorado */
+        .btn-mayorista {
+            background-color: #333 !important;
+            color: #d4af37 !important;
+            border: 1px solid #333 !important;
+        }
+        .btn-mayorista:hover {
+            background-color: #d4af37 !important;
+            color: #000 !important;
+        }
+
+        /* === NUEVO: ESTILOS PARA EL BADGE DE DESCUENTO === */
+        .discount-badge {
+            position: absolute;
+            bottom: 10px;       /* Abajo */
+            left: 10px;         /* Izquierda */
+            background-color: #e91e63; /* Rosa Fuerte */
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px; /* Redondeado */
+            font-size: 0.85rem;
+            font-weight: bold;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        /* Aseguramos que el contenedor de la imagen sea relativo */
+        .product-carousel {
+            position: relative !important; 
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .controls-mayorista {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filtros-marcas {
+                justify-content: center;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #eee;
+            }
+            .ordenamiento-container {
+                justify-content: space-between;
+                padding-top: 5px;
+            }
+            .ordenamiento-container select {
+                flex-grow: 1;
+                max-width: 60%;
+            }
+        }
+    </style>
+</head>
+<body class="mayorista-theme">
+
+    <nav class="navbar">
+        <div class="logo"><a href="index.html" style="color:#333; text-decoration:none;">Volver a Tienda</a></div>
+        <ul class="nav-links">
+            <li><a href="carrito.html" class="cart-link">🛒 Carrito Mayorista</a></li>
+        </ul>
+        <div class="hamburger-menu"><span></span><span></span><span></span></div>
+    </nav>
+
+    <header class="mayorista-header">
+        <h1>ZONA MAYORISTA</h1>
+        <p>Precios exclusivos para revendedores y compras por volumen.</p>
+        <p style="font-size: 0.9rem; opacity: 0.8;">Descuento aplicado automáticamente sobre precio de lista.</p>
+    </header>
+
+    <div class="controls-mayorista">
+        
+        <form id="form-busqueda-mayorista" class="search-mayorista-form">
+            <input type="text" id="input-busqueda-mayorista" placeholder="Buscar producto mayorista..." required>
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+
+        <div class="filtros-marcas">
+            <button class="btn-filtro active" data-filter="all">Todas</button>
+            <button class="btn-filtro" data-filter="marykay">Mary Kay</button>
+            <button class="btn-filtro" data-filter="biogreen">Biogreen</button>
+            <button class="btn-filtro" data-filter="arbell">Arbell</button>
+            <button class="btn-filtro" data-filter="nucleo">Núcleo</button>
+            <button class="btn-filtro" data-filter="nexo">Nexo</button>
+        </div>
+
+        <div class="view-switcher-container" style="display: flex; align-items: center; gap: 8px; margin: 0 10px;">
+            <label style="font-size: 0.85rem; font-weight: bold; color: #555;"><i class="fas fa-eye"></i> Vista:</label>
+            <div class="view-buttons" style="background: #f4f4f4; border-radius: 20px; padding: 2px; border: 1px solid #ddd;">
+                <button class="btn-view" data-view="list" title="Lista Detallada">
+        <i class="fas fa-list"></i>
+    </button>
+    
+    <button class="btn-view active" data-view="grid" title="Grilla">
+        <i class="fas fa-th-large"></i>
+    </button>
+    
+    <button class="btn-view" data-view="feed" title="Modo Instagram">
+        <i class="fas fa-mobile-alt"></i>
+    </button>
+</div>
+
+        <div class="ordenamiento-container">
+            <label for="sort-mayorista"><i class="fas fa-sort"></i> Ordenar:</label>
+            <select id="sort-mayorista" class="form-select">
+                <option value="default">Destacado</option>
+                <option value="price-asc">Precio: Menor a Mayor</option>
+                <option value="price-desc">Precio: Mayor a Menor</option>
+                <option value="az">Nombre: A - Z</option>
+                <option value="za">Nombre: Z - A</option>
+                <option value="newest">Más Nuevos (Fecha)</option>
+                <option value="oldest">Más Viejos (Fecha)</option>
+                <option value="best-seller">🔥 Más Vendidos</option>
+            </select>
+        </div>
+
+    </div>
+
+    <main>
+        <div id="mayorista-container" class="catalogo-grid-nucleo">
+    <div class="loading-message" style="width:100%; text-align:center; padding:50px; color:#777;">
+        <i class="fas fa-spinner fa-spin"></i> Cargando catálogo completo...
+    </div>
+</div>
+    </main>
+
+    <footer>
+        <p>© 2025 Multimarcas 360 - Área Mayorista</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCD4lBf6BA76Oz-SDr4f8eaPA-q7v5AecY",
+            authDomain: "consultoravidal91.firebaseapp.com",
+            projectId: "consultoravidal91",
+            storageBucket: "consultoravidal91.firebasestorage.app",
+            messagingSenderId: "840042202477",
+            appId: "1:840042202477:web:aae77961b4bca465dc4664",
+            measurementId: "G-HP3L0WZ60V"
+        };
+
+        // Inicializar Firebase solo si no existe ya
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+        // Variables globales para que app.js las use
+        var db = firebase.firestore();
+        var auth = firebase.auth();
+        var ADMIN_EMAIL = 'ortolanimichael@gmail.com';
+    </script>
+
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>

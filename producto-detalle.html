@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Producto - Mi Tienda</title>
+    <link rel="stylesheet" href="style.css?v=1.22"> <style>
+        /* Estilos rápidos para la página de detalle. */
+        /* Idealmente, esto iría en style.css */
+        
+        .detalle-producto-container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .detalle-producto-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Una columna en móvil */
+            gap: 2rem;
+        }
+
+        /* En pantallas más grandes, usamos 2 columnas */
+        @media (min-width: 768px) {
+            .detalle-producto-grid {
+                /* Aprox 45% para imagen, 55% para info */
+                grid-template-columns: 45fr 55fr; 
+            }
+        }
+
+        .detalle-imagen-col #detalle-img-grande {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            margin-bottom: 1rem;
+        }
+
+        .detalle-thumbnails {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .detalle-thumb {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .detalle-thumb:hover, .detalle-thumb.active {
+            border-color: #e91e63;
+        }
+
+        .detalle-info-col h2 {
+            font-size: 2.2rem;
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .detalle-categoria {
+            font-size: 1rem;
+            color: #777;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .detalle-precio {
+            font-size: 2rem;
+            color: #e91e63;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+
+        .detalle-acciones {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .detalle-acciones .producto-cantidad {
+             width: 70px;
+             padding: 0.75rem;
+        }
+        
+        .detalle-acciones .boton-agregar {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        /* Enlace del nombre del producto en las tarjetas */
+        .producto-nombre-link {
+            text-decoration: none;
+            color: inherit;
+        }
+         .producto-nombre-link:hover .producto-nombre {
+            color: #e91e63;
+         }
+
+        /* --- NUEVOS ESTILOS --- */
+
+        /* Estilo para el botón "Volver" */
+        .boton-volver {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #f0f0f0;
+            color: #555;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .boton-volver:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Estilos para el Acordeón */
+        #detalle-acordeon-container {
+            margin-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+        .acordeon-item {
+            border-bottom: 1px solid #eee;
+        }
+        .acordeon-header {
+            background: none;
+            border: none;
+            width: 100%;
+            padding: 1.25rem 0.5rem;
+            text-align: left;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .acordeon-header:hover {
+            color: #e91e63;
+        }
+        .acordeon-icono {
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+            transform-origin: center;
+            transform: rotate(0deg); /* Estado inicial */
+        }
+        .acordeon-contenido {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            padding: 0 1rem;
+        }
+        .acordeon-contenido p {
+            margin: 0 0 1.25rem 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* Estado Activo */
+        .acordeon-item.active .acordeon-header .acordeon-icono {
+            transform: rotate(90deg);
+        }
+        .acordeon-item.active .acordeon-contenido {
+            max-height: 1000px; /* Suficientemente grande */
+            padding: 0 1rem; /* Mismo padding que en la transición */
+        }
+        /* --- FIN NUEVOS ESTILOS --- */
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="top-bar">
+             <a href="index.html" id="top-bar-desktop-banner">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761256896/banner_4_r8x0te.jpg" alt="Banner principal de marcas">
+             </a>
+             <div id="top-bar-mobile-scroll" class="barra-logos-scroll">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761256896/banner_4_r8x0te.jpg" alt="Marcas">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761256896/banner_4_r8x0te.jpg" alt="Marcas">
+             </div>
+             <form id="search-form">
+                <input type="search" id="search-input" placeholder="Buscar productos...">
+                <button type="submit" id="search-button">Buscar</button>
+             </form>
+        </div>
+        <nav class="main-nav">
+             <div class="logo">
+                 <a href="index.html">
+                     <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761336043/Stefania_Vidal_1_qekwcc.jpg" alt="Logo Stefania Vidal" class="logo-img">
+                 </a>
+             </div>
+             <span id="user-email-mobile" style="display: none;"></span>
+             <ul class="nav-links">
+                 <li id="search-form-nav">
+                     <form>
+                        <input type="search" id="search-input-nav" placeholder="Buscar productos...">
+                        <button type="submit" id="search-button-nav">Buscar</button>
+                     </form>
+                 </li>
+                 <li class="dropdown">
+                     <a href="#">HISTORIAS</a>
+                     <div class="dropdown-content">
+                         <a href="sobre-mary-kay.html">Sobre Mary Kay</a>
+                         <a href="sobre-arbell.html">Sobre Arbell</a>
+                         <a href="sobre-biogreen.html">Sobre Biogreen</a>
+                         <a href="sobre-nexo.html">Sobre Nexo</a>
+                     </div>
+                 </li>
+                 <li class="dropdown">
+                     <a href="#">PRODUCTOS</a>
+                     <div class="dropdown-content">
+                         <a href="productos-marykay.html">Mary Kay</a>
+                         <a href="productos-biogreen.html">Biogreen</a>
+                         <a href="productos-arbell.html">Arbell</a>
+                         <a href="productos-nexo.html">Nexo (Indumentaria)</a>
+                     </div>
+                 </li>
+                 <li class="dropdown">
+                     <a href="#">EMPRENDE</a>
+                     <div class="dropdown-content">
+                         <a href="quiero-ser-consultora.html">Consultora Mary Kay</a>
+                         <a href="experta-arbell.html">Experta en Arbell</a>
+                         <a href="revendedor-biogreen.html">Revendedor Biogreen</a>
+                         <a href="revendedor-nexo.html">Revendedor Nexo</a>
+                     </div>
+                 </li>
+                 <li><a href="oportunidad-mk.html">OPORTUNIDAD MK</a></li>
+                 <li><a href="contacto.html">CONTÁCTANOS</a></li>
+                 <li id="user-logged-out-mobile" class="auth-mobile-link"><a href="login.html">Iniciar Sesión</a></li>
+                 <li id="user-logged-out-mobile-register" class="auth-mobile-link register-link-mobile"><a href="registro.html">Registrarse</a></li>
+                 <li id="user-logged-in-mobile" class="auth-mobile-link" style="display: none;"><button id="logout-button-mobile">Cerrar Sesión</button></li>
+             </ul>
+             <div class="nav-extra">
+                 <div id="user-logged-out" style="display: flex;">
+                     <a href="login.html" class="auth-link">Iniciar Sesión</a>
+                     <a href="registro.html" class="auth-link register-link">Registrarse</a>
+                 </div>
+                 <div id="user-logged-in" style="display: none;">
+                     <a id="admin-link-a" href="admin.html" class="auth-link" style="display: none; background-color: #ffc107; color: #333; margin-right: 5px;">ADMIN</a>
+                     <span id="user-email" style="margin-right: 5px;"></span>
+                     <button id="logout-button" class="auth-link">Cerrar Sesión</button> 
+                 </div>
+             </div>
+             <a href="carrito.html" class="cart-link" style="margin-right: 0.5rem;">🛒 Carrito</a>
+             <div class="hamburger-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+             </div>
+         </nav>
+    </header>
+    <main class="detalle-producto-container">
+        
+        <a href="index.html" id="detalle-volver-btn" class="boton-volver" style="display: none;">&larr; Volver al catálogo</a>
+        
+        <p class="loading-message" style="text-align:center; padding: 2rem;">Cargando producto...</p>
+        
+        <div id="detalle-producto-wrapper" class="detalle-producto-grid" style="display: none;">
+            <div class="detalle-imagen-col">
+                <img id="detalle-img-grande" src="https://via.placeholder.com/500?text=Cargando..." alt="Producto">
+                <div id="detalle-thumbnails" class="detalle-thumbnails">
+                    </div>
+            </div>
+
+            <div class="detalle-info-col">
+                <p class="detalle-categoria" id="detalle-categoria">Categoría</p>
+                <h2 id="detalle-nombre">Nombre del Producto</h2>
+                <p id="detalle-subtitulo" class="detalle-subtitulo" style="display: none;"></p>
+                <p class="detalle-precio" id="detalle-precio">$0.00</p>
+                
+                <div class="detalle-acciones">
+                     <label for="detalle-cantidad">Cant:</label>
+                     <input type"number" id="detalle-cantidad" class="producto-cantidad" value="1" min="1">
+                     <button id="detalle-agregar-btn" class="boton-agregar" data-id="">Agregar al Carrito</button>
+                </div>
+
+                <div id="detalle-acordeon-container">
+                    </div>
+            </div>
+        </div>
+
+    </main>
+    <footer>
+        <p>© 2025 Mi Tienda Mary Kay. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+      const firebaseConfig = {
+            apiKey: "AIzaSyCD4lBf6BA76Oz-SDr4f8eaPA-q7v5AecY",
+            authDomain: "consultoravidal91.firebaseapp.com",
+            projectId: "consultoravidal91",
+            storageBucket: "consultoravidal91.appspot.com",
+            messagingSenderId: "840042202477",
+            appId: "1:840042202477:web:aae77961b4bca465dc4664",
+            measurementId: "G-HP3L0WZ60V"
+          };
+      let db;
+      try {
+          if (typeof firebase !== 'undefined') {
+              if (!firebase.apps.length) {
+                 console.log("Inicializando Firebase en detalle-producto.html...");
+                 firebase.initializeApp(firebaseConfig);
+                 db = firebase.firestore();
+              } else {
+                 db = firebase.firestore();
+               }
+          } else { console.error("Firebase SDK (firebase-app.js) no cargó."); }
+      } catch (e) { console.error("Error inicializando Firebase:", e); }
+
+      let auth;
+      if (typeof firebase !== 'undefined') {
+          auth = firebase.auth();
+      } else {
+          console.error("Firebase no está definido, no se puede obtener auth.");
+      }
+      const ADMIN_EMAIL = 'ortolanimichael@gmail.com';
+    </script> 
+
+    <script src="app.js?v=1.22" defer></script> <script src="auth.js" defer></script>
+    </body>
+</html>

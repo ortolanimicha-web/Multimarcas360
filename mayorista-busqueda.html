@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados Mayoristas - Multimarcas 360</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* Reutilizamos estilos Mayorista */
+        .mayorista-theme { background-color: #fffdf5; }
+        .mayorista-header {
+            background: linear-gradient(to right, #111, #333);
+            color: #d4af37; padding: 3rem 1rem; text-align: center;
+            border-bottom: 4px solid #d4af37; margin-bottom: 0;
+        }
+        .mayorista-header h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 2.5rem; }
+        
+        /* Estilos específicos de tarjetas mayoristas (Repetidos para asegurar renderizado) */
+        .mayorista-badge { background-color: #d4af37; color: #000; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; display: inline-block; margin-bottom: 5px; }
+        .precio-regular-tachado { text-decoration: line-through; color: #999; font-size: 0.9rem; margin-right: 10px; }
+        .precio-mayorista-final { color: #d4af37; font-weight: 900; font-size: 1.3rem; }
+        .btn-mayorista { background-color: #333 !important; color: #d4af37 !important; border: 1px solid #333 !important; }
+        .btn-mayorista:hover { background-color: #d4af37 !important; color: #000 !important; }
+        .discount-badge { position: absolute; bottom: 10px; left: 10px; background-color: #e91e63; color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .product-carousel { position: relative !important; }
+        
+        /* Botón Volver */
+        .btn-volver-mayorista {
+            display: inline-block; margin-top: 15px; padding: 10px 20px;
+            background: #d4af37; color: #333; font-weight: bold; text-decoration: none; border-radius: 30px;
+        }
+        .btn-volver-mayorista:hover { background: #b89628; color: #000; }
+    </style>
+</head>
+<body class="mayorista-theme">
+
+    <nav class="navbar">
+        <div class="logo"><a href="mayorista.html" style="color:#333; text-decoration:none;">&laquo; Volver a Zona Mayorista</a></div>
+        <ul class="nav-links">
+            <li><a href="carrito.html" class="cart-link">🛒 Carrito Mayorista</a></li>
+        </ul>
+        <div class="hamburger-menu"><span></span><span></span><span></span></div>
+    </nav>
+
+    <header class="mayorista-header">
+        <h1>RESULTADOS DE BÚSQUEDA</h1>
+        <p id="search-term-display">Buscando...</p>
+        <a href="mayorista.html" class="btn-volver-mayorista">Ver Catálogo Completo</a>
+    </header>
+
+    <div style="max-width: 600px; margin: 20px auto; padding: 0 15px;">
+        <form id="form-busqueda-mayorista" class="search-mayorista-form" style="max-width: 100%;">
+            <input type="text" id="input-busqueda-mayorista" placeholder="Realizar otra búsqueda..." required>
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+
+    <main>
+        <div id="mayorista-search-results" class="catalogo-grid-nucleo" style="padding: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+            <div class="loading-message" style="width:100%; text-align:center; padding:50px; color:#777;">
+                <i class="fas fa-spinner fa-spin"></i> Buscando productos...
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Multimarcas 360 - Búsqueda Mayorista</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCD4lBf6BA76Oz-SDr4f8eaPA-q7v5AecY",
+            authDomain: "consultoravidal91.firebaseapp.com",
+            projectId: "consultoravidal91",
+            storageBucket: "consultoravidal91.firebasestorage.app",
+            messagingSenderId: "840042202477",
+            appId: "1:840042202477:web:aae77961b4bca465dc4664",
+            measurementId: "G-HP3L0WZ60V"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+        var auth = firebase.auth();
+        var ADMIN_EMAIL = 'ortolanimichael@gmail.com';
+    </script>
+
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>

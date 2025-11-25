@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Producto - Electrónica Núcleo</title>
+    
+    <link rel="stylesheet" href="style.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* ESTILOS ESPECÍFICOS PARA DETALLE NÚCLEO */
+        .nucleo-detail-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .nucleo-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .nucleo-detail-grid {
+                grid-template-columns: 50% 50%;
+            }
+        }
+
+        /* Columna Imagen */
+        .nucleo-img-wrapper {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        #nucleo-img-main {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            object-fit: contain;
+        }
+        .nucleo-thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .nucleo-thumb {
+            width: 70px;
+            height: 70px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            object-fit: cover;
+            transition: border-color 0.3s;
+        }
+        .nucleo-thumb:hover, .nucleo-thumb.active {
+            border-color: #6f42c1; /* Violeta Núcleo */
+        }
+
+        /* Columna Info */
+        .nucleo-info-col h1 {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 900;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: #111;
+        }
+        .nucleo-category-tag {
+            background-color: #6f42c1;
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        .nucleo-price {
+            font-size: 2.5rem;
+            color: #28a745; /* Verde Tech */
+            font-weight: 900;
+            margin: 20px 0;
+        }
+
+        /* Acciones */
+        .nucleo-actions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nucleo-qty {
+            padding: 12px;
+            width: 70px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .nucleo-btn-add {
+            flex-grow: 1;
+            background: linear-gradient(to right, #6f42c1, #5a32a3);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .nucleo-btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(111, 66, 193, 0.3);
+        }
+
+        /* Descripción */
+        .nucleo-desc-box {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .nucleo-desc-box h3 {
+            color: #333;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        .nucleo-desc-text {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .nucleo-back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #6f42c1;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .nucleo-back-link:hover { text-decoration: underline; }
+
+    </style>
+</head>
+<body class="nucleo-theme">
+
+    <nav class="navbar">
+        <div class="logo">Electrónica Núcleo</div>
+        <ul class="nav-links">
+            <li><a href="productos-nucleo.html">Volver a Catálogo</a></li>
+            <li><a href="carrito.html" class="cart-link"><i class="fas fa-shopping-cart"></i> Carrito</a></li>
+        </ul>
+        <div class="hamburger-menu">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
+
+    <main class="nucleo-detail-container">
+        <a href="productos-nucleo.html" class="nucleo-back-link"><i class="fas fa-arrow-left"></i> Volver a Productos</a>
+        
+        <p id="nucleo-loading" style="text-align:center; padding: 40px;">Cargando especificaciones...</p>
+
+        <div id="nucleo-content" class="nucleo-detail-grid" style="display: none;">
+            
+            <div class="nucleo-img-col">
+                <div class="nucleo-img-wrapper">
+                    <img id="nucleo-img-main" src="" alt="Producto">
+                </div>
+                <div id="nucleo-thumbnails" class="nucleo-thumbnails"></div>
+            </div>
+
+            <div class="nucleo-info-col">
+                <span id="nucleo-category" class="nucleo-category-tag">Categoría</span>
+                <h1 id="nucleo-title">Nombre del Producto</h1>
+                <div id="nucleo-price" class="nucleo-price">$0.00</div>
+
+                <div class="nucleo-actions">
+                    <label style="font-weight:bold;">Cantidad:</label>
+                    <input type="number" id="nucleo-qty" class="nucleo-qty" value="1" min="1">
+                    <button id="nucleo-btn-add" class="nucleo-btn-add">
+                        <i class="fas fa-cart-plus"></i> Agregar al Pedido
+                    </button>
+                </div>
+
+                <div class="nucleo-desc-box">
+                    <h3><i class="fas fa-info-circle"></i> Especificaciones</h3>
+                    <div id="nucleo-desc" class="nucleo-desc-text"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="nucleo-footer" style="background: #000; color: #fff; padding:20px; text-align:center; margin-top: 40px;">
+        <p style="margin:0; color: #555;">© 2025 Electrónica Núcleo - Multimarcas 360</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCD4lBf6BA76Oz-SDr4f8eaPA-q7v5AecY",
+        authDomain: "consultoravidal91.firebaseapp.com",
+        projectId: "consultoravidal91",
+        storageBucket: "consultoravidal91.firebasestorage.app",
+        messagingSenderId: "840042202477",
+        appId: "1:840042202477:web:aae77961b4bca465dc4664",
+        measurementId: "G-HP3L0WZ60V"
+      };
+      if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+         firebase.initializeApp(firebaseConfig);
+      }
+      var db = firebase.firestore();
+      var auth = firebase.auth();
+      var ADMIN_EMAIL = 'ortolanimichael@gmail.com';
+    </script>
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>

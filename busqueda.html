@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Búsqueda - Mi Tienda</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .nav-links { gap: 2.5rem; }
+        .admin-nav-link { text-decoration: none; color: #333; font-weight: bold; font-size: 0.9rem; text-transform: uppercase; margin-right: 0.5rem; }
+        #user-email { font-weight: bold; font-size: 0.9rem; color: #555; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="top-bar">
+             <a href="index.html">
+                <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761256896/banner_4_r8x0te.jpg" alt="Banner principal de marcas">
+             </a>
+             <form id="search-form">
+                <input type="search" id="search-input" placeholder="Buscar productos...">
+                <button type="submit" id="search-button">Buscar</button>
+             </form>
+        </div>
+        <nav class="main-nav">
+             <div class="logo">
+                 <a href="index.html">
+                     <img src="https://res.cloudinary.com/dgrfs58n6/image/upload/v1761336043/Stefania_Vidal_1_qekwcc.jpg" alt="Logo Stefania Vidal" class="logo-img">
+                 </a>
+             </div>
+            <ul class="nav-links">
+                 <li class="dropdown">
+                     <a href="#">HISTORIAS</a>
+                     <div class="dropdown-content">
+                         <a href="sobre-mary-kay.html">Sobre Mary Kay</a>
+                         <a href="sobre-arbell.html">Sobre Arbell</a>
+                         <a href="sobre-biogreen.html">Sobre Biogreen</a>
+                         <a href="sobre-nexo.html">Sobre Nexo</a>
+                     </div>
+                 </li>
+                 <li class="dropdown">
+                    <a href="#">PRODUCTOS</a>
+                    <div class="dropdown-content">
+                        <a href="productos-marykay.html">Mary Kay</a>
+                        <a href="productos-biogreen.html">Biogreen</a>
+                        <a href="productos-arbell.html">Arbell</a>
+                        <a href="productos-nexo.html">Nexo (Indumentaria)</a>
+                    </div>
+                </li>
+                 <li class="dropdown">
+                     <a href="#">EMPRENDE</a>
+                     <div class="dropdown-content">
+                         <a href="quiero-ser-consultora.html">Consultora Mary Kay</a>
+                         <a href="experta-arbell.html">Experta en Arbell</a>
+                         <a href="revendedor-biogreen.html">Revendedor Biogreen</a>
+                         <a href="revendedor-nexo.html">Revendedor Nexo</a>
+                     </div>
+                 </li>
+                 <li><a href="oportunidad-mk.html">OPORTUNIDAD MK</a></li>
+                <li><a href="contacto.html">CONTÁCTANOS</a></li>
+             </ul>
+             <div class="nav-extra">
+                 <div id="user-logged-out"><a href="login.html" class="auth-link">Iniciar Sesión</a><a href="registro.html" class="auth-link register-link">Registrarse</a></div>
+                 <div id="user-logged-in" style="display: none;">
+                    <a id="admin-link-a" href="admin.html" class="admin-nav-link" style="display: none;">ADMIN</a>
+                    <span id="user-email"></span>
+                    <button id="logout-button" class="auth-link">Cerrar Sesión</button>
+                </div>
+                 <a href="carrito.html" class="cart-link">🛒 Carrito</a>
+             </div>
+        </nav>
+    </header>
+
+    <main id="search-results-page-container">
+        <h2 id="search-results-title">Buscando...</h2>
+        <div id="search-results-list">
+             <p class="loading-message">Cargando resultados...</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Mi Tienda Mary Kay. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+            apiKey: "AIzaSyCD4lBf6BA76Oz-SDr4f8eaPA-q7v5AecY",
+            authDomain: "consultoravidal91.firebaseapp.com",
+            projectId: "consultoravidal91",
+            storageBucket: "consultoravidal91.appspot.com",
+            messagingSenderId: "840042202477",
+            appId: "1:840042202477:web:aae77961b4bca465dc4664",
+            measurementId: "G-HP3L0WZ60V"
+          };
+
+      // Inicializar Firebase (evitando reinicializar)
+      let db, auth;
+      try {
+          if (typeof firebase !== 'undefined') {
+              if (!firebase.apps.length) {
+                 firebase.initializeApp(firebaseConfig);
+                 db = firebase.firestore();
+                 auth = firebase.auth();
+              } else {
+                 db = firebase.firestore();
+                 auth = firebase.auth();
+              }
+          } else {
+              console.error("Firebase SDK (firebase-app.js) no se cargó correctamente.");
+          }
+      } catch (e) {
+          console.error("Error inicializando Firebase o servicios:", e);
+      }
+
+      const ADMIN_EMAIL = 'ortolanimichael@gmail.com';
+    </script>
+
+    <script src="app.js" defer></script>
+    <script src="auth.js" defer></script>
+    </body>
+</html>

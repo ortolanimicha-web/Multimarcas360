@@ -169,56 +169,50 @@
 
     <div class="nucleo-layout-wrapper">
         <main class="nucleo-main-content">
-            
-            <div class="nucleo-hero-banner">
-                <div class="nucleo-hero-text">
-                    <h2 style="color: #cbbde2;">Tecnología Mayorista</h2>
-                    <h1>NOVEDADES 2025</h1>
-                    <p>Equipá tu negocio con lo último en gadgets y accesorios.</p>
-                    
-                    <button id="btn-open-sidebar" class="nucleo-btn" style="background: #fff; color: #6f42c1;">Ver Catálogo</button>
-                
-                </div>
-                <div class="nucleo-hero-image" style="background-image: url('https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=1200&q=80'); clip-path: none; width: 55%;"></div>
-            </div>
+    
+    <div id="nucleo-landing-hero" class="nucleo-hero-banner">
+        <div id="category-banner-container" class="category-banner-container" style="display: none; position: relative; width: 100%; height: 300px; overflow: hidden; margin-bottom: 25px;">
+    <img id="category-banner-img" src="" alt="Banner Categoría" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7);">
+    
+    <div style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
+        <h1 id="category-banner-title" style="color: white; margin: 0; font-size: 3rem; font-weight: 900; text-transform: uppercase; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">CATEGORÍA</h1>
+    </div>
+</div>
+        <div class="nucleo-hero-text">
+            <h2 style="color: #cbbde2;">Tecnología Mayorista</h2>
+            <h1>NOVEDADES 2025</h1>
+            <p>Equipá tu negocio con lo último en gadgets y accesorios.</p>
+            <button id="btn-open-sidebar" class="nucleo-btn" style="background: #fff; color: #6f42c1;">Ver Catálogo</button>
+        </div>
+        <div class="nucleo-hero-image" style="background-image: url('https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=1200&q=80'); clip-path: none; width: 55%;"></div>
+    </div>
 
-            <div class="features-bar">
-                <div class="feature-item">
-                    <i class="fas fa-truck feature-icon"></i>
-                    <div class="feature-title">Envíos</div>
-                    <div class="feature-desc">A todo el país</div>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-tags feature-icon"></i>
-                    <div class="feature-title">Descuentos</div>
-                    <div class="feature-desc">Por bulto cerrado</div>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-map-marker-alt feature-icon"></i>
-                    <div class="feature-title">Rio Tercero</div>
-                    <div class="feature-desc">Entregas en el día</div>
-                </div>
-            </div>
+    <div id="category-banner-container" class="category-banner-container" style="display: none; position: relative; width: 100%; height: 250px; overflow: hidden; margin-bottom: 25px; border-radius: 8px;">
+        <img id="category-banner-img" src="" alt="Banner Categoría" style="width: 100%; height: 100%; object-fit: cover;">
+        <div style="position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
+            <h1 id="category-banner-title" style="color: white; margin: 0; font-size: 2.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></h1>
+        </div>
+    </div>
 
-            <div class="section-title-bar">
-                <h3>¡Lleva tu negocio a otro nivel!</h3>
-                <p style="color: #777; margin-top: 5px;">Productos de alta rotación seleccionados para vos.</p>
-            </div>
+    <div class="section-title-bar">
+        <h3>¡Lleva tu negocio a otro nivel!</h3>
+        <p style="color: #777; margin-top: 5px;">Productos de alta rotación seleccionados para vos.</p>
+    </div>
 
-            <div id="catalogo-container" class="catalogo-grid-nucleo">
-                <div class="loading-spinner">
-                    <i class="fas fa-circle-notch fa-spin"></i> Cargando mercadería...
-                </div>
-            </div>
+    <div id="catalogo-container" class="catalogo-grid-nucleo">
+        <div class="loading-spinner">
+            <i class="fas fa-circle-notch fa-spin"></i> Cargando mercadería...
+        </div>
+    </div>
 
-            <div class="promo-banner-full" style="background-image: url('https://images.unsplash.com/photo-1512054502232-10a0a035d672?auto=format&fit=crop&w=1200&q=80'); margin-top:40px; height:200px; display:flex; align-items:center; justify-content:center; position:relative;">
-                <div style="position:relative; z-index:2; color:white; text-align:center;">
-                    <h2 style="font-size:2.5rem; font-weight:900; text-shadow:0 2px 10px rgba(0,0,0,0.5);">¡Iluminá tu espacio!</h2>
-                </div>
-                <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3);"></div>
-            </div>
+    <div class="promo-banner-full" style="background-image: url('https://images.unsplash.com/photo-1512054502232-10a0a035d672?auto=format&fit=crop&w=1200&q=80'); margin-top:40px; height:200px; display:flex; align-items:center; justify-content:center; position:relative;">
+        <div style="position:relative; z-index:2; color:white; text-align:center;">
+            <h2 style="font-size:2.5rem; font-weight:900; text-shadow:0 2px 10px rgba(0,0,0,0.5);">¡Iluminá tu espacio!</h2>
+        </div>
+        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3);"></div>
+    </div>
 
-            </main>
+</main>
     </div>
 
     <footer class="nucleo-footer" style="background: #000; color: #fff; padding:20px; text-align:center;">

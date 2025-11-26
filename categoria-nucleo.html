@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categoría - Electrónica Núcleo</title>
+    
+    <link rel="stylesheet" href="style.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* === ESTILOS ESPECÍFICOS PARA ESTA PÁGINA === */
+        /* (Estos estilos complementan a style.css para asegurar que la barra funcione aquí mismo) */
+        
+        body {
+            margin: 0; padding: 0;
+            background-color: #f5f5f5;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Navbar Fixed */
+        .nucleo-navbar {
+            background-color: #000;
+            border-bottom: 3px solid #6f42c1;
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .nucleo-logo {
+            color: #fff; font-weight: 900; text-transform: uppercase;
+            font-size: 1.5rem; letter-spacing: 1px; text-decoration: none;
+        }
+
+        .nucleo-nav-links {
+            list-style: none; display: flex; gap: 20px;
+            margin: 0; padding: 0; align-items: center;
+        }
+
+        .nucleo-nav-links a {
+            color: #fff; text-decoration: none; font-weight: bold;
+            text-transform: uppercase; font-size: 0.9rem;
+        }
+        
+        .nucleo-cart-btn {
+            background: #fff; color: #000 !important;
+            padding: 8px 15px; border-radius: 4px;
+            display: flex; align-items: center; gap: 5px; transition: 0.3s;
+        }
+        .nucleo-cart-btn:hover { background: #e0e0e0; }
+
+        /* Hero Banner */
+        .universal-hero {
+            position: relative; width: 100%; height: 350px;
+            background-color: #111; background-size: cover; background-position: center;
+            display: flex; align-items: flex-end;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); margin-bottom: 40px;
+        }
+
+        .universal-hero-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+            z-index: 1;
+        }
+
+        .universal-hero-content {
+            position: relative; z-index: 2; width: 100%; max-width: 1200px;
+            margin: 0 auto; padding: 40px;
+        }
+
+        .universal-hero h1 {
+            color: #fff; font-size: 3.5rem; font-weight: 900;
+            text-transform: uppercase; margin: 0; line-height: 1;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .universal-hero p {
+            color: #d6b3ff; font-size: 1.2rem; margin: 10px 0 0 0; font-weight: 300;
+        }
+
+        /* Layout Principal */
+        .main-layout {
+            max-width: 1300px; margin: 0 auto; padding: 0 20px 60px 20px;
+        }
+
+        /* === BARRA DE HERRAMIENTAS AVANZADA === */
+        .nucleo-toolbar-advanced {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            border-left: 5px solid #6f42c1;
+        }
+
+        /* Buscador */
+        .nucleo-search-box {
+            display: flex; align-items: center; border: 1px solid #ddd;
+            border-radius: 20px; overflow: hidden; flex-grow: 1; max-width: 300px;
+        }
+        .nucleo-search-box input { border: none; padding: 8px 15px; outline: none; width: 100%; }
+        .nucleo-search-box button { background: #6f42c1; color: white; border: none; padding: 8px 15px; cursor: pointer; }
+
+        /* Botones de Vista */
+        .nucleo-view-controls { display: flex; align-items: center; }
+        .view-buttons-nucleo { display: flex; background: #f0f0f0; border-radius: 20px; padding: 3px; }
+        .btn-view-nucleo {
+            border: none; background: transparent; padding: 6px 12px; cursor: pointer;
+            color: #777; border-radius: 15px; transition: 0.3s;
+        }
+        .btn-view-nucleo:hover { color: #000; }
+        .btn-view-nucleo.active { background: #fff; color: #6f42c1; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-weight: bold;}
+
+        /* Selector de Orden */
+        #nucleo-cat-sort { padding: 8px; border: 1px solid #ddd; border-radius: 5px; outline: none; cursor: pointer; }
+
+        /* === LOGICA DE VISTAS CSS === */
+        
+        /* 1. Vista Grilla (Default) */
+        .catalogo-grid-nucleo.view-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px; width: 100%;
+        }
+        .catalogo-grid-nucleo.view-grid .tarjeta-producto {
+            flex-direction: column !important;
+        }
+
+        /* 2. Vista Lista */
+        .catalogo-grid-nucleo.view-list {
+            display: flex; flex-direction: column; gap: 15px;
+        }
+        .catalogo-grid-nucleo.view-list .tarjeta-producto {
+            flex-direction: row !important; width: 100% !important; max-width: 900px; margin: 0 auto;
+            align-items: center; padding: 10px;
+        }
+        .catalogo-grid-nucleo.view-list .product-carousel {
+            width: 150px !important; height: 150px !important; border-right: 1px solid #eee; border-bottom: none;
+        }
+        .catalogo-grid-nucleo.view-list .producto-info {
+            text-align: left; padding-left: 20px; align-items: flex-start;
+        }
+
+        /* 3. Vista Feed */
+        .catalogo-grid-nucleo.view-feed {
+            display: flex; flex-direction: column; align-items: center; gap: 30px;
+        }
+        .catalogo-grid-nucleo.view-feed .tarjeta-producto {
+            flex-direction: column !important; width: 100%; max-width: 500px !important;
+            border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .catalogo-grid-nucleo.view-feed .product-carousel {
+            height: 400px !important; width: 100% !important;
+        }
+
+        /* General Tarjeta (Base) */
+        .tarjeta-producto {
+            background: #fff; border-radius: 8px; overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.2s;
+            display: flex;
+        }
+        
+        .section-header { margin-bottom: 20px; border-bottom: 1px solid #ddd; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .section-header h3 { margin: 0; color: #333; text-transform: uppercase; font-size: 1.5rem; }
+
+        .loading-spinner { grid-column: 1 / -1; text-align: center; padding: 50px; font-size: 1.5rem; color: #6f42c1; width: 100%; }
+        .error-msg { color: red; text-align: center; font-weight: bold; padding: 20px; background: #fff; border-radius: 8px; margin: 20px; }
+
+        @media (max-width: 768px) {
+            .universal-hero { height: 200px; }
+            .universal-hero h1 { font-size: 2rem; }
+            .nucleo-toolbar-advanced { flex-direction: column; align-items: stretch; gap: 10px; }
+            .nucleo-search-box { max-width: 100%; }
+            .nucleo-view-controls, .nucleo-sort-box { justify-content: space-between; display: flex; align-items: center; }
+            /* Ajuste responsive grilla */
+            .catalogo-grid-nucleo.view-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        }
+        @media (max-width: 480px) {
+            .catalogo-grid-nucleo.view-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nucleo-navbar">
+        <a href="productos-nucleo.html" class="nucleo-logo">Electrónica Núcleo</a>
+        <ul class="nucleo-nav-links">
+            <li><a href="productos-nucleo.html"><i class="fas fa-arrow-left"></i> Volver</a></li>
+            <li>
+                <a href="#" class="nucleo-cart-btn cart-link" onclick="if(window.openSideCart) window.openSideCart(); return false;">
+                    <i class="fas fa-shopping-cart"></i> <span id="cart-count-label">Carrito</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <header id="dynamic-hero" class="universal-hero">
+        <div class="universal-hero-overlay"></div>
+        <div class="universal-hero-content">
+            <h1 id="dynamic-cat-title">Cargando...</h1>
+            <p id="dynamic-cat-desc">Explorando categoría</p>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        
+        <div class="nucleo-toolbar-advanced">
+            
+            <form id="nucleo-cat-search-form" class="nucleo-search-box">
+                <input type="text" id="nucleo-cat-search-input" placeholder="Buscar en esta categoría...">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+    
+            <div class="nucleo-view-controls">
+                <span style="font-size:0.8rem; font-weight:bold; color:#555; margin-right:5px;">VISTA:</span>
+                <div class="view-buttons-nucleo">
+                    <button class="btn-view-nucleo" data-view="list" title="Lista"><i class="fas fa-list"></i></button>
+                    <button class="btn-view-nucleo active" data-view="grid" title="Grilla"><i class="fas fa-th-large"></i></button>
+                    <button class="btn-view-nucleo" data-view="feed" title="Feed"><i class="fas fa-mobile-alt"></i></button>
+                </div>
+            </div>
+    
+            <div class="nucleo-sort-box">
+                <select id="nucleo-cat-sort">
+                    <option value="default">Destacado</option>
+                    <option value="price-asc">Precio: Menor a Mayor</option>
+                    <option value="price-desc">Precio: Mayor a Menor</option>
+                    <option value="az">Nombre: A - Z</option>
+                    <option value="za">Nombre: Z - A</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h3 id="nucleo-results-count">Productos Disponibles</h3>
+        </div>
+
+        <div id="catalogo-container" class="catalogo-grid-nucleo view-grid">
+            <div class="loading-spinner">
+                <i class="fas fa-circle-notch fa-spin"></i> Conectando con la base de datos...
+            </div>
+        </div>
+    </div>
+
+    <footer style="background: #000; color: #777; padding:20px; text-align:center; margin-top:50px; border-top: 3px solid #6f42c1;">
+        <p style="margin:0;">© 2025 Electrónica Núcleo - Categoría Oficial</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCD4lBf6BA76Oz-SDr4f8eaPA-q7v5AecY",
+        authDomain: "consultoravidal91.firebaseapp.com",
+        projectId: "consultoravidal91",
+        storageBucket: "consultoravidal91.firebasestorage.app",
+        messagingSenderId: "840042202477",
+        appId: "1:840042202477:web:aae77961b4bca465dc4664",
+        measurementId: "G-HP3L0WZ60V"
+      };
+      if (!firebase.apps.length) {
+         firebase.initializeApp(firebaseConfig);
+      }
+      const db = firebase.firestore();
+      const auth = firebase.auth();
+      const ADMIN_EMAIL = 'ortolanimichael@gmail.com';
+    </script>
+
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>

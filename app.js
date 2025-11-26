@@ -155,7 +155,39 @@ function initializePageLogic()
                  console.warn("No se pudo determinar la marca para filtrar productos en:", pathname);
             }
         }
-
+        // PÁGINA UNIVERSAL DE CATEGORÍA NÚCLEO
+else if (currentPage === 'categoria-nucleo' || document.getElementById('dynamic-cat-title')) {
+            console.log("✅ Página de Categoría Universal detectada (por ID o Nombre).");
+            
+            const params = new URLSearchParams(window.location.search);
+            const catId = params.get('id');
+            const container = document.getElementById('catalogo-container');
+            const titleH1 = document.getElementById('dynamic-cat-title');
+            
+            // Verificamos si loadUniversalCategoryLogic existe antes de llamarla
+            if (typeof loadUniversalCategoryLogic === 'function') {
+                if (catId) {
+                    // Si hay ID en la URL, cargamos los productos
+                    loadUniversalCategoryLogic(catId);
+                } else {
+                    // Si NO hay ID (abriste el archivo directo), mostramos aviso
+                    console.warn("No se detectó ID en la URL");
+                    if(titleH1) titleH1.textContent = "Bienvenido al Catálogo";
+                    if(container) {
+                        container.innerHTML = `
+                            <div style="text-align:center; padding: 40px;">
+                                <i class="fas fa-search" style="font-size: 3rem; color: #6f42c1; margin-bottom: 15px;"></i>
+                                <h3>Selecciona una categoría para empezar</h3>
+                                <p>Para ver productos, debes elegir una categoría desde el menú principal.</p>
+                                <a href="productos-nucleo.html" class="nucleo-btn" style="margin-top:20px; display:inline-block; background:#6f42c1; color:white;">Ir al Menú</a>
+                            </div>
+                        `;
+                    }
+                }
+            } else {
+                console.error("Error: La función loadUniversalCategoryLogic no está definida.");
+            }
+        }
         // Página de Admin General
         else if (currentPage === 'admin') {
              console.log("Ejecutando lógica para admin.html.");
@@ -2395,13 +2427,27 @@ function handleFinalizarCompra() {
 
     let mensaje = "¡Hola! Quisiera hacer el siguiente pedido:\n\n";
     let total = 0;
+    
     carrito.forEach(item => {
         const subtotal = item.precio * item.cantidad;
         total += subtotal;
-        mensaje += `*Producto:* ${item.nombre}\n*Cantidad:* ${item.cantidad}\n*Precio Unit:* $${item.precio.toFixed(2)}\n*Subtotal:* $${subtotal.toFixed(2)}\n-------------------------\n`;
+        
+        mensaje += `*Producto:* ${item.nombre}\n`;
+        mensaje += `*Cant:* ${item.cantidad} x $${item.precio.toFixed(2)}\n`;
+        
+        // --- AQUÍ AGREGAMOS LA NOTA AL MENSAJE ---
+        if (item.nota && item.nota.trim() !== "") {
+            mensaje += `*Nota:* ${item.nota}\n`;
+        }
+        // -----------------------------------------
+        
+        mensaje += `*Subtotal:* $${subtotal.toFixed(2)}\n`;
+        mensaje += `-------------------------\n`;
     });
+    
     mensaje += `\n*TOTAL DEL PEDIDO: $${total.toFixed(2)}*`;
 
+    // Reemplaza con tu número real
     const numeroWhatsApp = "5493571618367"; 
     const mensajeCodificado = encodeURIComponent(mensaje);
     const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensajeCodificado}`;
@@ -2678,23 +2724,58 @@ function renderSideCart() {
         const subtotal = item.precio * item.cantidad;
         total += subtotal;
 
+        // Verificamos si hay nota para mostrarla
+        const notaHTML = item.nota ? `<span class="cart-item-user-note">📝: ${item.nota}</span>` : '';
+        const btnNotaTexto = item.nota ? 'Editar Nota' : 'Nota';
+        const btnNotaIcon = item.nota ? 'fa-edit' : 'fa-pen';
+
         itemsContainer.innerHTML += `
             <div class="side-cart-item">
                 <img src="${item.imagen}" alt="${item.nombre}" onerror="this.src='https://via.placeholder.com/60?text=Img'">
+                
                 <div class="side-cart-item-info">
                     <h4>${item.nombre}</h4>
                     <p>${item.cantidad} x $${item.precio.toFixed(2)}</p>
+                    ${notaHTML}
                 </div>
-                <button class="side-cart-remove" onclick="removeItemFromSideCart('${item.id}')">
-                    <i class="fas fa-trash"></i> Eliminar
-                </button>
+
+                <div class="side-cart-actions">
+                    <button class="side-cart-note-btn" onclick="addNoteToItem('${item.id}')" title="Agregar especificación">
+                        <i class="fas ${btnNotaIcon}"></i> ${btnNotaTexto}
+                    </button>
+                    <button class="side-cart-remove" onclick="removeItemFromSideCart('${item.id}')">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                </div>
             </div>
         `;
     });
 
     totalLabel.textContent = `$${total.toFixed(2)}`;
 }
-
+// --- Función para agregar/editar nota en el carrito ---
+window.addNoteToItem = function(id) {
+    let carrito = getCarritoFromStorage();
+    const itemIndex = carrito.findIndex(i => i.id === id);
+    
+    if (itemIndex > -1) {
+        // Pedimos la nota al usuario (muestra la actual si existe)
+        const notaActual = carrito[itemIndex].nota || "";
+        const nuevaNota = prompt("Escribe detalles (color, talle, etc):", notaActual);
+        
+        // Si el usuario no canceló (null), guardamos
+        if (nuevaNota !== null) {
+            carrito[itemIndex].nota = nuevaNota.trim();
+            saveCarritoToStorage(carrito);
+            renderSideCart(); // Refrescamos el carrito lateral
+            
+            // Si estás en la página carrito.html, refrescamos también
+            if (document.getElementById('carrito-container')) {
+                renderizarCarrito();
+            }
+        }
+    }
+};
 // Función global para eliminar desde el Side Cart (necesaria para el onclick inline)
 window.removeItemFromSideCart = function(id) {
     let carrito = getCarritoFromStorage();
@@ -2822,36 +2903,59 @@ async function loadNucleoAdminCategories() {
     
     if(!select || !tbody) return;
 
+    // Indicador visual de carga
     select.innerHTML = '<option value="">Cargando...</option>';
-    tbody.innerHTML = '';
+    // Limpiamos la tabla visualmente mientras carga
+    tbody.innerHTML = '<tr><td colspan="2" style="text-align:center">Cargando datos...</td></tr>';
 
-    const snap = await db.collection('categories')
-        .where('brand', '==', 'nucleo')
-        .orderBy('name')
-        .get();
+    try {
+        // Intentamos pedir los datos
+        const snap = await db.collection('categories')
+            .where('brand', '==', 'nucleo')
+            .orderBy('name')
+            .get();
 
-    select.innerHTML = '<option value="">-- Selecciona Categoría --</option>';
+        // Si llegamos aquí, la conexión funcionó
+        select.innerHTML = '<option value="">-- Selecciona Categoría --</option>';
+        tbody.innerHTML = ''; // Limpiamos mensaje de carga
 
-    snap.forEach(doc => {
-        const data = doc.data();
-        
-        // Llenar Select del Formulario Producto
-        const opt = document.createElement('option');
-        opt.value = doc.id;
-        opt.textContent = data.name;
-        // Guardamos datos extra para usar al guardar producto
-        opt.dataset.name = data.name;
-        opt.dataset.img = data.imageUrl || '';
-        select.appendChild(opt);
+        if (snap.empty) {
+         tbody.innerHTML = '<tr><td colspan="2" style="text-align:center">No hay categorías creadas.</td></tr>';
+         select.innerHTML = '<option value="">-- No hay categorías --</option>'; 
+         return;
+        }
 
-        // Llenar Tabla de Categorías (para borrar si se quiere)
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${data.name}</td>
-            <td><button class="action-btn btn-delete" onclick="deleteNucleoCategory('${doc.id}')"><i class="fas fa-trash"></i></button></td>
-        `;
-        tbody.appendChild(tr);
-    });
+        snap.forEach(doc => {
+            const data = doc.data();
+            
+            // 1. Llenar Select del Formulario
+            const opt = document.createElement('option');
+            opt.value = doc.id;
+            opt.textContent = data.name;
+            opt.dataset.name = data.name;
+            opt.dataset.img = data.imageUrl || '';
+            select.appendChild(opt);
+
+            // 2. Llenar Tabla
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${data.name}</td>
+                <td>
+                    <div style="display:flex; gap:5px;">
+                        <button class="action-btn btn-edit" onclick="editNucleoCategory('${doc.id}')" title="Editar"><i class="fas fa-pen"></i></button>
+                        <button class="action-btn btn-delete" onclick="deleteNucleoCategory('${doc.id}')" title="Eliminar"><i class="fas fa-trash"></i></button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+    } catch (error) {
+        console.error("Error cargando categorías:", error);
+        // Esto debería cambiar el texto de "Cargando..." a "Error..."
+        select.innerHTML = '<option value="">Error (Ver Consola F12)</option>';
+        tbody.innerHTML = `<tr><td colspan="2" style="color:red; text-align:center">Error de conexión o falta Índice.<br>Revisa la consola con F12.</td></tr>`;
+    }
 }
 
 window.deleteNucleoCategory = async (id) => {
@@ -3059,48 +3163,172 @@ function setupNucleoLogic() {
 
     // 2. CARGAR CATEGORÍAS EN EL SIDEBAR
     async function loadNucleoCategories() {
-        if (!categoryListContainer) return;
-        
-        categoryListContainer.innerHTML = '<li style="padding:15px; text-align:center;">Cargando...</li>';
+        console.log("Cargando categorías Núcleo...");
+        const selectElement = document.getElementById('nucleo-category-select');
+        const sidebarList = document.getElementById('nucleo-category-list'); // Corregido ID según tu HTML
+
+        // Limpiar opciones anteriores
+        if (selectElement) selectElement.innerHTML = '<option value="">Seleccione Categoría</option>';
+        if (sidebarList) sidebarList.innerHTML = '';
 
         try {
-            // Buscamos solo categorías de la marca 'nucleo'
-            const snap = await db.collection('categories')
+            // Ordenamos alfabéticamente para que se vea mejor
+            const snapshot = await db.collection('categories')
                 .where('brand', '==', 'nucleo')
-                .orderBy('name')
+                .orderBy('name') 
                 .get();
 
-            categoryListContainer.innerHTML = '';
-
-            if (snap.empty) {
-                categoryListContainer.innerHTML = '<li style="padding:15px;">No hay categorías.</li>';
+            if (snapshot.empty) {
+                if (sidebarList) sidebarList.innerHTML = '<li style="padding:10px;">No hay categorías.</li>';
                 return;
             }
 
-            snap.forEach(doc => {
-                const cat = doc.data();
-                const li = document.createElement('li');
-                // Creamos el HTML del item de lista
-                li.innerHTML = `
-                    <a class="nucleo-cat-link" data-id="${doc.id}">
-                        ${cat.imageUrl ? `<img src="${cat.imageUrl}" alt="icon">` : '<i class="fas fa-bolt"></i>'}
-                        <span>${cat.name}</span>
-                    </a>
-                `;
-                
-                // Listener al hacer click en una categoría del sidebar
-                li.querySelector('a').addEventListener('click', () => {
-                    loadNucleoProducts(doc.id, cat.name); // Cargar productos filtrados
-                    closeSidebar(); // Cerrar sidebar automáticamente (mejor UX en móvil)
-                });
+            snapshot.docs.forEach(doc => {
+                const data = doc.data();
+                const categoryId = doc.id;
 
-                categoryListContainer.appendChild(li);
+                // A. Llenar el <select> del formulario de Admin (si existe en la página)
+                if (selectElement) {
+                    const option = document.createElement('option');
+                    option.value = categoryId;
+                    option.textContent = data.name;
+                    // Guardamos datos extra para usar al guardar producto
+                    option.dataset.img = data.imageUrl || ''; 
+                    selectElement.appendChild(option);
+                }
+
+                // B. Llenar el menú lateral de navegación con ENLACE DIRECTO
+                if (sidebarList) {
+                    const li = document.createElement('li');
+                    // Al hacer clic, recarga la página con el parámetro catId
+                    li.innerHTML = `
+                        <a href="categoria-nucleo.html?id=${categoryId}" class="nucleo-cat-link">
+                            <img src="${data.imageUrl || 'https://via.placeholder.com/30'}" alt="icon" style="width:30px; height:30px; border-radius:50%; margin-right:10px;">
+                            ${data.name}
+                        </a>`;
+                    sidebarList.appendChild(li);
+                }
             });
+            console.log(`Categorías Núcleo cargadas: ${snapshot.docs.length}`);
+        } catch (error) {
+            console.error("Error al cargar categorías Núcleo:", error);
+            if (sidebarList) sidebarList.innerHTML = '<li style="color:red; padding:10px;">Error al cargar.</li>';
+        }
+    }
+function getUrlParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+
+// --- 6. Lógica de Carga y Filtrado de Productos por Categoría (Núcleo) ---
+async function loadNucleoProductsFiltered() {
+    const productsContainer = document.getElementById('catalogo-container');
+    if (!productsContainer) return;
+
+    // Elementos del DOM
+    const landingHero = document.getElementById('nucleo-landing-hero');
+    const categoryBannerContainer = document.getElementById('category-banner-container');
+    const categoryBannerImg = document.getElementById('category-banner-img');
+    const categoryBannerTitle = document.getElementById('category-banner-title');
+    const sectionTitleH3 = document.querySelector('.section-title-bar h3');
+    const sectionTitleP = document.querySelector('.section-title-bar p');
+
+    // Obtener ID de la URL (?catId=xyz)
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryId = urlParams.get('catId');
+
+    // Loader
+    productsContainer.innerHTML = '<div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> Cargando tecnología...</div>';
+
+    // Query Base
+    let productsRef = db.collection('products').where('brand', '==', 'nucleo');
+
+    // === ESCENARIO A: ESTAMOS VIENDO UNA CATEGORÍA ===
+    if (categoryId) {
+        console.log("Cargando categoría ID:", categoryId);
+
+        try {
+            // 1. Obtener datos de la categoría para pintar el Banner
+            const catDoc = await db.collection('categories').doc(categoryId).get();
+            
+            if (catDoc.exists) {
+                const catData = catDoc.data();
+                
+                // Ocultar Banner de Inicio
+                if (landingHero) landingHero.style.display = 'none'; 
+                
+                // Mostrar Banner de Categoría
+                if (categoryBannerContainer) {
+                    categoryBannerContainer.style.display = 'block'; 
+                    
+                    // AQUI ESTA LA MAGIA: Usamos la imagen de banner del Admin
+                    // Si no tiene banner grande, usa el icono pequeño, si no, una por defecto.
+                    const bannerSrc = catData.bannerImageUrl || catData.imageUrl || 'https://via.placeholder.com/1200x300?text=Tecnologia';
+                    
+                    if (categoryBannerImg) categoryBannerImg.src = bannerSrc;
+                    if (categoryBannerTitle) categoryBannerTitle.textContent = catData.name;
+                }
+
+                // Ajustar títulos inferiores
+                if (sectionTitleH3) sectionTitleH3.style.display = 'none'; // Ocultamos el título repetido
+                if (sectionTitleP) sectionTitleP.textContent = `Explorando: ${catData.name}`;
+
+            } else {
+                console.warn("Categoría no encontrada.");
+            }
+
+            // 2. Filtrar la consulta de productos
+            productsRef = productsRef.where('categoryId', '==', categoryId);
 
         } catch (error) {
-            console.error("Error cargando categorías Núcleo:", error);
-            categoryListContainer.innerHTML = '<li style="padding:15px; color:red;">Error de conexión.</li>';
+            console.error("Error obteniendo categoría:", error);
         }
+
+    } 
+    // === ESCENARIO B: ESTAMOS EN EL INICIO (SIN FILTRO) ===
+    else {
+        // Mostrar Banner de Inicio normal y ocultar el de categoría
+        if (landingHero) landingHero.style.display = 'flex';
+        if (categoryBannerContainer) categoryBannerContainer.style.display = 'none';
+        
+        if (sectionTitleH3) {
+            sectionTitleH3.style.display = 'block';
+            sectionTitleH3.textContent = "¡Lleva tu negocio a otro nivel!";
+        }
+    }
+
+    // 3. EJECUTAR LA CONSULTA Y DIBUJAR PRODUCTOS
+    try {
+        const snapshot = await productsRef.get(); 
+        productsContainer.innerHTML = ''; 
+
+        if (snapshot.empty) {
+            productsContainer.innerHTML = `
+                <div style="text-align:center; width:100%; padding:50px; grid-column: 1 / -1;">
+                    <h3 style="color:#666;">No hay productos en esta sección todavía.</h3>
+                    <a href="productos-nucleo.html" class="nucleo-btn" style="margin-top:15px;">Ver Todo</a>
+                </div>`;
+            return;
+        }
+
+        snapshot.docs.forEach(doc => {
+            const card = window.createProductCard(doc.data(), doc.id);
+            productsContainer.appendChild(card);
+        });
+
+        if(window.setupCarousels) window.setupCarousels(productsContainer);
+
+    } catch (error) {
+        console.error("Error cargando productos:", error);
+        productsContainer.innerHTML = '<p>Error de conexión.</p>';
+    }
+}
+// Listener para "Ver Todo el Stock" dentro del sidebar
+    if (btnVerTodo) {
+        btnVerTodo.addEventListener('click', () => {
+            // Redirigir a la misma página sin parámetros para ver todo
+            window.location.href = 'productos-nucleo.html';
+        });
     }
 
     // 3. CARGAR PRODUCTOS (FILTRADOS O TODOS)
@@ -3971,99 +4199,312 @@ if (prod.quantityPromos && Array.isArray(prod.quantityPromos) && prod.quantityPr
         console.error("Error búsqueda mayorista:", error);
         container.innerHTML = '<p class="error-message">Error al realizar la búsqueda.</p>';
     }
-}// ==========================================================
-// === INICIALIZACIÓN ADMIN NÚCLEO (FALTABA ESTA FUNCIÓN) ===
+}
+// ==========================================================
+// === LÓGICA DE CATEGORÍA NÚCLEO (CARGA DE DATOS) ===
 // ==========================================================
 
-function initializeNucleoAdminPage() {
-    console.log("Inicializando lógica de Admin Núcleo...");
+// Variable global para el caché de esta página
+let nucleoProductsCache = []; 
 
-    auth.onAuthStateChanged(user => {
-        if (user && user.email === ADMIN_EMAIL) {
-            console.log("Usuario Admin verificado para Núcleo.");
+async function loadUniversalCategoryLogic(categoryId) {
+    console.log("🚀 Iniciando carga de categoría ID:", categoryId);
 
-            // 1. Cargar el inventario (Esto quita el mensaje "Cargando...")
-            loadNucleoStock();
+    const titleH1 = document.getElementById('dynamic-cat-title');
+    const descP = document.getElementById('dynamic-cat-desc');
+    const container = document.getElementById('catalogo-container');
+    const resultsCount = document.getElementById('nucleo-results-count');
+    const hero = document.getElementById('dynamic-hero');
+
+    // ======================================================
+    // === NUEVO: LÓGICA PARA CAMBIAR DE VISTA (LISTA/GRILLA) ===
+    // ======================================================
+    const viewButtons = document.querySelectorAll('.btn-view-nucleo');
+    
+    if(viewButtons.length > 0 && container) {
+        viewButtons.forEach(btn => {
+            // Clonamos el botón para eliminar listeners viejos si se recarga la función
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
             
-            // 2. Cargar las categorías en el select y la tabla
-            loadNucleoAdminCategories();
+            newBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetBtn = e.currentTarget; // Aseguramos agarrar el botón, no el icono
 
-            // 1. Configurar listener para GUARDAR PRODUCTOS (existente)
-            const prodForm = document.getElementById('nucleo-product-form');
-            if (prodForm) {
-                prodForm.removeEventListener('submit', handleNucleoProductSubmit);
-                prodForm.addEventListener('submit', handleNucleoProductSubmit);
-            }
+                // 1. Visual: Cambiar botón activo
+                document.querySelectorAll('.btn-view-nucleo').forEach(b => b.classList.remove('active'));
+                targetBtn.classList.add('active');
 
-            // === NUEVO: LISTENER PARA BOTÓN AGREGAR PROMO ===
-            const btnAddPromo = document.getElementById('btn-add-promo-row');
-            if (btnAddPromo) {
-                // Clonamos para evitar listeners duplicados si se recarga la función
-                const newBtn = btnAddPromo.cloneNode(true);
-                btnAddPromo.parentNode.replaceChild(newBtn, btnAddPromo);
+                // 2. Lógica: Cambiar clase del contenedor
+                const viewMode = targetBtn.dataset.view; // 'grid', 'list', o 'feed'
                 
-                newBtn.addEventListener('click', () => {
-                    addNucleoPromoRow(); // Agrega una fila vacía
+                // Quitamos todas las clases de vista posibles
+                container.classList.remove('view-grid', 'view-list', 'view-feed');
+                
+                // Agregamos la seleccionada
+                container.classList.add(`view-${viewMode}`);
+                console.log("Vista cambiada a:", viewMode);
+            });
+        });
+    }
+
+    // Cambiamos el mensaje para confirmar que JS tomó el control
+    if(container) container.innerHTML = '<div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> Buscando productos...</div>';
+    try {
+        // 1. CARGAR INFO DE LA CATEGORÍA
+        const catDoc = await db.collection('categories').doc(categoryId).get();
+        if (catDoc.exists) {
+            const data = catDoc.data();
+            if(titleH1) titleH1.textContent = data.name;
+            if(descP) descP.textContent = `Explora nuestra selección de ${data.name}`;
+            
+            // Imagen de fondo del banner
+            const bannerUrl = data.bannerImageUrl || data.imageUrl;
+            if (hero && bannerUrl) {
+                hero.style.backgroundImage = `url('${bannerUrl}')`;
+            }
+        } else {
+            if(titleH1) titleH1.textContent = "Categoría Desconocida";
+        }
+
+        // 2. CARGAR PRODUCTOS
+        // Pedimos TODOS los de la marca nucleo y filtramos por ID de categoría
+        const snapshot = await db.collection('products')
+            .where('brand', '==', 'nucleo')
+            .get();
+
+        nucleoProductsCache = []; 
+
+        snapshot.forEach(doc => {
+            const p = doc.data();
+            // Comparamos IDs como texto para evitar errores
+            if (p.categoryId && String(p.categoryId) === String(categoryId)) {
+                nucleoProductsCache.push({
+                    id: doc.id,
+                    ...p,
+                    searchName: (p.name || '').toLowerCase(),
+                    price: parseFloat(p.price || 0)
                 });
             }
+        });
 
-            // 4. Configurar listener para CREAR CATEGORÍAS
-            const catForm = document.getElementById('nucleo-category-form');
-            if (catForm) {
-                catForm.addEventListener('submit', handleNucleoCategorySubmit);
-            }
-            
-            // 5. Configurar botón Cancelar Edición
-            const btnCancel = document.getElementById('btn-cancel-prod');
-            if(btnCancel) {
-                btnCancel.addEventListener('click', resetNucleoForm);
-            }
-
-        } else {
-            console.warn("Acceso denegado o usuario no logueado en Admin Núcleo");
-            const container = document.querySelector('.nucleo-admin-container');
-            if(container) container.innerHTML = "<h2>Acceso Denegado</h2><p>Debes ser administrador.</p>";
+        if (nucleoProductsCache.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column:1/-1; text-align:center; padding:40px;">
+                    <i class="fas fa-box-open" style="font-size:3rem; color:#ddd; margin-bottom:15px;"></i>
+                    <h3 style="color:#666;">Aún no hay productos aquí.</h3>
+                    <a href="productos-nucleo.html" class="nucleo-btn" style="margin-top:15px; display:inline-block; background:#6f42c1; color:white;">Ver todo el stock</a>
+                </div>`;
+            if(resultsCount) resultsCount.textContent = "0 Productos";
+            return;
         }
-    });
+
+        renderNucleoCategoryProducts(container, resultsCount);
+
+    } catch (error) {
+        console.error("Error cargando categoría:", error);
+        if(container) container.innerHTML = `<p class="error-msg">Error: ${error.message}</p>`;
+    }
 }
 
-// Función para guardar Categorías Núcleo (También faltaba la lógica de submit)
-async function handleNucleoCategorySubmit(e) {
-    e.preventDefault();
-    const nameInput = document.getElementById('nucleo-cat-name');
-    const imgInput = document.getElementById('nucleo-cat-img');
-    const feedback = document.getElementById('feedback-cat');
+// Función auxiliar para renderizar y filtrar
+function renderNucleoCategoryProducts(container, resultsCount) {
+    const searchInput = document.getElementById('nucleo-cat-search-input');
+    const sortSelect = document.getElementById('nucleo-cat-sort');
+    
+    container.innerHTML = '';
+    
+    // Filtros
+    const term = searchInput ? searchInput.value.trim().toLowerCase() : '';
+    let filtered = nucleoProductsCache.filter(p => p.searchName.includes(term));
 
-    const name = nameInput.value.trim();
-    const img = imgInput.value.trim();
+    // Ordenamiento
+    const sortMode = sortSelect ? sortSelect.value : 'default';
+    if (sortMode === 'price-asc') filtered.sort((a, b) => a.price - b.price);
+    else if (sortMode === 'price-desc') filtered.sort((a, b) => b.price - a.price);
+    else if (sortMode === 'az') filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    else if (sortMode === 'za') filtered.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
 
-    if(!name) {
-        alert("El nombre de la categoría es obligatorio");
+    if(resultsCount) resultsCount.textContent = `${filtered.length} Productos`;
+
+    if (filtered.length === 0) {
+        container.innerHTML = '<div style="padding:30px; width:100%; text-align:center;">No hay coincidencias.</div>';
         return;
     }
 
-    try {
-        await db.collection('categories').add({
-            name: name,
-            imageUrl: img,
-            brand: 'nucleo' // IMPORTANTE: Para filtrar luego
+    filtered.forEach(prod => {
+        const card = window.createProductCard(prod, prod.id);
+        container.appendChild(card);
+    });
+    
+    // Activar carruseles
+    if (window.setupCarousels) window.setupCarousels(container);
+
+    // Listeners (solo una vez)
+    const searchForm = document.getElementById('nucleo-cat-search-form');
+    if (searchForm && !searchForm.dataset.listening) {
+        searchForm.dataset.listening = "true";
+        searchForm.addEventListener('submit', (e) => { e.preventDefault(); renderNucleoCategoryProducts(container, resultsCount); });
+        if(searchInput) searchInput.addEventListener('input', () => renderNucleoCategoryProducts(container, resultsCount));
+    }
+    if (sortSelect && !sortSelect.dataset.listening) {
+        sortSelect.dataset.listening = "true";
+        sortSelect.addEventListener('change', () => renderNucleoCategoryProducts(container, resultsCount));
+    }
+}// ==========================================================
+// === INICIALIZACIÓN Y LÓGICA DEL ADMIN NÚCLEO ===
+// ==========================================================
+
+function initializeNucleoAdminPage() {
+    console.log("🔧 Inicializando Panel de Administración Núcleo...");
+
+    // 1. Cargar datos iniciales
+    loadNucleoAdminCategories();
+    loadNucleoStock();
+
+    // 2. Configurar Listener para Crear Categoría
+    const catForm = document.getElementById('nucleo-category-form');
+    if (catForm) {
+        // Clonamos para evitar listeners duplicados si se recarga
+        const newCatForm = catForm.cloneNode(true);
+        catForm.parentNode.replaceChild(newCatForm, catForm);
+        
+        newCatForm.addEventListener('submit', handleNucleoCategorySubmit);
+    }
+
+    // 3. Configurar Listener para Crear/Editar Producto
+    const prodForm = document.getElementById('nucleo-product-form');
+    if (prodForm) {
+        const newProdForm = prodForm.cloneNode(true);
+        prodForm.parentNode.replaceChild(newProdForm, prodForm);
+        
+        newProdForm.addEventListener('submit', handleNucleoProductSubmit);
+    }
+
+    // 4. Botón para agregar fila de Promo
+    const btnAddPromo = document.getElementById('btn-add-promo-row');
+    if (btnAddPromo) {
+        // Limpiamos listener anterior clonando
+        const newBtn = btnAddPromo.cloneNode(true);
+        btnAddPromo.parentNode.replaceChild(newBtn, btnAddPromo);
+        newBtn.addEventListener('click', () => addNucleoPromoRow());
+    }
+    
+    // 5. Botón Cancelar Edición
+    const btnCancel = document.getElementById('btn-cancel-prod');
+    if(btnCancel) {
+        btnCancel.addEventListener('click', resetNucleoForm);
+    }
+
+    // 6. Botón Logout específico de esta página
+    const btnLogout = document.getElementById('logout-btn-nucleo');
+    if(btnLogout) {
+        btnLogout.addEventListener('click', (e) => {
+            e.preventDefault();
+            auth.signOut().then(() => window.location.href = 'productos-nucleo.html');
         });
-
-        // Feedback visual
-        feedback.textContent = "¡Categoría Creada!";
-        feedback.className = 'feedback-msg feedback-success';
-        feedback.style.display = 'block';
-        
-        // Limpiar form y recargar lista
-        document.getElementById('nucleo-category-form').reset();
-        loadNucleoAdminCategories(); // Recargar select y tabla
-        
-        setTimeout(() => feedback.style.display = 'none', 3000);
-
-    } catch (error) {
-        console.error("Error al crear categoría:", error);
-        feedback.textContent = "Error al guardar.";
-        feedback.className = 'feedback-msg feedback-error';
-        feedback.style.display = 'block';
     }
 }
+
+// --- Función para GUARDAR CATEGORÍA (Faltaba esta lógica) ---
+const btnCancelCat = document.getElementById('btn-cancel-cat');
+    if(btnCancelCat) {
+        btnCancelCat.addEventListener('click', window.resetNucleoCategoryForm);
+    }
+async function handleNucleoCategorySubmit(e) {
+    e.preventDefault();
+    
+    const idInput = document.getElementById('nucleo-cat-edit-id'); // El campo oculto
+    const nameInput = document.getElementById('nucleo-cat-name');
+    const imgInput = document.getElementById('nucleo-cat-img');
+    const bannerInput = document.getElementById('nucleo-cat-banner-img');
+    const feedback = document.getElementById('feedback-cat');
+    const btnSave = document.getElementById('btn-save-cat');
+
+    const name = nameInput.value.trim();
+    const imgUrl = imgInput.value.trim();
+    const bannerUrl = bannerInput.value.trim();
+    const editId = idInput.value; // ID si estamos editando
+
+    if (!name) return alert("El nombre es obligatorio");
+
+    const originalText = btnSave.textContent;
+    btnSave.textContent = "Guardando...";
+    btnSave.disabled = true;
+
+    try {
+        const catData = {
+            name: name,
+            imageUrl: imgUrl,
+            bannerImageUrl: bannerUrl,
+            brand: 'nucleo'
+        };
+
+        if (editId) {
+            // === MODO EDICIÓN ===
+            await db.collection('categories').doc(editId).update(catData);
+            feedback.textContent = "¡Categoría Actualizada!";
+        } else {
+            // === MODO CREACIÓN ===
+            await db.collection('categories').add(catData);
+            feedback.textContent = "¡Categoría Creada!";
+        }
+
+        // Mostrar mensaje éxito
+        feedback.className = "feedback-msg feedback-success";
+        feedback.style.display = "block";
+        setTimeout(() => feedback.style.display = 'none', 3000);
+        
+        // Resetear todo
+        window.resetNucleoCategoryForm(); 
+        loadNucleoAdminCategories(); // Recargar tabla
+
+    } catch (error) {
+        console.error("Error guardando categoría:", error);
+        alert("Error al guardar: " + error.message);
+    } finally {
+        btnSave.textContent = originalText;
+        if(editId) btnSave.textContent = "Actualizar Categoría"; // Mantener texto si falló
+        else btnSave.textContent = "Crear Categoría";
+        
+        btnSave.disabled = false;
+    }
+}
+window.editNucleoCategory = async (id) => {
+    try {
+        const doc = await db.collection('categories').doc(id).get();
+        if(!doc.exists) return;
+        const data = doc.data();
+
+        // Llenar inputs
+        document.getElementById('nucleo-cat-edit-id').value = id;
+        document.getElementById('nucleo-cat-name').value = data.name;
+        document.getElementById('nucleo-cat-img').value = data.imageUrl || '';
+        document.getElementById('nucleo-cat-banner-img').value = data.bannerImageUrl || '';
+
+        // Cambiar estado visual de botones
+        const btnSave = document.getElementById('btn-save-cat');
+        const btnCancel = document.getElementById('btn-cancel-cat');
+        
+        if(btnSave) btnSave.textContent = "Actualizar Categoría";
+        if(btnCancel) btnCancel.style.display = 'inline-block';
+
+        // Scroll hacia arriba para ver el formulario
+        document.getElementById('nucleo-category-form').scrollIntoView({ behavior: 'smooth' });
+
+    } catch (error) {
+        console.error("Error al cargar categoría:", error);
+    }
+};
+
+// === FUNCIÓN PARA CANCELAR EDICIÓN ===
+window.resetNucleoCategoryForm = () => {
+    document.getElementById('nucleo-category-form').reset();
+    document.getElementById('nucleo-cat-edit-id').value = '';
+    
+    const btnSave = document.getElementById('btn-save-cat');
+    const btnCancel = document.getElementById('btn-cancel-cat');
+    
+    if(btnSave) btnSave.textContent = "Crear Categoría";
+    if(btnCancel) btnCancel.style.display = 'none';
+};

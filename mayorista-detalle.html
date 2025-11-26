@@ -5,113 +5,366 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle Mayorista - Multimarcas 360</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        /* Estilos Inline para forzar el tema Mayorista */
-        body { background-color: #fffdf5; }
+        /* === TEMA GLOBAL MAYORISTA === */
+        body { 
+            background-color: #fffdf9; /* Crema muy suave */
+            color: #333;
+            font-family: 'Montserrat', sans-serif;
+        }
         
+        /* HEADER MINI */
         .mayorista-header-mini {
-            background: linear-gradient(to right, #111, #333);
+            background: #1a1a1a;
             color: #d4af37;
-            padding: 1rem;
-            text-align: center;
-            border-bottom: 4px solid #d4af37;
+            padding: 1rem 2rem;
+            border-bottom: 3px solid #d4af37;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .mayorista-header-mini h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 1.5rem; }
-        .mayorista-header-mini a { color: #fff; text-decoration: none; font-size: 0.9rem; }
+        .mayorista-header-mini h1 { 
+            margin: 0; 
+            font-family: 'Playfair Display', serif; 
+            font-size: 1.4rem; 
+            letter-spacing: 1px;
+        }
+        .mayorista-header-mini a { 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 0.9rem; 
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .mayorista-header-mini a:hover { color: #d4af37; }
 
-        .may-detalle-container { max-width: 1100px; margin: 2rem auto; padding: 1rem; }
-        .may-detalle-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-        @media (min-width: 768px) { .may-detalle-grid { grid-template-columns: 50fr 50fr; } }
-
-        .may-image-container { position: relative; width: 100%; margin-bottom: 10px; }
-        #may-img-grande { width: 100%; border-radius: 8px; border: 1px solid #d4af37; object-fit: cover; aspect-ratio: 1 / 1; }
-
-        .discount-badge-detail {
-            position: absolute; bottom: 15px; left: 15px;
-            background-color: #e91e63; color: white; padding: 8px 15px;
-            border-radius: 30px; font-size: 1rem; font-weight: bold;
-            z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        /* CONTENEDOR PRINCIPAL */
+        .may-detalle-container { 
+            max-width: 1100px; 
+            margin: 3rem auto; 
+            padding: 0 1.5rem; 
         }
 
-        #may-thumbnails { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
-        .may-thumb { width: 70px; height: 70px; object-fit: cover; border-radius: 4px; border: 2px solid transparent; cursor: pointer; transition: all 0.3s; opacity: 0.7; }
-        .may-thumb:hover { opacity: 1; }
-        .may-thumb.active { border-color: #d4af37; opacity: 1; }
+        /* GRID LAYOUT (IZQUIERDA IMAGEN - DERECHA INFO) */
+        .may-detalle-grid { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 3rem; 
+            align-items: start;
+        }
+        @media (min-width: 900px) { 
+            .may-detalle-grid { 
+                grid-template-columns: 45% 50%; /* Imagen un poco más chica, info más ancha */
+                gap: 5%;
+            } 
+        }
 
-        .may-categoria { color: #b8860b; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;}
-        .may-titulo { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #111; margin: 0.5rem 0 1.5rem 0; line-height: 1.1;}
+        /* === COLUMNA IZQUIERDA: IMAGEN === */
+        .col-visual {
+            position: sticky;
+            top: 90px; /* Para que se quede fija al hacer scroll */
+        }
+
+        /* CORRECCIÓN AQUÍ: Usamos el nombre de clase que app.js espera */
+        .may-image-container { 
+            position: relative; 
+            width: 100%; 
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+            background: #fff;
+        }
+
+        #may-img-grande { 
+            width: 100%; 
+            height: auto; 
+            aspect-ratio: 1 / 1; 
+            object-fit: contain; 
+            display: block;
+        }
+
+        /* Miniaturas */
+        #may-thumbnails { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 15px; 
+            justify-content: center;
+        }
+        .may-thumb { 
+            width: 70px; 
+            height: 70px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+            border: 2px solid #ddd; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            opacity: 0.6; 
+        }
+        .may-thumb:hover, .may-thumb.active { 
+            border-color: #d4af37; 
+            opacity: 1; 
+            transform: translateY(-2px);
+        }
+
+        /* === COLUMNA DERECHA: INFO === */
         
-        .may-precios-box { margin-bottom: 2rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;}
-        .may-precio-lista { text-decoration: line-through; color: #999; font-size: 1.2rem; display: block; margin-bottom: 5px;}
-        .may-precio-final { font-size: 2.8rem; color: #d4af37; font-weight: 900; line-height: 1; }
-
-        /* === NUEVO ESTILO PARA EL AHORRO EN $ === */
-        .may-ahorro-text {
-            color: #e67e22; /* Un naranja/dorado oscuro similar a la foto */
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-top: 5px;
-            display: none; /* Se muestra con JS si hay ahorro */
+        /* Breadcrumb y Titulo */
+        .may-categoria { 
+            color: #b8860b; 
+            font-size: 0.85rem;
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-bottom: 0.5rem;
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.1);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+        .may-titulo { 
+            font-family: 'Playfair Display', serif; 
+            font-size: 2.8rem; 
+            color: #111; 
+            margin: 0.5rem 0 1.5rem 0; 
+            line-height: 1.1;
         }
 
-        .may-actions { display: flex; gap: 10px; margin-bottom: 30px; align-items: center; }
-        .may-cantidad-input { width: 70px; padding: 12px; border: 2px solid #ddd; text-align:center; font-size: 1.1rem; border-radius: 4px; font-weight: bold;}
-        .btn-may-agregar { background-color: #111; color: #d4af37; border: 2px solid #111; padding: 15px 40px; font-weight: bold; cursor: pointer; font-size: 1.1rem; transition: all 0.3s; border-radius: 4px; flex-grow: 1; }
-        .btn-may-agregar:hover { background-color: #d4af37; color: #111; border-color: #d4af37;}
+        /* CAJA DE PRECIOS UNIFICADA */
+        .may-pricing-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border-left: 5px solid #d4af37;
+        }
 
-        .may-acordeon-item { border-bottom: 1px solid #ddd; border-top: 1px solid #ddd; }
-        .may-acordeon-header { width: 100%; padding: 20px 0; background: none; border: none; text-align: left; font-weight: bold; cursor: pointer; font-size: 1.1rem; display: flex; justify-content: space-between; color: #333; }
+        .pricing-row {
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .may-precio-lista { 
+            text-decoration: line-through; 
+            color: #999; 
+            font-size: 1.1rem; 
+        }
+
+        .may-precio-final { 
+            font-size: 2.5rem; 
+            color: #d4af37; 
+            font-weight: 800; 
+            line-height: 1; 
+        }
+
+        .may-ahorro-text {
+            color: #28a745; 
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: #e8f5e9;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: none; /* Se activa con JS */
+            margin-top: 10px;
+        }
+
+        /* ESTILOS PARA LA TABLA DE ESCALAS (Generada por app.js) */
+        .promo-table-container {
+            margin-top: 1.5rem;
+            border-top: 1px dashed #ddd;
+            padding-top: 1rem;
+        }
+        .promo-table-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .promo-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .promo-table th { text-align: left; color: #888; font-weight: normal; padding-bottom: 5px; }
+        .promo-table td { padding: 6px 0; border-bottom: 1px solid #f9f9f9; }
+        .promo-table td strong { color: #333; }
+        .promo-highlight { color: #d4af37; font-weight: bold; }
+        .badge-ahorro-detalle {
+            background-color: #333; color: #d4af37; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem;
+        }
+
+        /* CONTROLES DE ACCIÓN */
+        .may-actions-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 2rem;
+            align-items: stretch;
+        }
+
+        .qty-wrapper {
+            position: relative;
+            width: 80px;
+        }
+        .may-cantidad-input { 
+            width: 100%; 
+            height: 50px;
+            text-align: center; 
+            font-size: 1.2rem; 
+            border: 2px solid #ddd; 
+            border-radius: 6px; 
+            font-weight: bold;
+            color: #333;
+        }
+        .may-cantidad-input:focus { border-color: #d4af37; outline: none; }
+
+        .btn-may-agregar { 
+            flex-grow: 1;
+            background-color: #111; 
+            color: #d4af37; 
+            border: none; 
+            padding: 0 2rem; 
+            font-weight: 700; 
+            cursor: pointer; 
+            font-size: 1rem; 
+            letter-spacing: 1px;
+            transition: all 0.3s; 
+            border-radius: 6px; 
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-may-agregar:hover { 
+            background-color: #d4af37; 
+            color: #000; 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* ACORDEON DE DESCRIPCIÓN */
+        .may-acordeon-item { 
+            border-bottom: 1px solid #eee; 
+        }
+        .may-acordeon-header { 
+            width: 100%; 
+            padding: 18px 0; 
+            background: none; 
+            border: none; 
+            text-align: left; 
+            font-weight: 600; 
+            cursor: pointer; 
+            font-size: 1rem; 
+            display: flex; 
+            justify-content: space-between; 
+            color: #444; 
+            font-family: 'Montserrat', sans-serif;
+        }
         .may-acordeon-header:hover { color: #d4af37; }
-        .may-acordeon-content { max-height: 0; overflow: hidden; transition: 0.3s; }
-        .may-acordeon-item.active .may-acordeon-content { max-height: 600px; padding-bottom: 20px;}
+        .may-acordeon-content { 
+            max-height: 0; 
+            overflow: hidden; 
+            transition: max-height 0.4s ease; 
+        }
+        .may-acordeon-item.active .may-acordeon-content { 
+            max-height: 800px; 
+        }
+        .content-inner {
+            padding-bottom: 20px;
+            line-height: 1.7;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* BADGES FLOTANTES */
+        .discount-badge-detail {
+            position: absolute; top: 15px; left: 15px;
+            background-color: #e91e63; color: white; padding: 5px 12px;
+            border-radius: 4px; font-size: 0.85rem; font-weight: bold;
+            z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .mayorista-detail-stock-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(220, 53, 69, 0.9); color: white; padding: 10px 20px;
+            font-weight: bold; border: 2px solid white; text-transform: uppercase;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .may-titulo { font-size: 2rem; }
+            .may-actions-container { flex-direction: column; }
+            .qty-wrapper { width: 100%; }
+            .btn-may-agregar { width: 100%; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="mayorista-header-mini">
-        <a href="mayorista.html">&larr; Volver al Catálogo</a>
-        <h1>DETALLE MAYORISTA</h1>
-        <a href="carrito.html" class="cart-link">🛒 Carrito</a>
-    </div>
+    <header class="mayorista-header-mini">
+        <a href="mayorista.html"><i class="fas fa-arrow-left"></i> Catálogo</a>
+        <h1>ZONA MAYORISTA</h1>
+        <a href="carrito.html" class="cart-link"><i class="fas fa-shopping-cart"></i> Carrito</a>
+    </header>
 
     <main class="may-detalle-container">
-        <div id="may-loading" style="text-align:center; padding:50px; font-size: 1.2rem; color: #d4af37;">
-            <i class="fas fa-spinner fa-spin"></i> Cargando datos del producto...
+        
+        <div id="may-loading" style="text-align:center; padding:80px 0; color: #d4af37;">
+            <i class="fas fa-circle-notch fa-spin fa-2x"></i>
+            <p style="margin-top: 15px; font-weight: 500;">Cargando información del producto...</p>
         </div>
 
         <div id="may-content" class="may-detalle-grid" style="display:none;">
             
-            <div>
+            <div class="col-visual">
                 <div class="may-image-container">
-                    <img id="may-img-grande" src="" alt="Producto" onerror="this.src='https://via.placeholder.com/500?text=Sin+Imagen'">
+                    <img id="may-img-grande" src="" alt="Producto" onerror="this.src='https://via.placeholder.com/600?text=Sin+Imagen'">
                     <div id="may-discount-badge"></div>
-                </div>
-                <div id="may-thumbnails"></div>
+                    </div>
+                <div id="may-thumbnails">
+                    </div>
             </div>
 
-            <div>
-                <p id="may-categoria" class="may-categoria">Categoría</p>
-                <h2 id="may-titulo" class="may-titulo">Nombre Producto</h2>
+            <div class="col-info">
+                <span id="may-categoria" class="may-categoria">Categoría</span>
+                <h2 id="may-titulo" class="may-titulo">Nombre del Producto</h2>
                 
-                <div class="may-precios-box">
-                    <span id="may-precio-lista" class="may-precio-lista">Lista: $0.00</span>
-                    <div id="may-precio-final" class="may-precio-final">$0.00 <span style="font-size:1rem; font-weight:normal; color:#333;">(Mayorista)</span></div>
-                    
-                    <div id="may-ahorro" class="may-ahorro-text"></div>
+                <div class="may-pricing-card">
+                    <div class="may-precios-box">
+                        <span id="may-precio-lista" class="may-precio-lista">Lista: $0.00</span>
+                        <div class="pricing-row">
+                            <div id="may-precio-final" class="may-precio-final">$0.00</div>
+                            <span style="font-size:0.9rem; font-weight:600; color:#555; text-transform:uppercase;">Precio Mayorista</span>
+                        </div>
+                        <div id="may-ahorro" class="may-ahorro-text"></div>
+                    </div>
+                    </div>
+
+                <div class="may-actions-container">
+                    <div class="qty-wrapper">
+                        <input type="number" id="may-cantidad" value="1" min="1" class="may-cantidad-input">
+                    </div>
+                    <button id="may-btn-agregar" class="btn-may-agregar">
+                        <span>Agregar al Pedido</span>
+                        <i class="fas fa-cart-plus"></i>
+                    </button>
                 </div>
 
-                <div class="may-actions">
-                    <input type="number" id="may-cantidad" value="1" min="1" class="may-cantidad-input">
-                    <button id="may-btn-agregar" class="btn-may-agregar">AGREGAR AL PEDIDO</button>
-                </div>
-
-                <div id="may-acordeon"></div>
+                <div id="may-acordeon">
+                    </div>
             </div>
         </div>
     </main>

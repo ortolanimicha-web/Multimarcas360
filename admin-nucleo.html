@@ -96,9 +96,17 @@
         <section class="admin-card">
             <h3>1. Categorías Núcleo</h3>
             <form id="nucleo-category-form">
+                <input type="hidden" id="nucleo-cat-edit-id">
+
                 <input type="text" id="nucleo-cat-name" class="nucleo-input" placeholder="Nombre de la Categoría (Ej: Audio, Gaming...)" required>
-                <input type="text" id="nucleo-cat-img" class="nucleo-input" placeholder="URL Imagen Categoría (Opcional)">
-                <button type="submit" class="nucleo-btn-admin">Crear Categoría</button>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="nucleo-cat-img" class="nucleo-input" placeholder="URL Ícono (Redondo Pequeño)">
+                    <input type="text" id="nucleo-cat-banner-img" class="nucleo-input" placeholder="URL Banner Grande (Para la cabecera)">
+                </div>
+
+                <button type="submit" id="btn-save-cat" class="nucleo-btn-admin">Crear Categoría</button>
+                <button type="button" id="btn-cancel-cat" class="nucleo-btn-admin nucleo-btn-cancel" style="display: none;">Cancelar</button>
+                
                 <div id="feedback-cat" class="feedback-msg"></div>
             </form>
             
@@ -173,8 +181,6 @@
                 </table>
             </div>
         </section>
-
-    </main>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>

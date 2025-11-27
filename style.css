@@ -3316,46 +3316,50 @@ main#search-results-page-container .mensaje-vacio {
         padding-left: 0 !important;
         padding-right: 0 !important;
     }
-}/* ========================================================== */
-/* === FIX: AJUSTE MÓVIL PÁGINAS TEMA NÚCLEO (PRODUCTOS) === */
+}
+/* ========================================================== */
+/* === FIX V4: AJUSTE CATEGORÍA NÚCLEO REFORZADO (MÓVIL) === */
 /* ========================================================== */
 
 @media (max-width: 768px) {
-
-    /* 1. Ajuste general del contenedor principal en Núcleo para eliminar márgenes */
+    
+    /* 1. RESET GENERAL: Eliminar márgenes del layout principal en móvil */
+    body.nucleo-theme,
     .nucleo-theme .nucleo-layout-wrapper {
-        margin: 0 !important;
-        padding: 10px !important;
+        margin: 0 !important; 
+        padding: 0 !important; 
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
-        overflow-x: hidden !important;
-        gap: 0 !important;
+        overflow-x: hidden !important; 
     }
-    
-    /* 2. Ajuste de la zona principal de contenido */
-    .nucleo-theme main {
+
+    /* 2. AJUSTE MAIN CONTENT (para productos-nucleo.html y categoria-nucleo.html) */
+    .nucleo-theme main, 
+    .nucleo-theme .main-content-area {
         width: 100% !important;
         padding: 5px !important;
-        margin: 0 !important;
+        margin: 0 auto !important; /* Centrado forzado del contenedor de contenido */
         box-sizing: border-box !important;
     }
 
-    /* 3. Forzar 2 columnas en la grilla de productos de Núcleo (para productos-nucleo.html) */
+    /* 3. REFUERZO DE LA GRILLA DE PRODUCTOS */
     .nucleo-theme .catalogo-grid-nucleo {
         display: grid !important;
-        grid-template-columns: 1fr 1fr !important; /* 2 columnas forzadas */
+        /* Aseguramos 2 columnas que no crecen más allá de su límite */
+        grid-template-columns: 1fr 1fr !important; 
         gap: 10px !important;
         width: 100% !important;
-        padding: 0 5px !important;
+        padding: 0 !important; /* CLAVE: Eliminar padding interno que puede empujar */
+        margin: 0 auto !important; /* Centrar la grilla misma */
         box-sizing: border-box !important;
     }
     
-    /* 4. Asegurar que las tarjetas de producto de Núcleo se centren y no se desborden */
+    /* 4. AJUSTE DE LA TARJETA INDIVIDUAL (asegurar que no tengan margen) */
     .nucleo-theme .tarjeta-producto {
         width: 100% !important;
         max-width: 100% !important;
-        margin: 0 auto !important; /* Centrado dentro de la celda */
+        margin: 0 auto !important; 
     }
 
     /* 5. Ajuste específico para el detalle del producto (nucleo-detalle.html) */
@@ -3365,13 +3369,10 @@ main#search-results-page-container .mensaje-vacio {
         box-shadow: none !important;
     }
 
-    /* 6. Ajuste para las páginas de administración (admin.html y admin-nucleo.html) */
-    /* Estas páginas a menudo necesitan scroll horizontal para tablas, por lo que solo ajustamos el padding */
+    /* 6. Ajuste para las páginas de administración (si se usan en móvil) */
     .admin-container {
         padding: 10px !important;
     }
-
-    /* Permite que la tabla en admin sea responsive horizontalmente */
     .table-responsive {
         overflow-x: auto;
         width: 100%;

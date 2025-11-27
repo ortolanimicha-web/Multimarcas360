@@ -3233,63 +3233,87 @@ main#search-results-page-container .mensaje-vacio {
     100% { transform: scale(1); }
 }
 /* ========================================================== */
-/* === FIX V2: CENTRADO TOTAL MÓVIL MAYORISTA (AGRESIVO) === */
+/* === FIX V3: SOLUCIÓN FINAL MÓVIL (CENTRADO Y VERTICAL) === */
 /* ========================================================== */
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     
-    /* 1. Eliminar márgenes del contenedor principal que empujan el contenido */
+    /* 1. Resetear el contenedor principal para eliminar espacios muertos */
+    body.mayorista-theme,
     body.mayorista-theme main {
-        margin: 0 !important; 
-        padding: 15px 5px !important; /* Muy poco padding lateral */
         width: 100% !important;
-        max-width: 100vw !important; /* Asegurar que no exceda la ventana */
-        box-sizing: border-box;
-        border: none !important;
-        overflow-x: hidden; /* Evitar scroll horizontal fantasma */
+        max-width: 100% !important;
+        padding: 5px !important; /* Padding mínimo seguro */
+        margin: 0 !important;
+        overflow-x: hidden !important; /* Cortar cualquier desborde fantasma */
+        box-sizing: border-box !important;
     }
 
-    /* 2. Configuración del contenedor de la rejilla/lista */
+    /* 2. Configuración del contenedor de productos */
     #mayorista-container {
         width: 100% !important;
-        margin: 0 auto !important;
+        margin: 0 !important;
         padding: 0 !important;
-        box-sizing: border-box;
+        box-sizing: border-box !important;
     }
 
-    /* --- CASO 1: VISTA GRILLA (Los cuadraditos) --- */
+    /* --- REGLA DE ORO: SIEMPRE VERTICAL EN MÓVIL --- */
+    /* Esto arregla que se corte la derecha en la vista de lista */
+    #mayorista-container .tarjeta-producto,
+    #mayorista-container.view-list .tarjeta-producto, 
+    #mayorista-container.view-grid .tarjeta-producto,
+    #mayorista-container.view-feed .tarjeta-producto {
+        display: flex !important;
+        flex-direction: column !important; /* Siempre foto arriba, info abajo */
+        align-items: center !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto 15px auto !important; /* Centrado automático */
+        box-sizing: border-box !important;
+    }
+
+    /* 3. Ajuste específico para la VISTA GRILLA (2 columnas) */
     #mayorista-container.view-grid {
         display: grid !important;
-        /* "minmax(0, 1fr)" es clave: evita que el contenido estire la celda y rompa la pantalla */
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important; 
-        gap: 8px !important; /* Espacio pequeño entre tarjetas */
-        justify-content: center !important;
-        padding: 0 4px !important; /* Pequeño margen interno de seguridad */
+        grid-template-columns: 1fr 1fr !important; /* 2 columnas exactas */
+        gap: 10px !important; /* Espacio entre columnas */
+        justify-items: center !important;
     }
-
-    /* Ajuste de tarjeta en grilla */
+    /* En grilla, quitamos el margen inferior extra */
     #mayorista-container.view-grid .tarjeta-producto {
-        width: 100% !important;
-        margin: 0 !important;
-        max-width: none !important;
+        margin-bottom: 0 !important; 
     }
 
-    /* --- CASO 2 & 3: VISTA LISTA Y FEED (Uno debajo del otro) --- */
-    #mayorista-container.view-list,
-    #mayorista-container.view-feed {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important; /* ESTO ES LO QUE CENTRA LOS ELEMENTOS */
-        gap: 20px !important;
+    /* 4. Ajustar imágenes para que ocupen el ancho disponible sin romper */
+    .product-carousel, .product-carousel img {
         width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        box-sizing: border-box !important;
+        min-height: 160px; /* Altura mínima para que se vea bien */
     }
 
-    /* Ajuste de tarjeta en lista/feed */
-    #mayorista-container.view-list .tarjeta-producto,
-    #mayorista-container.view-feed .tarjeta-producto {
-        width: 96% !important; /* Casi todo el ancho */
-        max-width: 380px !important; /* Tope para que no se vean gigantes */
-        margin-left: auto !important;
-        margin-right: auto !important; /* Centrado automático */
+    /* 5. Asegurar que la info (texto y botones) no se salga */
+    .producto-info {
+        width: 100% !important;
+        padding: 10px !important;
+        box-sizing: border-box !important;
+        text-align: center !important; /* Todo centrado para mejor visualización */
+    }
+
+    /* 6. Alinear botones y inputs al centro */
+    .producto-acciones {
+        justify-content: center !important;
+        width: 100% !important;
+        flex-wrap: wrap !important;
+    }
+    
+    /* 7. Arreglar el buscador y filtros para que no se salgan */
+    .controls-mayorista, .filtros-marcas, .search-mayorista-form {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 }

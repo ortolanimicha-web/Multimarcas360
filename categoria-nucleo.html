@@ -179,20 +179,47 @@
         .error-msg { color: red; text-align: center; font-weight: bold; padding: 20px; background: #fff; border-radius: 8px; margin: 20px; }
 
         @media (max-width: 768px) {
+            /* 1. Ajustes del Banner */
             .universal-hero { height: 200px; }
             .universal-hero h1 { font-size: 2rem; }
-            .nucleo-toolbar-advanced { flex-direction: column; align-items: stretch; gap: 10px; }
+            
+            /* 2. Ajustes de la Barra de Herramientas */
+            .nucleo-toolbar-advanced { 
+                flex-direction: column; 
+                align-items: stretch; 
+                gap: 10px; 
+                padding: 10px !important; 
+            }
             .nucleo-search-box { max-width: 100%; }
             .nucleo-view-controls, .nucleo-sort-box { justify-content: space-between; display: flex; align-items: center; }
-            /* Ajuste responsive grilla */
-            .catalogo-grid-nucleo.view-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        }
-        @media (max-width: 480px) {
-            .catalogo-grid-nucleo.view-grid { grid-template-columns: 1fr; }
+
+            /* 3. CORRECCIÓN PRINCIPAL DE ALINEACIÓN */
+            .main-layout {
+                padding: 5px !important; 
+                width: 100% !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
+            }
+
+            /* 4. Forzar la Grilla a 2 columnas perfectas */
+            .catalogo-grid-nucleo.view-grid { 
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important; 
+                gap: 10px !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100% !important;
+            }
+            
+            /* Asegurar que la tarjeta ocupe el 100% de su espacio */
+            .tarjeta-producto {
+                width: 100% !important;
+                margin: 0 !important;
+            }
         }
     </style>
 </head>
-<body>
+<body class="nucleo-theme">
 
     <nav class="nucleo-navbar">
         <a href="productos-nucleo.html" class="nucleo-logo">Electrónica Núcleo</a>

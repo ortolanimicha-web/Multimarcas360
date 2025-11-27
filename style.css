@@ -3201,3 +3201,95 @@ main#search-results-page-container .mensaje-vacio {
     padding: 2px 5px;
     border-radius: 3px;
 }
+/* --- ALERTA DE ESCASEZ / RESERVAS --- */
+.scarcity-alert {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-top: 15px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.scarcity-alert i {
+    color: #fd7e14; /* Naranja fuego */
+    font-size: 1.2rem;
+    animation: pulse 2s infinite;
+}
+
+.scarcity-alert strong {
+    color: #d63384; /* Rosa/Rojo intenso para el número */
+    font-weight: 900;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+/* ========================================================== */
+/* === FIX V2: CENTRADO TOTAL MÓVIL MAYORISTA (AGRESIVO) === */
+/* ========================================================== */
+
+@media (max-width: 600px) {
+    
+    /* 1. Eliminar márgenes del contenedor principal que empujan el contenido */
+    body.mayorista-theme main {
+        margin: 0 !important; 
+        padding: 15px 5px !important; /* Muy poco padding lateral */
+        width: 100% !important;
+        max-width: 100vw !important; /* Asegurar que no exceda la ventana */
+        box-sizing: border-box;
+        border: none !important;
+        overflow-x: hidden; /* Evitar scroll horizontal fantasma */
+    }
+
+    /* 2. Configuración del contenedor de la rejilla/lista */
+    #mayorista-container {
+        width: 100% !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        box-sizing: border-box;
+    }
+
+    /* --- CASO 1: VISTA GRILLA (Los cuadraditos) --- */
+    #mayorista-container.view-grid {
+        display: grid !important;
+        /* "minmax(0, 1fr)" es clave: evita que el contenido estire la celda y rompa la pantalla */
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important; 
+        gap: 8px !important; /* Espacio pequeño entre tarjetas */
+        justify-content: center !important;
+        padding: 0 4px !important; /* Pequeño margen interno de seguridad */
+    }
+
+    /* Ajuste de tarjeta en grilla */
+    #mayorista-container.view-grid .tarjeta-producto {
+        width: 100% !important;
+        margin: 0 !important;
+        max-width: none !important;
+    }
+
+    /* --- CASO 2 & 3: VISTA LISTA Y FEED (Uno debajo del otro) --- */
+    #mayorista-container.view-list,
+    #mayorista-container.view-feed {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important; /* ESTO ES LO QUE CENTRA LOS ELEMENTOS */
+        gap: 20px !important;
+        width: 100% !important;
+    }
+
+    /* Ajuste de tarjeta en lista/feed */
+    #mayorista-container.view-list .tarjeta-producto,
+    #mayorista-container.view-feed .tarjeta-producto {
+        width: 96% !important; /* Casi todo el ancho */
+        max-width: 380px !important; /* Tope para que no se vean gigantes */
+        margin-left: auto !important;
+        margin-right: auto !important; /* Centrado automático */
+    }
+}

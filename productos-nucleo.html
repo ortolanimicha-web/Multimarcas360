@@ -57,7 +57,6 @@
         .feature-desc { font-size: 0.85rem; color: #666; }
 
         /* Títulos */
-        .section-title-bar { text-align: center; padding: 20px; margin: 20px 0; }
         .section-title-bar h3 { font-size: 1.8rem; font-weight: 900; text-transform: uppercase; color: #000; }
 
         /* Grid Productos */
@@ -113,6 +112,145 @@
         }
         .nucleo-cat-link:hover { background: #f3e5f5; color: #6f42c1; padding-left: 18px; }
         .nucleo-cat-link img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover;}
+        
+        /* ================================================= */
+        /* === NUEVOS ESTILOS PARA BARRA DE HERRAMIENTAS === */
+        /* ================================================= */
+
+        .nucleo-toolbar-advanced {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin: 20px 40px 25px 40px; 
+            border-left: 5px solid #6f42c1;
+            max-width: 1400px; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Buscador */
+        .nucleo-search-box {
+            display: flex; align-items: center; border: 1px solid #ddd;
+            border-radius: 20px; overflow: hidden; flex-grow: 1; max-width: 300px;
+        }
+        .nucleo-search-box input { border: none; padding: 8px 15px; outline: none; width: 100%; }
+        .nucleo-search-box button { background: #6f42c1; color: white; border: none; padding: 8px 15px; cursor: pointer; }
+
+        /* Botones de Vista */
+        .nucleo-view-controls { display: flex; align-items: center; }
+        .view-buttons-nucleo { display: flex; background: #f0f0f0; border-radius: 20px; padding: 3px; }
+        .btn-view-nucleo {
+            border: none; background: transparent; padding: 6px 12px; cursor: pointer;
+            color: #777; border-radius: 15px; transition: 0.3s;
+        }
+        .btn-view-nucleo:hover { color: #000; }
+        .btn-view-nucleo.active { background: #fff; color: #6f42c1; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-weight: bold;}
+
+        /* Selector de Orden */
+        #nucleo-cat-sort { padding: 8px; border: 1px solid #ddd; border-radius: 5px; outline: none; cursor: pointer; }
+
+        /* Section Header (Contador de Resultados) */
+        .section-header-nucleo { 
+            margin-bottom: 20px; 
+            border-bottom: 1px solid #ddd; 
+            padding: 0 40px 10px 40px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-end; 
+            max-width: 1400px; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .section-header-nucleo h3 { margin: 0; color: #333; text-transform: uppercase; font-size: 1.5rem; }
+
+
+        /* === LOGICA DE VISTAS CSS (COPIADA Y ADAPTADA) === */
+        
+        /* 1. Vista Grilla (Default) */
+        .catalogo-grid-nucleo.view-grid .tarjeta-producto {
+            flex-direction: column !important;
+        }
+
+        /* 2. Vista Lista */
+        .catalogo-grid-nucleo.view-list {
+            display: flex; flex-direction: column; gap: 15px;
+            padding: 0 40px 40px 40px; 
+            max-width: 1400px; margin: 0 auto;
+        }
+        .catalogo-grid-nucleo.view-list .tarjeta-producto {
+            flex-direction: row !important; width: 100% !important; max-width: 900px; margin: 0 auto;
+            align-items: center; padding: 10px;
+        }
+        .catalogo-grid-nucleo.view-list .product-carousel {
+            width: 150px !important; 
+            height: 150px !important; 
+            border-right: 1px solid #eee; 
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+        }
+        .catalogo-grid-nucleo.view-list .carousel-image {
+            object-fit: contain !important;
+            width: 100% !important;
+            height: 100% !important;
+            padding: 5px;
+        }
+        .catalogo-grid-nucleo.view-list .producto-info {
+            text-align: left; padding-left: 20px; align-items: flex-start;
+        }
+        
+        /* 3. Vista Feed (Modo Instagram) */
+        .catalogo-grid-nucleo.view-feed {
+            display: flex; flex-direction: column; align-items: center; gap: 30px;
+            padding: 0 40px 40px 40px; 
+            max-width: 1400px; margin: 0 auto;
+        }
+        .catalogo-grid-nucleo.view-feed .tarjeta-producto {
+            flex-direction: column !important; width: 100%; max-width: 500px !important;
+            border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid #ddd;
+        }
+        .catalogo-grid-nucleo.view-feed .product-carousel {
+            height: 400px !important; width: 100% !important;
+        }
+
+
+        /* AJUSTES RESPONSIVE (Móviles) */
+        @media (max-width: 768px) {
+            .nucleo-toolbar-advanced { 
+                flex-direction: column; 
+                align-items: stretch; 
+                gap: 10px; 
+                padding: 10px !important; 
+                margin: 10px !important; 
+            }
+            .nucleo-search-box { max-width: 100%; }
+            .nucleo-view-controls, .nucleo-sort-box { justify-content: space-between; display: flex; align-items: center; }
+            
+            .section-header-nucleo {
+                padding: 0 10px 10px 10px !important;
+                margin: 0 10px 20px 10px !important;
+            }
+
+            .catalogo-grid-nucleo.view-grid {
+                grid-template-columns: 1fr 1fr !important; 
+                gap: 10px !important;
+                padding: 0 10px 40px 10px !important; 
+            }
+            
+            .catalogo-grid-nucleo.view-list,
+            .catalogo-grid-nucleo.view-feed {
+                padding: 0 10px 40px 10px !important; 
+            }
+        }
 
     </style>
 </head>
@@ -193,13 +331,39 @@
             <h1 id="category-banner-title" style="color: white; margin: 0; font-size: 2.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></h1>
         </div>
     </div>
+    
+    <div class="nucleo-toolbar-advanced">
+            
+        <form id="nucleo-cat-search-form" class="nucleo-search-box">
+            <input type="text" id="nucleo-cat-search-input" placeholder="Buscar en el catálogo...">
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
 
-    <div class="section-title-bar">
-        <h3>¡Lleva tu negocio a otro nivel!</h3>
-        <p style="color: #777; margin-top: 5px;">Productos de alta rotación seleccionados para vos.</p>
+        <div class="nucleo-view-controls">
+            <span style="font-size:0.8rem; font-weight:bold; color:#555; margin-right:5px;">VISTA:</span>
+            <div class="view-buttons-nucleo">
+                <button class="btn-view-nucleo" data-view="list" title="Lista"><i class="fas fa-list"></i></button>
+                <button class="btn-view-nucleo active" data-view="grid" title="Grilla"><i class="fas fa-th-large"></i></button>
+                <button class="btn-view-nucleo" data-view="feed" title="Feed"><i class="fas fa-mobile-alt"></i></button>
+            </div>
+        </div>
+
+        <div class="nucleo-sort-box">
+            <select id="nucleo-cat-sort">
+                <option value="default">Destacado</option>
+                <option value="price-asc">Precio: Menor a Mayor</option>
+                <option value="price-desc">Precio: Mayor a Menor</option>
+                <option value="az">Nombre: A - Z</option>
+                <option value="za">Nombre: Z - A</option>
+            </select>
+        </div>
+    </div>
+    <div class="section-header-nucleo">
+        <h3 id="nucleo-results-count">Productos Destacados</h3>
+        <p style="color: #777; margin-top: 5px; font-size:0.9rem;">Productos de alta rotación seleccionados para vos.</p>
     </div>
 
-    <div id="catalogo-container" class="catalogo-grid-nucleo">
+    <div id="catalogo-container" class="catalogo-grid-nucleo view-grid">
         <div class="loading-spinner">
             <i class="fas fa-circle-notch fa-spin"></i> Cargando mercadería...
         </div>
@@ -244,6 +408,61 @@
           }
       }
       const ADMIN_EMAIL = 'ortolanimichael@gmail.com';
+      
+      // =========================================================
+      // === SCRIPT PARA EL FUNCIONAMIENTO DEL TOOLBAR (VISTAS) ===
+      // =========================================================
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const catalogo = document.getElementById('catalogo-container');
+        const viewButtons = document.querySelectorAll('.btn-view-nucleo');
+        const searchForm = document.getElementById('nucleo-cat-search-form');
+        const sortSelect = document.getElementById('nucleo-cat-sort');
+
+        // Función para cambiar la vista (Grid, List, Feed)
+        function changeView(view) {
+            // Eliminar todas las clases de vista
+            catalogo.classList.remove('view-grid', 'view-list', 'view-feed');
+            
+            // Agregar la clase de vista seleccionada
+            catalogo.classList.add(`view-${view}`);
+
+            // Actualizar botones de vista
+            viewButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-view') === view) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Guardar la vista preferida (para persistencia)
+            localStorage.setItem('nucleo-product-view', view);
+        }
+
+        // 1. Manejador de botones de vista
+        viewButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const newView = button.getAttribute('data-view');
+                changeView(newView);
+            });
+        });
+
+        // 2. Inicializar vista desde localStorage (o default 'grid')
+        const savedView = localStorage.getItem('nucleo-product-view') || 'grid';
+        changeView(savedView);
+
+        // 3. Manejador de Búsqueda y Ordenamiento (Solo para simular la funcionalidad)
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Búsqueda activada: Si tuviera el código de app.js implementaría el filtro.');
+        });
+        
+        sortSelect.addEventListener('change', () => {
+             alert('Ordenamiento activado: Si tuviera el código de app.js implementaría la lógica de ordenamiento.');
+        });
+        
+      });
+      // FIN SCRIPT TOOLBAR
     </script>
 
     <script src="auth.js"></script>

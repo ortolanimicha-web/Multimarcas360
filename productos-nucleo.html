@@ -322,32 +322,48 @@
 
     /* --- RESPONSIVE (MÓVIL) --- */
     @media (max-width: 1024px) {
-        .nucleo-theme .navbar {
+        
+        /* 1. Forzar fondo negro en el Navbar y en los Enlaces */
+        .nucleo-theme .navbar,
+        .nucleo-theme .nav-links {
+            background-color: #000 !important; /* <--- CAMBIO CLAVE: Fondo Negro */
             padding: 10px 15px;
-            height: 60px;
-            /* Aseguramos que no haya bordes extraños en móvil */
-            border-bottom: none; 
+            height: auto; 
+            border-bottom: none;
         }
 
-        /* Arreglo Navbar Móvil */
+        /* 2. Asegurar que los textos sean blancos para que se lean sobre el negro */
+        .nucleo-theme .nav-links a {
+            color: #eee !important; /* Texto claro */
+        }
+        
+        /* Arreglo Navbar Móvil (Flex horizontal) */
         .nucleo-theme .nav-links {
             display: flex !important;
             flex-direction: row !important;
             align-items: center;
             gap: 10px !important;
+            width: 100%; /* Ocupar ancho disponible */
+            justify-content: space-between; /* Distribuir elementos */
         }
 
-        /* Ocultar textos largos en móvil */
+        /* Ocultar textos largos en móvil para que quepan */
         .nucleo-theme .nav-links > li { display: none !important; }
-        .nucleo-theme .nav-links > li:first-child { display: block !important; } /* Icono Home */
+        .nucleo-theme .nav-links > li:first-child { display: block !important; } /* Link "Volver" */
         .nucleo-theme .nav-links > li:last-child { display: block !important; } /* Carrito */
         
         .nucleo-theme #nucleo-auth-links { display: flex !important; }
-        .nucleo-theme #nucleo-login-link { display: inline-block !important; font-size: 0.8rem;}
+        
+        /* Ajuste visual del link de login en móvil */
+        .nucleo-theme #nucleo-login-link { 
+            display: inline-block !important; 
+            font-size: 0.8rem;
+            color: #ffc107 !important; /* Amarillo Núcleo */
+        }
 
         /* Ajuste Hero Banner Móvil */
         .nucleo-hero-banner { height: auto; flex-direction: column; }
-        .nucleo-hero-banner::after { display: none; } /* Quitar degradado en móvil */
+        .nucleo-hero-banner::after { display: none; } 
         .nucleo-hero-image { width: 100% !important; height: 200px; order: 1; }
         .nucleo-hero-text { padding: 30px 20px; order: 2; text-align: center; }
         .nucleo-hero-text h1 { font-size: 2rem; }

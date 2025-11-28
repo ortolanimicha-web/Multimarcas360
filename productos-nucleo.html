@@ -452,10 +452,48 @@
         changeView(savedView);
 
         // 3. Manejador de Búsqueda y Ordenamiento (Solo para simular la funcionalidad)
+        // 3. Manejador de Búsqueda REAL (Corregido)
+        const performNucleoSearch = () => {
+            const input = document.getElementById('nucleo-cat-search-input');
+            const term = input.value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.tarjeta-producto');
+            const resultsHeader = document.getElementById('nucleo-results-count');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                // Buscamos en el título y en la categoría del producto
+                const title = card.querySelector('.producto-nombre')?.textContent.toLowerCase() || '';
+                const category = card.querySelector('.producto-categoria')?.textContent.toLowerCase() || '';
+                
+                if (title.includes(term) || category.includes(term)) {
+                    card.style.display = ''; // Mostrar (respetando el CSS grid/flex)
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none'; // Ocultar
+                }
+            });
+
+            // Actualizar el texto del contador de resultados
+            if (resultsHeader) {
+                if (term === '') {
+                    resultsHeader.textContent = "Todos los productos";
+                } else {
+                    resultsHeader.textContent = `Encontrados: ${visibleCount}`;
+                }
+            }
+        };
+
+        // Evento al presionar Enter o clic en buscar
         searchForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            alert('Búsqueda activada: Si tuviera el código de app.js implementaría el filtro.');
+            performNucleoSearch();
         });
+
+        // Evento opcional: Búsqueda en vivo mientras escribes
+        const searchInput = document.getElementById('nucleo-cat-search-input');
+        if(searchInput) {
+            searchInput.addEventListener('input', performNucleoSearch);
+        }
         
         sortSelect.addEventListener('change', () => {
              alert('Ordenamiento activado: Si tuviera el código de app.js implementaría la lógica de ordenamiento.');

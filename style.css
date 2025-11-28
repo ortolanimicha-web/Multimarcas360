@@ -3410,3 +3410,7 @@ main#search-results-page-container .mensaje-vacio {
         width: 100%;
     }
 }
+/* --- Ocultar encabezado de categoría (imagen ovalada) en Vista Lista --- */
+.nucleo-theme .catalogo-grid-nucleo.view-list .producto-categoria-header {
+    display: none !important;
+}

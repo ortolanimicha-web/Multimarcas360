@@ -320,66 +320,125 @@
     .nucleo-search-box button:hover { background: #6f42c1; }
 
 
-    /* --- RESPONSIVE (MÓVIL) --- */
-    @media (max-width: 1024px) {
+    /* ================================================== */
+    /* === DISEÑO MÓVIL EXACTO (SCREENSHOT REPLICA) === */
+    /* ================================================== */
+    @media (max-width: 768px) {
         
-        /* 1. CORRECCIÓN NAVBAR: Asegurar que empuje el contenido hacia abajo */
+        /* 1. FONDO GENERAL NEGRO */
+        body.nucleo-theme, 
+        .nucleo-theme .main-content-area, 
+        .nucleo-main-content {
+            background-color: #000 !important;
+            color: #fff !important;
+        }
+
+        /* 2. NAVBAR (PARTE SUPERIOR NEGRA) */
         .nucleo-theme .navbar {
             background-color: #000 !important;
-            padding: 10px 15px;
-            height: auto !important; /* Altura automática según contenido */
-            min-height: auto;
-            position: relative !important; /* CLAVE: Para que no flote encima del banner */
-            display: block; /* Asegurar bloque */
+            border-bottom: 1px solid #333;
+        }
+        .nucleo-theme .logo {
+            color: #fff !important; /* Texto Electrónica Núcleo en Blanco */
+            text-shadow: none !important;
         }
 
-        /* 2. Arreglo de los Enlaces del Navbar en Móvil (Flex Wrap) */
+        /* 3. ESTILOS DEL MENÚ / ENLACES */
+        /* Aseguramos fondo negro si se despliega el menú */
         .nucleo-theme .nav-links {
-            display: flex !important;
-            flex-wrap: wrap !important; /* Permitir que bajen si no entran */
-            justify-content: center; /* Centrar elementos */
-            gap: 15px !important;
-            padding-bottom: 10px;
+            background-color: #000 !important;
+            border-top: 1px solid #333;
         }
 
-        /* 3. CORRECCIÓN IMAGEN BANNER: Hacerla proporcional para verla completa */
-        .nucleo-hero-banner { 
-            height: auto !important; 
-            flex-direction: column; 
-            margin-top: 0; /* Ya no necesita margen extra si el navbar es relative */
+        /* "Volver a Inicio" en BLANCO */
+        .nucleo-theme .nav-links a[href="index.html"] {
+            color: #fff !important;
+            font-weight: bold;
         }
 
-        .nucleo-hero-image { 
+        /* "Iniciar Sesión" y "Salir" en AMARILLO */
+        #nucleo-login-link, 
+        #nucleo-logout-btn, 
+        #nucleo-admin-link {
+            color: #ffc107 !important; /* Amarillo */
+            border-color: #ffc107 !important;
+        }
+
+        /* 4. CARRITO ROJO CON FONDO NEGRO */
+        .nucleo-theme .cart-link {
+            background-color: #000 !important; /* Fondo Negro */
+            border: 1px solid #333 !important; /* Borde sutil */
+            color: #fff !important; /* Texto "Carrito" (si se ve) en blanco */
+        }
+        /* El icono del carrito (fa-shopping-cart) en ROJO */
+        .nucleo-theme .cart-link i {
+            color: #ff0000 !important; 
+            font-size: 1.2rem;
+        }
+        /* La burbuja de cantidad (Badge) en ROJO */
+        .cart-badge {
+            background-color: #ff0000 !important;
+            color: #fff !important;
+        }
+
+        /* 5. IMAGEN COMPLETAMENTE NÍTIDA */
+        /* Quitamos filtros y sombras para que se vea real */
+        .nucleo-hero-banner {
+            background-color: #000 !important;
+            height: auto !important;
+            margin-top: 0;
+            position: relative;
+        }
+        
+        /* Eliminar la capa oscura que opacaba la imagen */
+        .nucleo-hero-banner::after {
+            display: none !important; 
+        }
+
+        .nucleo-hero-image {
             width: 100% !important;
-            
-            /* TRUCO PARA VER IMAGEN COMPLETA */
-            height: 0 !important; /* Reseteamos altura fija */
-            padding-bottom: 75%; /* Esto crea un rectángulo proporcional (formato 4:3) más alto */
-            
-            background-size: cover !important; /* Cubrir el área */
-            background-position: center center !important;
-            order: 1; /* Poner la imagen primero, texto después */
+            height: 300px !important; /* Altura suficiente para verla bien */
+            background-size: contain !important; /* ¡CLAVE! Muestra la imagen entera sin cortarla */
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+            background-color: #000; /* Relleno negro si la imagen no es cuadrada */
+            padding-bottom: 0 !important; /* Quitamos el hack anterior */
+            opacity: 1 !important;
+            order: 1; /* Poner la imagen arriba del texto */
         }
 
-        .nucleo-hero-text { 
-            padding: 30px 20px; 
-            order: 2; 
-            text-align: center; 
+        /* Textos del Banner ("NOVEDADES 2025") sobre fondo negro */
+        .nucleo-hero-text {
+            order: 2;
+            background-color: #000;
+            position: relative;
+            z-index: 10;
+            padding-top: 10px;
+        }
+        .nucleo-hero-text h1, 
+        .nucleo-hero-text h2, 
+        .nucleo-hero-text p {
+            color: #fff !important;
+            text-shadow: none !important;
+        }
+        /* Subtítulo pequeño en gris claro */
+        .nucleo-hero-text h2 {
+            color: #ccc !important; 
         }
 
-        /* Ajuste Grid Móvil */
-        .catalogo-grid-nucleo { padding: 10px; grid-template-columns: 1fr 1fr; gap: 10px; }
-        
-        .section-header-nucleo, .nucleo-toolbar-advanced {
-            margin: 15px 10px; padding: 15px; width: auto;
+        /* 6. TÍTULOS DE SECCIONES (Productos Destacados) */
+        .section-header-nucleo h3, 
+        #nucleo-results-count {
+            color: #fff !important;
         }
-        
-        /* Ajuste Tarjeta Móvil */
-        .nucleo-theme .product-carousel { height: 160px; }
-        .nucleo-theme .carousel-image { padding: 10px; }
-        .nucleo-theme .producto-precio { font-size: 1.2rem; margin-bottom: 5px;}
-        .nucleo-theme .producto-info { padding: 10px; }
-        .nucleo-theme .boton-agregar { padding: 8px; font-size: 0.8rem; }
+        .section-header-nucleo {
+            border-bottom: 1px solid #333;
+        }
+
+        /* Ajuste para el botón de hamburguesa */
+        .hamburger-menu span {
+            background-color: #fff !important;
+        }
     }
 </style>
 </head>

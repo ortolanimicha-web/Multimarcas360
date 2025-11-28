@@ -251,7 +251,33 @@
                 padding: 0 10px 40px 10px !important; 
             }
         }
+        /* ========================================= */
+        /* === CORRECCIÓN MENÚ MÓVIL TEMA NÚCLEO === */
+        /* ========================================= */
+        @media (max-width: 1024px) {
+            /* 1. Cambiar color de la hamburguesa a BLANCO (para que se vea en el fondo negro) */
+            .hamburger-menu .bar {
+                background-color: #fff !important;
+            }
 
+            /* 2. Cambiar color de los enlaces a NEGRO cuando el menú se despliega (fondo blanco) */
+            .nucleo-theme .nav-links.active a {
+                color: #333 !important;
+            }
+
+            /* 3. Ajuste específico para el botón del carrito en el menú desplegado */
+            .nucleo-theme .nav-links.active .cart-link {
+                background: #f8f9fa !important;
+                color: #333 !important;
+                border: 1px solid #ddd !important;
+            }
+            
+            /* 4. Ajuste para los enlaces de Admin/Login que pueden heredar color incorrecto */
+            .nucleo-theme .nav-links.active #nucleo-auth-links a,
+            .nucleo-theme .nav-links.active #nucleo-auth-links button {
+                color: #333 !important;
+            }
+        }
     </style>
 </head>
 <body class="nucleo-theme">

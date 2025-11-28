@@ -170,23 +170,125 @@
             text-align: left; padding-left: 20px; align-items: flex-start;
         }
 
-        /* 3. Vista Feed */
+        /* 3. Vista Feed (Modo Instagram / Mayorista Style) - REFORZADO */
         .catalogo-grid-nucleo.view-feed {
-            display: flex; flex-direction: column; align-items: center; gap: 30px;
-        }
-        .catalogo-grid-nucleo.view-feed .tarjeta-producto {
-            flex-direction: column !important; width: 100%; max-width: 500px !important;
-            border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        .catalogo-grid-nucleo.view-feed .product-carousel {
-            height: 400px !important; width: 100% !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px; /* Espacio vertical generoso entre productos */
+            padding-bottom: 60px;
+            width: 100%;
         }
 
-        /* General Tarjeta (Base) */
-        .tarjeta-producto {
-            background: #fff; border-radius: 8px; overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.2s;
+        .catalogo-grid-nucleo.view-feed .tarjeta-producto {
             display: flex;
+            flex-direction: column !important;
+            width: 100%;
+            max-width: 500px !important; /* Ancho típico de un post de Instagram móvil */
+            border-radius: 15px; /* Bordes redondeados modernos */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12); /* Sombra profunda "levitante" */
+            border: 1px solid #f0f0f0;
+            background: #fff;
+            overflow: hidden;
+            margin: 0 auto; /* Centrado absoluto */
+            transition: transform 0.3s ease;
+        }
+
+        /* Efecto leve al pasar el mouse por el post */
+        .catalogo-grid-nucleo.view-feed .tarjeta-producto:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Imagen Grande y Cuadrada/Vertical */
+        .catalogo-grid-nucleo.view-feed .product-carousel {
+            width: 100% !important;
+            height: 450px !important; /* Altura fija grande para protagonismo visual */
+            border-right: none;
+            border-bottom: 1px solid #f5f5f5;
+            background-color: #fff;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .catalogo-grid-nucleo.view-feed .carousel-image,
+        .catalogo-grid-nucleo.view-feed img {
+            width: 100% !important;
+            height: 100% !important;
+            /* Usamos 'contain' para tecnología para que no se corten cables o detalles, 
+               pero manteniendo el tamaño grande del contenedor estilo Feed */
+            object-fit: contain !important; 
+            padding: 20px; /* Aire para que la imagen respire */
+            background: #fff;
+        }
+
+        /* Info Centrada y Estilizada */
+        .catalogo-grid-nucleo.view-feed .producto-info {
+            padding: 25px 30px !important;
+            text-align: center !important; /* Forzar centrado de texto */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Título del Producto */
+        .catalogo-grid-nucleo.view-feed .producto-nombre-link h3,
+        .catalogo-grid-nucleo.view-feed h3 {
+            font-size: 1.5rem !important;
+            margin: 10px 0 15px 0 !important;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+            height: auto !important; /* Permitir que el texto crezca si es largo */
+        }
+
+        /* Precio Grande */
+        .catalogo-grid-nucleo.view-feed .producto-precio {
+            font-size: 2rem !important;
+            font-weight: 900;
+            color: #6f42c1; /* Púrpura Núcleo */
+            margin-bottom: 25px;
+        }
+
+        /* Botones y Acciones Centrados */
+        .catalogo-grid-nucleo.view-feed .producto-acciones {
+            width: 100%;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .catalogo-grid-nucleo.view-feed label {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .catalogo-grid-nucleo.view-feed .producto-cantidad {
+            padding: 10px;
+            font-size: 1rem;
+            text-align: center;
+            border-radius: 8px;
+            width: 60px;
+        }
+
+        .catalogo-grid-nucleo.view-feed .boton-agregar {
+            width: 100%;
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 30px; /* Botón redondo tipo App */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(111, 66, 193, 0.3);
+        }
+
+        /* Ocultar elementos pequeños para limpiar la vista Feed */
+        .catalogo-grid-nucleo.view-feed .producto-categoria-header, 
+        .catalogo-grid-nucleo.view-feed .producto-categoria {
+            display: none !important;
         }
         
         .section-header { margin-bottom: 20px; border-bottom: 1px solid #ddd; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; }

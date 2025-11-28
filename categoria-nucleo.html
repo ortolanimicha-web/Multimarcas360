@@ -298,42 +298,73 @@
         .error-msg { color: red; text-align: center; font-weight: bold; padding: 20px; background: #fff; border-radius: 8px; margin: 20px; }
 
         @media (max-width: 768px) {
-            /* 1. Ajustes del Banner */
-            .universal-hero { height: 200px; }
-            .universal-hero h1 { font-size: 2rem; }
-            
-            /* 2. Ajustes de la Barra de Herramientas */
-            .nucleo-toolbar-advanced { 
-                flex-direction: column; 
-                align-items: stretch; 
-                gap: 10px; 
-                padding: 10px !important; 
-            }
-            .nucleo-search-box { max-width: 100%; }
-            .nucleo-view-controls, .nucleo-sort-box { justify-content: space-between; display: flex; align-items: center; }
-
-            /* 3. CORRECCIÓN PRINCIPAL DE ALINEACIÓN */
-            .main-layout {
-                padding: 5px !important; 
+            .nucleo-theme .catalogo-grid-nucleo.view-feed {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 40px !important; /* Espacio entre productos */
+                padding: 10px !important;
                 width: 100% !important;
-                margin: 0 !important;
-                box-sizing: border-box !important;
             }
 
-            /* 4. Forzar la Grilla a 2 columnas perfectas */
-            .catalogo-grid-nucleo.view-grid { 
-                display: grid !important;
-                grid-template-columns: 1fr 1fr !important; 
-                gap: 10px !important;
-                padding: 0 !important;
-                margin: 0 !important;
+            /* 2. Forzamos a la tarjeta a ocupar el ancho completo */
+            .nucleo-theme .catalogo-grid-nucleo.view-feed .tarjeta-producto {
                 width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 auto !important;
+                display: flex !important;
+                flex-direction: column !important;
+                
+                /* Estilo Visual Mayorista */
+                border: 1px solid #ddd !important;
+                border-radius: 15px !important;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+                background: #fff !important;
+            }
+
+            /* 3. Imagen GIGANTE y cuadrada (Clave del modo Instagram) */
+            .nucleo-theme .catalogo-grid-nucleo.view-feed .product-carousel {
+                height: 400px !important; /* Altura forzada grande */
+                width: 100% !important;
+                min-height: 400px !important;
+                border-bottom: 1px solid #eee !important;
+            }
+
+            .nucleo-theme .catalogo-grid-nucleo.view-feed .carousel-image {
+                object-fit: contain !important; /* Que se vea el producto entero */
+                padding: 20px !important;
+            }
+
+            /* 4. Textos y Botones grandes y centrados */
+            .nucleo-theme .catalogo-grid-nucleo.view-feed .producto-info {
+                text-align: center !important;
+                padding: 20px !important;
+            }
+
+            .nucleo-theme .catalogo-grid-nucleo.view-feed h3 {
+                font-size: 1.4rem !important;
+                margin-bottom: 10px !important;
+                height: auto !important; /* Permitir que el texto se expanda */
+                white-space: normal !important;
+            }
+
+            .nucleo-theme .catalogo-grid-nucleo.view-feed .producto-precio {
+                font-size: 1.8rem !important;
+                font-weight: 900 !important;
+                color: #6f42c1 !important;
+                display: block !important;
+                margin-bottom: 15px !important;
+            }
+
+            .nucleo-theme .catalogo-grid-nucleo.view-feed .producto-acciones {
+                width: 100% !important;
+                justify-content: center !important;
             }
             
-            /* Asegurar que la tarjeta ocupe el 100% de su espacio */
-            .tarjeta-producto {
-                width: 100% !important;
-                margin: 0 !important;
+            .nucleo-theme .catalogo-grid-nucleo.view-feed .boton-agregar {
+                padding: 15px !important;
+                font-size: 1rem !important;
+                border-radius: 50px !important; /* Botón redondo */
             }
         }
     </style>

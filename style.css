@@ -3343,16 +3343,48 @@ main#search-results-page-container .mensaje-vacio {
         box-sizing: border-box !important;
     }
 
-    /* 3. REFUERZO DE LA GRILLA DE PRODUCTOS */
-    .nucleo-theme .catalogo-grid-nucleo {
+    /* 3. REFUERZO DE LA GRILLA (Lógica corregida para Lista/Grilla) */
+    
+    /* Caso A: Vista Grilla (Por defecto) -> 2 Columnas */
+    .nucleo-theme .catalogo-grid-nucleo,
+    .nucleo-theme .catalogo-grid-nucleo.view-grid {
         display: grid !important;
-        /* Aseguramos 2 columnas que no crecen más allá de su límite */
         grid-template-columns: 1fr 1fr !important; 
         gap: 10px !important;
         width: 100% !important;
-        padding: 0 !important; /* CLAVE: Eliminar padding interno que puede empujar */
-        margin: 0 auto !important; /* Centrar la grilla misma */
+        padding: 0 !important;
+        margin: 0 auto !important;
         box-sizing: border-box !important;
+    }
+
+    /* Caso B: Vista Lista -> 1 Columna (Tarjeta Horizontal) */
+    .nucleo-theme .catalogo-grid-nucleo.view-list {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+
+    /* Ajuste de la tarjeta en Vista Lista Móvil */
+    .nucleo-theme .catalogo-grid-nucleo.view-list .tarjeta-producto {
+        flex-direction: row !important; /* Imagen izq, texto der */
+        width: 100% !important;
+        align-items: center !important;
+        margin-bottom: 0 !important;
+    }
+
+    /* Ajuste de la imagen en Vista Lista Móvil (Nítida y Completa) */
+    .nucleo-theme .catalogo-grid-nucleo.view-list .product-carousel {
+        width: 120px !important; /* Tamaño fijo equilibrado */
+        height: 120px !important;
+        min-width: 120px !important; /* Evita que se aplaste */
+        border-right: 1px solid #eee;
+        border-bottom: none !important;
+    }
+
+    .nucleo-theme .catalogo-grid-nucleo.view-list .carousel-image {
+        object-fit: contain !important; /* CLAVE: Muestra la imagen entera sin zoom */
+        padding: 5px; /* Aire para que no toque bordes */
+        background: #fff;
     }
     
     /* 4. AJUSTE DE LA TARJETA INDIVIDUAL (asegurar que no tengan margen) */

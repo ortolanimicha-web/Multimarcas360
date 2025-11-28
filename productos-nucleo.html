@@ -323,50 +323,49 @@
     /* --- RESPONSIVE (MÓVIL) --- */
     @media (max-width: 1024px) {
         
-        /* 1. Forzar fondo negro en el Navbar y en los Enlaces */
-        .nucleo-theme .navbar,
-        .nucleo-theme .nav-links {
-            background-color: #000 !important; /* <--- CAMBIO CLAVE: Fondo Negro */
+        /* 1. CORRECCIÓN NAVBAR: Asegurar que empuje el contenido hacia abajo */
+        .nucleo-theme .navbar {
+            background-color: #000 !important;
             padding: 10px 15px;
-            height: auto; 
-            border-bottom: none;
+            height: auto !important; /* Altura automática según contenido */
+            min-height: auto;
+            position: relative !important; /* CLAVE: Para que no flote encima del banner */
+            display: block; /* Asegurar bloque */
         }
 
-        /* 2. Asegurar que los textos sean blancos para que se lean sobre el negro */
-        .nucleo-theme .nav-links a {
-            color: #eee !important; /* Texto claro */
-        }
-        
-        /* Arreglo Navbar Móvil (Flex horizontal) */
+        /* 2. Arreglo de los Enlaces del Navbar en Móvil (Flex Wrap) */
         .nucleo-theme .nav-links {
             display: flex !important;
-            flex-direction: row !important;
-            align-items: center;
-            gap: 10px !important;
-            width: 100%; /* Ocupar ancho disponible */
-            justify-content: space-between; /* Distribuir elementos */
+            flex-wrap: wrap !important; /* Permitir que bajen si no entran */
+            justify-content: center; /* Centrar elementos */
+            gap: 15px !important;
+            padding-bottom: 10px;
         }
 
-        /* Ocultar textos largos en móvil para que quepan */
-        .nucleo-theme .nav-links > li { display: none !important; }
-        .nucleo-theme .nav-links > li:first-child { display: block !important; } /* Link "Volver" */
-        .nucleo-theme .nav-links > li:last-child { display: block !important; } /* Carrito */
-        
-        .nucleo-theme #nucleo-auth-links { display: flex !important; }
-        
-        /* Ajuste visual del link de login en móvil */
-        .nucleo-theme #nucleo-login-link { 
-            display: inline-block !important; 
-            font-size: 0.8rem;
-            color: #ffc107 !important; /* Amarillo Núcleo */
+        /* 3. CORRECCIÓN IMAGEN BANNER: Hacerla proporcional para verla completa */
+        .nucleo-hero-banner { 
+            height: auto !important; 
+            flex-direction: column; 
+            margin-top: 0; /* Ya no necesita margen extra si el navbar es relative */
         }
 
-        /* Ajuste Hero Banner Móvil */
-        .nucleo-hero-banner { height: auto; flex-direction: column; }
-        .nucleo-hero-banner::after { display: none; } 
-        .nucleo-hero-image { width: 100% !important; height: 200px; order: 1; }
-        .nucleo-hero-text { padding: 30px 20px; order: 2; text-align: center; }
-        .nucleo-hero-text h1 { font-size: 2rem; }
+        .nucleo-hero-image { 
+            width: 100% !important;
+            
+            /* TRUCO PARA VER IMAGEN COMPLETA */
+            height: 0 !important; /* Reseteamos altura fija */
+            padding-bottom: 75%; /* Esto crea un rectángulo proporcional (formato 4:3) más alto */
+            
+            background-size: cover !important; /* Cubrir el área */
+            background-position: center center !important;
+            order: 1; /* Poner la imagen primero, texto después */
+        }
+
+        .nucleo-hero-text { 
+            padding: 30px 20px; 
+            order: 2; 
+            text-align: center; 
+        }
 
         /* Ajuste Grid Móvil */
         .catalogo-grid-nucleo { padding: 10px; grid-template-columns: 1fr 1fr; gap: 10px; }

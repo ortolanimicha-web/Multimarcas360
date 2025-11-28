@@ -255,29 +255,132 @@
         /* === CORRECCIÓN MENÚ MÓVIL TEMA NÚCLEO === */
         /* ========================================= */
         @media (max-width: 1024px) {
-            /* 1. Cambiar color de la hamburguesa a BLANCO (para que se vea en el fondo negro) */
-            .hamburger-menu .bar {
-                background-color: #fff !important;
-            }
+    /* 1. Configurar el contenedor del Navbar para permitir elementos en fila */
+    .nucleo-theme .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        height: 60px; /* Altura fija para evitar saltos */
+    }
 
-            /* 2. Cambiar color de los enlaces a NEGRO cuando el menú se despliega (fondo blanco) */
-            .nucleo-theme .nav-links.active a {
-                color: #333 !important;
-            }
+    /* 2. LOGO: Ajustar tamaño para dejar espacio a los iconos */
+    .nucleo-theme .logo {
+        font-size: 1rem; /* Texto un poco más chico */
+        margin-right: auto; /* Empujar el resto a la derecha */
+        white-space: nowrap;
+        order: 1;
+    }
 
-            /* 3. Ajuste específico para el botón del carrito en el menú desplegado */
-            .nucleo-theme .nav-links.active .cart-link {
-                background: #f8f9fa !important;
-                color: #333 !important;
-                border: 1px solid #ddd !important;
-            }
-            
-            /* 4. Ajuste para los enlaces de Admin/Login que pueden heredar color incorrecto */
-            .nucleo-theme .nav-links.active #nucleo-auth-links a,
-            .nucleo-theme .nav-links.active #nucleo-auth-links button {
-                color: #333 !important;
-            }
-        }
+    /* 3. MENÚ: Forzar que los links se muestren (ya no ocultos tras hamburguesa) */
+    .nucleo-theme .nav-links {
+        display: flex !important;
+        position: static !important; /* Quitar posición absoluta del menú desplegable */
+        flex-direction: row !important; /* Poner en fila */
+        width: auto !important;
+        height: auto !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        gap: 15px !important;
+        border: none !important;
+        overflow: visible !important;
+        order: 2; /* Poner después del logo */
+    }
+
+    /* 4. Ocultar todos los items del menú por defecto (para limpiar) */
+    .nucleo-theme .nav-links > li {
+        display: none !important;
+    }
+
+    /* --- MOSTRAR SOLO LOS ICONOS PEDIDOS --- */
+
+    /* A) BOTÓN INICIO (Primer LI) */
+    .nucleo-theme .nav-links > li:first-child {
+        display: block !important;
+    }
+    .nucleo-theme .nav-links > li:first-child a {
+        font-size: 0 !important; /* Ocultar texto "Volver a Inicio" */
+        padding: 0 !important;
+    }
+    /* Insertar icono de Casa mediante CSS */
+    .nucleo-theme .nav-links > li:first-child a::before {
+        content: "\f015"; /* Código FontAwesome Casa */
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        font-size: 1.2rem;
+        color: #fff;
+    }
+
+    /* B) LOGIN / LOGOUT (Links de Auth) */
+    .nucleo-theme #nucleo-auth-links {
+        display: flex !important;
+        align-items: center;
+        margin: 0 !important;
+        border: none !important;
+    }
+    /* Estilo Link Login (Icono Usuario) */
+    .nucleo-theme #nucleo-login-link {
+        font-size: 0 !important; /* Ocultar texto */
+        padding: 0 !important;
+    }
+    .nucleo-theme #nucleo-login-link i {
+        font-size: 1.2rem !important;
+        color: #ffc107 !important; /* Amarillo */
+        margin: 0 !important;
+    }
+    /* Estilo Botón Logout (Icono Salir) */
+    .nucleo-theme #nucleo-logout-btn {
+        font-size: 0 !important;
+        border: none !important;
+        padding: 0 !important;
+        background: transparent !important;
+    }
+    .nucleo-theme #nucleo-logout-btn i {
+        font-size: 1.2rem !important;
+        color: #ffc107 !important;
+        margin: 0 !important;
+    }
+    /* Ocultar elementos extra de auth en móvil para ahorrar espacio */
+    .nucleo-theme #nucleo-admin-link, 
+    .nucleo-theme #nucleo-user-email {
+        display: none !important; 
+    }
+
+    /* C) CARRITO (Último LI) */
+    .nucleo-theme .nav-links > li:last-child {
+        display: block !important;
+    }
+    .nucleo-theme .cart-link {
+        font-size: 0 !important; /* Ocultar texto "Carrito" */
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        color: #fff !important;
+        display: flex !important;
+        align-items: center;
+    }
+    .nucleo-theme .cart-link i {
+        font-size: 1.2rem !important;
+        color: #fff !important;
+    }
+    /* Ajuste de la burbuja roja del carrito si existe */
+    .nucleo-theme .cart-badge {
+        font-size: 0.7rem !important;
+        padding: 2px 4px !important;
+        position: relative;
+        top: -8px;
+        left: -5px;
+    }
+
+    /* 5. HAMBURGUESA: Mantenerla para ver categorías a la derecha */
+    .hamburger-menu {
+        order: 3;
+        margin-left: 10px;
+    }
+    /* Ocultar el input de búsqueda del nav (li intermedio) */
+    .nucleo-theme #search-form-nav { display: none !important; }
+}
     </style>
 </head>
 <body class="nucleo-theme">

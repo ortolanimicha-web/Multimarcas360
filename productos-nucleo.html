@@ -255,137 +255,131 @@
         /* === CORRECCIÓN MENÚ MÓVIL TEMA NÚCLEO === */
         /* ========================================= */
         @media (max-width: 1024px) {
-    /* 1. Configurar el contenedor del Navbar para permitir elementos en fila */
-    .nucleo-theme .navbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 15px;
-        height: 60px; /* Altura fija para evitar saltos */
-    }
+            /* 1. Configurar el contenedor del Navbar */
+            .nucleo-theme .navbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 10px 15px;
+                height: 60px;
+            }
 
-    /* 2. LOGO: Ajustar tamaño para dejar espacio a los iconos */
-    .nucleo-theme .logo {
-        font-size: 1rem; /* Texto un poco más chico */
-        margin-right: auto; /* Empujar el resto a la derecha */
-        white-space: nowrap;
-        order: 1;
-    }
+            /* 2. LOGO */
+            .nucleo-theme .logo {
+                font-size: 1rem;
+                margin-right: auto;
+                white-space: nowrap;
+                order: 1;
+            }
 
-    /* 3. MENÚ: Forzar que los links se muestren (ya no ocultos tras hamburguesa) */
-    .nucleo-theme .nav-links {
-        display: flex !important;
-        position: static !important; /* Quitar posición absoluta del menú desplegable */
-        flex-direction: row !important; /* Poner en fila */
-        width: auto !important;
-        height: auto !important;
-        background: transparent !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        gap: 15px !important;
-        border: none !important;
-        overflow: visible !important;
-        order: 2; /* Poner después del logo */
-    }
+            /* 3. MENÚ (Contenedor de iconos) */
+            .nucleo-theme .nav-links {
+                display: flex !important;
+                position: static !important;
+                flex-direction: row !important;
+                width: auto !important;
+                height: auto !important;
+                background: transparent !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                gap: 15px !important; /* Espacio entre iconos */
+                border: none !important;
+                overflow: visible !important;
+                order: 2;
+            }
 
-    /* 4. Ocultar todos los items del menú por defecto (para limpiar) */
-    .nucleo-theme .nav-links > li {
-        display: none !important;
-    }
+            /* 4. LIMPIEZA: Ocultar todo primero */
+            .nucleo-theme .nav-links > li {
+                display: none !important;
+            }
 
-    /* --- MOSTRAR SOLO LOS ICONOS PEDIDOS --- */
+            /* --- MOSTRAR SOLO LOS 3 ICONOS CORRECTOS --- */
 
-    /* A) BOTÓN INICIO (Primer LI) */
-    .nucleo-theme .nav-links > li:first-child {
-        display: block !important;
-    }
-    .nucleo-theme .nav-links > li:first-child a {
-        font-size: 0 !important; /* Ocultar texto "Volver a Inicio" */
-        padding: 0 !important;
-    }
-    /* Insertar icono de Casa mediante CSS */
-    .nucleo-theme .nav-links > li:first-child a::before {
-        content: "\f015"; /* Código FontAwesome Casa */
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        font-size: 1.2rem;
-        color: #fff;
-    }
+            /* A) BOTÓN INICIO (Izquierda) */
+            .nucleo-theme .nav-links > li:first-child {
+                display: block !important;
+            }
+            .nucleo-theme .nav-links > li:first-child a {
+                font-size: 0 !important;
+                padding: 0 !important;
+            }
+            .nucleo-theme .nav-links > li:first-child a::before {
+                content: "\f015"; /* Icono Casa */
+                font-family: "Font Awesome 5 Free";
+                font-weight: 900;
+                font-size: 1.2rem;
+                color: #fff;
+            }
 
-    /* B) LOGIN / LOGOUT (Links de Auth) */
-    .nucleo-theme #nucleo-auth-links {
-        display: flex !important;
-        align-items: center;
-        margin: 0 !important;
-        border: none !important;
-    }
-    /* Estilo Link Login (Icono Usuario) */
-    .nucleo-theme #nucleo-login-link {
-        font-size: 0 !important; 
-        padding: 15px 20px !important; /* AHORA TIENE UN ÁREA DE CLIC GRANDE */
-        display: inline-block !important; /* Asegura que respete el padding */
-        margin: -10px 0 !important; /* Compensa visualmente para que no descuadre la barra */
-    }
-    .nucleo-theme #nucleo-login-link i {
-        font-size: 1.2rem !important;
-        color: #ffc107 !important; /* Amarillo */
-        margin: 0 !important;
-    }
-    /* Estilo Botón Logout (Icono Salir) */
-    .nucleo-theme #nucleo-logout-btn {
-        font-size: 0 !important;
-        border: none !important;
-        padding: 0 !important;
-        background: transparent !important;
-    }
-    .nucleo-theme #nucleo-logout-btn i {
-        font-size: 1.2rem !important;
-        color: #ffc107 !important;
-        margin: 0 !important;
-    }
-    /* Ocultar elementos extra de auth en móvil para ahorrar espacio */
-    .nucleo-theme #nucleo-admin-link, 
-    .nucleo-theme #nucleo-user-email {
-        display: none !important; 
-    }
+            /* B) LOGIN / LOGOUT (Centro) - Aseguramos que sea el ID correcto */
+            .nucleo-theme #nucleo-auth-links {
+                display: flex !important;
+                align-items: center;
+                margin: 0 !important;
+                border: none !important;
+            }
+            /* Botón Entrar (Amarillo) */
+            .nucleo-theme #nucleo-login-link {
+                font-size: 0 !important; 
+                padding: 5px !important;
+                display: inline-block !important;
+                margin: 0 !important;
+            }
+            .nucleo-theme #nucleo-login-link i {
+                font-size: 1.2rem !important;
+                color: #ffc107 !important; /* Amarillo */
+            }
+            /* Botón Salir (Amarillo) */
+            .nucleo-theme #nucleo-logout-btn {
+                background: transparent !important;
+                border: none !important;
+                padding: 0 !important;
+            }
+            .nucleo-theme #nucleo-logout-btn i {
+                font-size: 1.2rem !important;
+                color: #ffc107 !important;
+            }
+            /* Ocultar elementos extra dentro del Auth */
+            .nucleo-theme #nucleo-admin-link, 
+            .nucleo-theme #nucleo-user-email {
+                display: none !important; 
+            }
 
-    /* C) CARRITO (Último LI) */
-    .nucleo-theme .nav-links > li:last-child {
-        display: block !important;
-    }
-    .nucleo-theme .cart-link {
-        font-size: 0 !important; /* Ocultar texto "Carrito" */
-        background: transparent !important;
-        border: none !important;
-        padding: 0 !important;
-        color: #fff !important;
-        display: flex !important;
-        align-items: center;
-    }
-    .nucleo-theme .cart-link i {
-        font-size: 1.2rem !important;
-        color: #fff !important;
-    }
-    /* Ajuste de la burbuja roja del carrito si existe */
-    .nucleo-theme .cart-badge {
-        font-size: 0.7rem !important;
-        padding: 2px 4px !important;
-        position: relative;
-        top: -8px;
-        left: -5px;
-    }
-
-    /* 5. HAMBURGUESA: Mantenerla para ver categorías a la derecha */
-    .hamburger-menu {
-        order: 3;
-        margin-left: 10px;
-    }
-    /* Ocultar el input de búsqueda del nav (li intermedio) */
-    .nucleo-theme #search-form-nav { display: none !important; }
-    .nucleo-theme .hamburger-menu .bar {
-    background-color: #fff !important; /* Fuerza a que las rayitas sean BLANCAS */
-}
-}
+            /* C) CARRITO (Derecha) - FORZADO VISUALMENTE */
+            .nucleo-theme .nav-links > li:last-child {
+                display: block !important;
+            }
+            /* Estilo específico para el link del carrito */
+            .nucleo-theme .nav-links > li:last-child .cart-link {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none !important;
+                background: transparent !important;
+                border: none !important;
+                padding: 0 !important;
+                font-size: 0 !important; /* Ocultar texto "Carrito" */
+            }
+            /* FORZAR ICONO BLANCO DEL CARRITO */
+            .nucleo-theme .nav-links > li:last-child .cart-link i {
+                font-size: 1.3rem !important;
+                color: #ffffff !important; /* BLANCO */
+                display: block !important;
+            }
+            
+            /* D) HAMBURGUESA (Categorías) */
+            .hamburger-menu {
+                order: 3;
+                margin-left: 10px;
+                display: block !important;
+            }
+            .nucleo-theme .hamburger-menu .bar {
+                background-color: #fff !important;
+            }
+            
+            /* Ocultar buscador del nav para que no moleste */
+            .nucleo-theme #search-form-nav { display: none !important; }
+        }
     </style>
 </head>
 <body class="nucleo-theme">

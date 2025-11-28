@@ -440,6 +440,34 @@
             background-color: #fff !important;
         }
     }
+    /* ================================================== */
+/* === AJUSTE: MENÚ FIJO Y BÚSQUEDA INSTANTÁNEA === */
+/* ================================================== */
+
+@media (max-width: 768px) {
+    /* 1. FIJAR LA BARRA SUPERIOR */
+    .nucleo-theme .navbar {
+        position: fixed !important; /* Se queda pegado arriba */
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 9999; /* Encima de todo */
+        /* Aseguramos el fondo negro del pedido anterior */
+        background-color: #000 !important;
+        border-bottom: 1px solid #333;
+    }
+
+    /* 2. EMPUJAR EL CONTENIDO HACIA ABAJO */
+    /* Como el menú ahora flota, necesitamos dar espacio para que no tape el banner */
+    body.nucleo-theme {
+        padding-top: 70px !important; /* Ajusta este valor si tu barra es más alta o baja */
+    }
+
+    /* Ajuste extra para asegurar que el contenido se vea bien */
+    .nucleo-main-content {
+        margin-top: 10px;
+    }
+}
 </style>
 </head>
 <body class="nucleo-theme">
@@ -693,6 +721,67 @@
 
     <script src="auth.js"></script>
     <script src="app.js"></script>
-    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- MOTOR DE BÚSQUEDA INSTANTÁNEA (SIN RECARGAR) ---
+        
+        // 1. Identificamos los formularios de búsqueda (Navbar y Toolbar)
+        const inputsBusqueda = [
+            document.getElementById('search-input-nav'),       // Buscador del Menú
+            document.getElementById('nucleo-cat-search-input') // Buscador de Filtros
+        ];
+
+        // Función que realiza el filtrado visual
+        function filtrarEnPagina(texto) {
+            const termino = texto.toLowerCase().trim();
+            const tarjetas = document.querySelectorAll('.tarjeta-producto');
+            let contador = 0;
+
+            tarjetas.forEach(tarjeta => {
+                // Obtenemos el nombre y la categoría del producto
+                const nombre = tarjeta.querySelector('.producto-nombre')?.textContent.toLowerCase() || '';
+                const categoria = tarjeta.querySelector('.producto-categoria')?.textContent.toLowerCase() || '';
+
+                // Si coincide con el texto, lo mostramos. Si no, lo ocultamos.
+                if (nombre.includes(termino) || categoria.includes(termino)) {
+                    tarjeta.style.display = ''; // Mostrar (respetando el flex/grid)
+                    contador++;
+                } else {
+                    tarjeta.style.display = 'none'; // Ocultar
+                }
+            });
+
+            // Actualizar el texto de resultados (si existe el elemento)
+            const resultsHeader = document.getElementById('nucleo-results-count');
+            if (resultsHeader) {
+                resultsHeader.textContent = termino === '' 
+                    ? 'Todos los productos' 
+                    : `Encontrados: ${contador}`;
+            }
+        }
+
+        // 2. Asignar los eventos a los inputs
+        inputsBusqueda.forEach(input => {
+            if (!input) return;
+
+            // Evitar que el formulario mande a otra página al dar Enter
+            if (input.form) {
+                input.form.addEventListener('submit', (e) => {
+                    e.preventDefault(); // ¡ALTO! No recargues la página.
+                    filtrarEnPagina(input.value);
+                    // Opcional: bajar el teclado en móvil
+                    input.blur();
+                });
+            }
+
+            // Filtrar mientras escribes (tiempo real)
+            input.addEventListener('input', (e) => {
+                filtrarEnPagina(e.target.value);
+            });
+        });
+
+        console.log("Motor de búsqueda instantánea activado.");
+    });
+</script>
 </body>
 </html>

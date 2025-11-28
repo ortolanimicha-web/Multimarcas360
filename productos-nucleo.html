@@ -351,15 +351,15 @@
             }
             /* Estilo específico para el link del carrito */
             .nucleo-theme .nav-links > li:last-child .cart-link {
-                display: flex !important;
-                align-items: center;
-                justify-content: center;
-                text-decoration: none !important;
-                background: transparent !important;
-                border: none !important;
-                padding: 0 !important;
-                font-size: 0 !important; /* Ocultar texto "Carrito" */
-            }
+    display: flex !important;
+    color: #fff !important; /* Fuerza color blanco */
+    opacity: 1 !important;
+}
+
+/* Ocultar cualquier texto plano que se escape dentro del link del carrito en móvil */
+.nucleo-theme .nav-links > li:last-child .cart-link {
+    font-size: 1rem !important; /* Tamaño normal para el icono */
+}
             /* FORZAR ICONO BLANCO DEL CARRITO */
             .nucleo-theme .nav-links > li:last-child .cart-link i {
                 font-size: 1.3rem !important;

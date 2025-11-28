@@ -15,6 +15,51 @@ function getPriceForQuantity(basePrice, quantity, promos) {
     }
     return finalPrice;
 }
+// --- Función para sumar RESERVAS (Por UNIDADES) ---
+window.registrarReservaProducto = function(productId, cantidad) {
+    if (!productId) {
+        console.error("Error: No hay ID de producto");
+        return;
+    }
+
+    const productRef = db.collection('products').doc(productId);
+    const qtyToAdd = Number(cantidad); // Aseguramos que lo que sumamos es número
+
+    // Usamos runTransaction para leer -> corregir -> guardar
+    return db.runTransaction((transaction) => {
+        return transaction.get(productRef).then((sfDoc) => {
+            if (!sfDoc.exists) {
+                throw "El producto no existe en la base de datos";
+            }
+
+            const data = sfDoc.data();
+            
+            // 1. LEER: Obtenemos el valor actual
+            let currentReservations = data.reservationCount;
+
+            // 2. CORREGIR: Si es Texto, undefined o nulo, lo forzamos a Número
+            // Esto arregla el bug de que se quede trabado en 5
+            let currentVal = parseInt(currentReservations);
+            if (isNaN(currentVal)) {
+                currentVal = 0; // Si estaba corrupto, empezamos de 0 (o del valor base)
+            }
+
+            // 3. SUMAR
+            const newVal = currentVal + qtyToAdd;
+
+            // 4. GUARDAR: Actualizamos asegurando que sea numérico
+            transaction.update(productRef, { reservationCount: newVal });
+            
+            return newVal;
+        });
+    }).then((newTotal) => {
+        console.log(`✅ BASE DE DATOS ACTUALIZADA. Nuevo total real: ${newTotal}`);
+    }).catch((error) => {
+        console.error("❌ Error crítico al guardar reserva:", error);
+        // Opcional: Avisar al usuario si falla la base de datos real
+        // alert("Hubo un error de conexión al guardar tu reserva. Intenta de nuevo.");
+    });
+};
 // ==========================================================
 // === LÓGICA DEL CARRITO Y CARGA/ADMIN DE PRODUCTOS (app.js) ===
 // ==========================================================
@@ -2472,10 +2517,26 @@ function handleEliminarItemCarrito(e) {
 function actualizarContadorCarrito() {
     const carrito = getCarritoFromStorage();
     const totalItems = carrito.reduce((total, item) => total + item.cantidad, 0); 
-    const cartLink = document.querySelector('.cart-link');
-    if (cartLink) {
-        cartLink.textContent = totalItems > 0 ? `🛒 Carrito (${totalItems})` : '🛒 Carrito';
-    }
+    
+    // Seleccionamos TODOS los enlaces de carrito (Móvil y Desktop)
+    const cartLinks = document.querySelectorAll('.cart-link');
+    
+    cartLinks.forEach(link => {
+        // Opción A: Si es el navbar de Núcleo (Móvil), solo mostramos icono con contador flotante
+        if (link.closest('.nucleo-theme')) {
+            // Mantenemos el icono de FontAwesome
+            link.innerHTML = `<i class="fas fa-shopping-cart"></i>`;
+            
+            // Si hay items, agregamos la burbuja roja
+            if (totalItems > 0) {
+                link.innerHTML += `<span class="cart-badge" style="background: red; color: white; border-radius: 50%; padding: 2px 5px; font-size: 0.7rem; position: relative; top: -10px; left: -5px;">${totalItems}</span>`;
+            }
+        } 
+        // Opción B: Navbar normal (Texto completo)
+        else {
+            link.textContent = totalItems > 0 ? `🛒 Carrito (${totalItems})` : '🛒 Carrito';
+        }
+    });
 }
 
 // --- Lógica de Búsqueda ---
@@ -2865,34 +2926,37 @@ async function loadNucleoStock() {
 // EN app.js - Agrega esta nueva función
 // ==========================================
 
+// Busca y REEMPLAZA todas las versiones de toggleNucleoStock por ESTA ÚNICA versión:
+
 window.toggleNucleoStock = async (id, currentStatus) => {
-    // currentStatus: true si NO hay stock, false si SI hay stock.
-    // Invertimos el valor.
-    const newStatus = !currentStatus; 
+    // currentStatus: 
+    // true  = El producto está SIN STOCK actualmente.
+    // false = El producto TIENE STOCK actualmente.
+    
+    const newStatus = !currentStatus; // Invertimos el estado (Si era true, ahora es false)
+
+    // 1. Preparamos los datos a actualizar
+    let updateData = {
+        noStock: newStatus
+    };
+
+    // 2. LÓGICA DE REINICIO:
+    // Si currentStatus es true (estaba sin stock) y pasamos a false (volvemos a tener stock),
+    // significa que entró mercadería nueva. Reiniciamos el contador a 0.
+    if (currentStatus === true) {
+        updateData.reservationCount = 0; 
+        console.log(`Stock reactivado para ${id}. Reiniciando contador de reservas a 0.`);
+    }
 
     try {
-        // Actualizamos Firebase
-        await db.collection('products').doc(id).update({
-            noStock: newStatus
-        });
+        // 3. Enviamos la actualización a Firebase
+        await db.collection('products').doc(id).update(updateData);
         
-        // Recargamos la tabla para ver el cambio
+        // 4. Recargamos la tabla para ver el cambio visualmente
         loadNucleoStock(); 
     } catch (error) {
         console.error("Error cambiando estado de stock:", error);
-        alert("Error al actualizar el stock.");
-    }
-};
-// NUEVA FUNCIÓN: Pégala justo debajo de la función anterior
-window.toggleNucleoStock = async (id, currentStatus) => {
-    try {
-        // Invertimos el estado: si estaba sin stock (true), pasa a con stock (false)
-        await db.collection('products').doc(id).update({
-            noStock: !currentStatus
-        });
-        loadNucleoStock(); // Recargar tabla
-    } catch (error) {
-        alert("Error al actualizar stock: " + error.message);
+        alert("Error al actualizar el stock: " + error.message);
     }
 };
 // --- Funciones Auxiliares Admin Núcleo ---
@@ -3801,6 +3865,78 @@ if (prod.quantityPromos && prod.quantityPromos.length > 0) {
         const newBtn = btnAgregar.cloneNode(true); // Clonar para limpiar listeners viejos
         btnAgregar.parentNode.replaceChild(newBtn, btnAgregar);
 
+        // --- LÓGICA DE MENSAJE DE ESCASEZ / RESERVAS ---
+        const oldAlert = document.querySelector('.scarcity-alert');
+        if(oldAlert) oldAlert.remove();
+
+        if (isNoStock) {
+            newBtn.textContent = "PEDIR RESERVA (SIN CARGO)";
+            newBtn.classList.add('btn-mayorista-reserva');
+            newBtn.style.backgroundColor = '#fd7e14';
+            newBtn.style.borderColor = '#fd7e14';
+            newBtn.style.color = '#fff';
+
+            // Leemos cuántos hay reservados. Si es 0, mostramos un número "semilla" (ej: 2) para generar tracción.
+            let reservados = prod.reservationCount || 0; 
+            
+            // Creamos el mensaje
+            const scarcityDiv = document.createElement('div');
+            scarcityDiv.className = 'scarcity-alert';
+            // Texto ajustado a "productos reservados"
+            scarcityDiv.innerHTML = `
+                <i class="fas fa-fire"></i>
+                <span>¡Alta demanda! Ya se reservaron <strong id="reserva-counter">${reservados} productos</strong> de este ingreso.</span>
+            `;
+            
+            // Insertamos el mensaje antes de los botones
+            document.querySelector('.may-actions-container').insertAdjacentElement('beforebegin', scarcityDiv);
+        } else {
+            // ... (lógica normal si hay stock) ...
+            newBtn.textContent = "AGREGAR AL PEDIDO";
+            newBtn.classList.remove('btn-mayorista-reserva');
+            newBtn.style.backgroundColor = ''; 
+            newBtn.style.borderColor = '';
+            newBtn.style.color = '';
+        }
+
+        newBtn.addEventListener('click', () => {
+            const qty = parseInt(inputCant.value) || 1;
+            
+            // ... (cálculo de precio y objeto item igual que antes) ...
+            const finalUnitPrice = getPriceForQuantity(precioMayorista, qty, prod.quantityPromos);
+            const item = {
+                id: doc.id,
+                nombre: isNoStock ? `(RESERVA) ${prod.name} (Mayorista)` : `${prod.name} (Mayorista)`,
+                precio: isNoStock ? 0 : finalUnitPrice,
+                cantidad: qty,
+                imagen: urls.length > 0 ? urls[0] : 'https://via.placeholder.com/150',
+                tipo: 'mayorista'
+            };
+            
+            addItemToCart(item, newBtn, inputCant);
+
+            if (!isNoStock && finalUnitPrice < precioMayorista) {
+                alert(`¡Promo aplicada! Precio unitario: $${finalUnitPrice}`);
+            }
+            
+            // --- ACTUALIZACIÓN VISUAL Y DE BASE DE DATOS ---
+            if(isNoStock) {
+                // 1. Guardar en Base de Datos (Pasamos ID y CANTIDAD)
+                window.registrarReservaProducto(doc.id, qty); 
+                
+                // 2. Efecto Visual Inmediato (Sumar al contador sin recargar)
+                const counterSpan = document.getElementById('reserva-counter'); // O 'nucleo-reserva-counter' en nucleo
+        if(counterSpan) {
+            // Leemos el número actual visual (limpiando el texto alrededor)
+            let currentText = counterSpan.innerText.replace(/\D/g, ''); 
+            let currentVal = parseInt(currentText) || 0;
+            let newVal = currentVal + qty;
+            counterSpan.innerText = `${newVal} productos`;
+        }
+
+                alert(`¡Has reservado ${qty} unidades con éxito!`);
+            }
+        });
         // Configurar Botón según stock
         if (isNoStock) {
             newBtn.textContent = "PEDIR RESERVA (SIN CARGO)";
@@ -3817,7 +3953,9 @@ if (prod.quantityPromos && prod.quantityPromos.length > 0) {
         }
 
         newBtn.addEventListener('click', () => {
-            const qty = parseInt(inputCant.value) || 1;
+    // 1. Obtener el valor del input y asegurar que sea número
+    let qty = parseInt(inputCant.value);
+    if (isNaN(qty) || qty < 1) qty = 1;
             
             // Calculamos precio dinámico
             const finalUnitPrice = getPriceForQuantity(precioMayorista, qty, prod.quantityPromos);
@@ -3957,45 +4095,72 @@ async function loadNucleoProductDetailsPage(productId) {
             }
         }
 
-        // 4. Configurar Botón "Agregar" o "Reservar"
+        // 4. Configurar Botón "Agregar" o "Reservar" Y MENSAJE ESCASEZ
         const btnAdd = document.getElementById('nucleo-btn-add');
         const qtyInput = document.getElementById('nucleo-qty');
+        const infoCol = document.querySelector('.nucleo-info-col'); // Referencia para insertar el mensaje
+
+        // Limpiar mensaje anterior si se recarga
+        const existingAlert = infoCol.querySelector('.scarcity-alert');
+        if(existingAlert) existingAlert.remove();
 
         if (btnAdd) {
-            // Resetear clases por si acaso
-            btnAdd.className = 'nucleo-btn-add';
+            btnAdd.className = 'nucleo-btn-add'; // Reset
 
             if (isNoStock) {
-                // CAMBIOS SI NO HAY STOCK
                 btnAdd.innerHTML = '<i class="fas fa-clock"></i> Pedir Reserva';
-                btnAdd.classList.add('btn-reserve'); // Clase naranja nueva
+                btnAdd.classList.add('btn-reserve'); 
+
+                // --- MENSAJE DE ESCASEZ NÚCLEO ---
+                let reservados = p.reservationCount || 0;
+                
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'scarcity-alert';
+                alertDiv.style.marginBottom = '20px';
+                alertDiv.innerHTML = `
+                    <i class="fas fa-fire-alt"></i>
+                    <span>¡Stock muy solicitado! Ya se reservaron <strong id="nucleo-reserva-counter">${reservados} unidades</strong>.</span>
+                `;
+                
+                const actionsDiv = document.querySelector('.nucleo-actions');
+                if(actionsDiv) actionsDiv.parentNode.insertBefore(alertDiv, actionsDiv);
+                // ----------------------------------------
+
             } else {
-                // NORMAL
                 btnAdd.innerHTML = '<i class="fas fa-cart-plus"></i> Agregar al Pedido';
             }
 
-            btnAdd.onclick = () => {
-                // LÓGICA DEL CARRITO
+            const newBtnAdd = btnAdd.cloneNode(true);
+            btnAdd.parentNode.replaceChild(newBtnAdd, btnAdd);
+
+            newBtnAdd.onclick = () => {
                 const item = {
                     id: doc.id,
-                    // Si es reserva, cambiamos el nombre para que sea evidente
                     nombre: isNoStock ? `(RESERVA) ${p.name}` : p.name,
-                    // Si es reserva, precio es 0. Si no, precio real.
                     precio: isNoStock ? 0 : p.price,
                     cantidad: parseInt(qtyInput.value) || 1,
                     imagen: urls[0],
                     tipo: 'minorista'
                 };
                 
-                addItemToCart(item, btnAdd, qtyInput);
+                addItemToCart(item, newBtnAdd, qtyInput);
                 
-                // Feedback extra opcional si es reserva
                 if(isNoStock) {
-                    alert("Producto agregado como RESERVA ($0). Coordinaremos el pago cuando ingrese stock.");
+                    const qty = item.cantidad;
+                    // 1. Actualizar BD
+                    registrarReservaProducto(doc.id, qty);
+                    
+                    // 2. Actualizar Visualmente
+                    const counterEl = document.getElementById('nucleo-reserva-counter');
+                    if(counterEl) {
+                        let current = parseInt(counterEl.innerText) || 0;
+                        counterEl.innerText = `${current + qty} unidades`;
+                    }
+
+                    alert("Producto reservado. Coordinaremos el pago y entrega al ingresar stock.");
                 }
             };
         }
-
         // 5. Mostrar la interfaz final
         if(loading) loading.style.display = 'none';
         if(content) content.style.display = 'grid'; 

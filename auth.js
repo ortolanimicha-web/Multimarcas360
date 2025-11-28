@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             auth.signOut().then(() => {
                 console.log('Logout desde Núcleo OK.');
                 // Recargamos para limpiar estados visuales inmediatamente
-                window.location.reload();
+                window.location.href = 'productos-nucleo.html'; 
             }).catch((error) => console.error('Error logout Núcleo:', error));
         });
     }

@@ -231,5 +231,67 @@ document.addEventListener('DOMContentLoaded', () => {
             default: return 'Error: ' + error.message;
         }
     }
+// ==========================================
+    // 5. LÓGICA ESPECÍFICA PARA LOGIN NÚCLEO
+    // ==========================================
 
+    const nucleoLoginForm = document.getElementById('nucleo-login-form');
+    const nucleoRegisterForm = document.getElementById('nucleo-register-form');
+
+    // Manejador LOGIN Núcleo
+    if (nucleoLoginForm) {
+        nucleoLoginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('nucleo-login-email').value;
+            const password = document.getElementById('nucleo-login-password').value;
+            const errorDiv = document.getElementById('nucleo-login-error');
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log('Login Núcleo exitoso:', userCredential.user.email);
+                    if (errorDiv) errorDiv.style.display = 'none';
+                    // Redirigir siempre a la tienda de Núcleo
+                    window.location.href = 'productos-nucleo.html';
+                })
+                .catch((error) => {
+                    console.error('Error Login Núcleo:', error);
+                    if (errorDiv) {
+                        errorDiv.textContent = getFriendlyAuthErrorMessage(error);
+                        errorDiv.style.display = 'block';
+                    }
+                });
+        });
+    }
+
+    // Manejador REGISTRO Núcleo
+    if (nucleoRegisterForm) {
+        nucleoRegisterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('nucleo-register-email').value;
+            const password = document.getElementById('nucleo-register-password').value;
+            const errorDiv = document.getElementById('nucleo-register-error');
+
+            if (password.length < 6) {
+                 if (errorDiv) {
+                    errorDiv.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+                    errorDiv.style.display = 'block';
+                 }
+                return;
+            }
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log('Registro Núcleo exitoso:', userCredential.user.email);
+                     if (errorDiv) errorDiv.style.display = 'none';
+                    window.location.href = 'productos-nucleo.html';
+                })
+                .catch((error) => {
+                    console.error('Error Registro Núcleo:', error);
+                    if (errorDiv) {
+                        errorDiv.textContent = getFriendlyAuthErrorMessage(error);
+                        errorDiv.style.display = 'block';
+                    }
+                });
+        });
+    }
 }); // Fin DOMContentLoaded

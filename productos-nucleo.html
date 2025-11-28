@@ -468,6 +468,117 @@
         margin-top: 10px;
     }
 }
+/* ========================================================= */
+    /* === DISEÑO MÓVIL: BARRA FIJA SIN HAMBURGUESA (V4) === */
+    /* ========================================================= */
+    @media (max-width: 768px) {
+        
+        /* 1. ESTRUCTURA DE LA BARRA (FIJA Y NEGRA) */
+        .nucleo-theme .navbar {
+            display: flex !important;
+            flex-direction: column !important; /* Logo arriba, botones abajo */
+            align-items: center !important;
+            justify-content: center !important;
+            
+            position: fixed !important; /* Siempre visible arriba */
+            top: 0; left: 0; width: 100%;
+            z-index: 10000;
+            
+            background-color: #000 !important; /* Fondo Negro */
+            border-bottom: 1px solid #333;
+            padding: 10px 5px !important;
+            height: auto !important;
+        }
+
+        /* 2. OCULTAR ELEMENTOS QUE NO QUEREMOS */
+        .hamburger-menu {
+            display: none !important; /* Adiós menú hamburguesa */
+        }
+        #search-form-nav {
+            display: none !important; /* Adiós buscador superior */
+        }
+
+        /* 3. CONTENEDOR DE BOTONES (EN FILA) */
+        .nucleo-theme .nav-links {
+            display: flex !important;
+            flex-direction: row !important; /* Uno al lado del otro */
+            flex-wrap: nowrap !important;   /* Que no bajen de línea */
+            align-items: center !important;
+            justify-content: center !important;
+            
+            background-color: transparent !important;
+            position: static !important; /* Ya no flota, está dentro del navbar */
+            width: auto !important;
+            box-shadow: none !important;
+            padding: 5px 0 0 0 !important;
+            gap: 15px !important; /* Espacio entre botones */
+            border-top: none !important;
+        }
+
+        /* 4. ESTILOS DE LOS ENLACES (COLORES PEDIDOS) */
+        
+        /* General de enlaces: letra un poco más chica para que entren */
+        .nucleo-theme .nav-links a,
+        .nucleo-theme .nav-links button {
+            font-size: 0.75rem !important; /* Ajuste para móviles pequeños */
+            padding: 5px !important;
+            white-space: nowrap; /* Que no se parta el texto */
+        }
+
+        /* A) "Volver a Inicio" -> BLANCO */
+        .nucleo-theme .nav-links a[href="index.html"] {
+            color: #fff !important;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        /* B) "Iniciar Sesión" / "Salir" / "Admin" -> AMARILLO */
+        #nucleo-auth-links a, 
+        #nucleo-logout-btn,
+        #nucleo-admin-link {
+            color: #ffc107 !important;
+            border: 1px solid transparent !important; /* Quitamos borde al botón salir para limpiar */
+        }
+
+        /* C) Carrito -> ROJO SOBRE NEGRO */
+        .nucleo-theme .cart-link {
+            background-color: #000 !important;
+            border: 1px solid #333 !important;
+            border-radius: 20px !important;
+            padding: 5px 12px !important;
+            display: flex !important;
+            align-items: center;
+            gap: 5px;
+        }
+        /* Texto "Carrito" oculto en móvil para ahorrar espacio (opcional, si quieres texto borra esta línea) */
+        .nucleo-theme .cart-link { font-size: 0 !important; } 
+        
+        /* Icono Carrito */
+        .nucleo-theme .cart-link i {
+            color: #ff0000 !important; /* Rojo */
+            font-size: 1.1rem !important; /* Icono visible */
+            display: inline-block !important; 
+        }
+        
+        /* Burbuja Roja */
+        .cart-badge {
+            font-size: 0.7rem !important;
+            background: #ff0000 !important;
+            color: white !important;
+        }
+
+        /* 5. EMPUJAR EL CONTENIDO (ESPACIO PARA LA BARRA) */
+        /* Como la barra ahora tiene dos pisos (Logo + Botones), ocupa más espacio */
+        body.nucleo-theme {
+            padding-top: 100px !important; 
+        }
+        
+        /* Ajuste del Logo */
+        .nucleo-theme .logo {
+            font-size: 1.2rem !important;
+            margin-bottom: 5px; /* Separar logo de los botones */
+        }
+    }
 </style>
 </head>
 <body class="nucleo-theme">

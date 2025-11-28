@@ -11,148 +11,376 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-    @media (max-width: 768px) {
+    /* ========================================= */
+    /* === ESTILOS TEMA NÚCLEO (PREMIUM DARK) === */
+    /* ========================================= */
 
-    /* 1. NAVBAR: Fondo Negro y Alineación */
-    .nucleo-theme .navbar {
-        background-color: #000 !important;
-        border-bottom: 1px solid #222;
-        padding: 10px 0 !important;
+    .nucleo-theme { 
+        font-family: 'Roboto', sans-serif; 
+        background-color: #f4f6f9; /* Gris muy suave, más moderno */
     }
 
-    .nucleo-theme .logo {
-        text-align: left;
-        padding-left: 20px;
-        font-size: 1.3rem;
-        margin-bottom: 10px;
-        display: block;
-        width: 100%;
-        border-bottom: 1px solid #222;
-        padding-bottom: 10px;
+    /* --- Navbar Mejorado --- */
+    .nucleo-theme .navbar { 
+        background-color: #111; 
+        border-bottom: none; /* Quitamos la línea sólida fea */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4); /* Sombra elegante */
+        padding: 10px 20px;
+        height: auto;
+        min-height: 70px;
+    }
+    
+    .nucleo-theme .logo { 
+        color: #fff; 
+        font-weight: 900; 
+        text-transform: uppercase; 
+        letter-spacing: 1px;
+        font-size: 1.4rem;
+        background: linear-gradient(45deg, #fff, #a0a0a0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
-    /* 2. ENLACES DEL MENÚ (Estilo Botones/Iconos) */
-    .nucleo-theme .nav-links {
-        display: flex !important;
-        flex-direction: row !important; /* En fila */
-        flex-wrap: nowrap !important; /* No bajar de línea */
-        justify-content: space-evenly !important; /* Espaciado uniforme */
-        align-items: center !important;
-        gap: 5px !important;
-        padding: 5px 10px !important;
-        width: 100%;
-        overflow-x: auto; /* Scroll si es necesario */
+    /* Links del Navbar */
+    .nucleo-theme .nav-links a { 
+        color: #ddd; 
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+    .nucleo-theme .nav-links a:hover { 
+        color: #fff; 
+        text-shadow: 0 0 5px rgba(255,255,255,0.5);
+    }
+    
+    /* Botón Carrito Navbar */
+    .nucleo-theme .cart-link { 
+        background: rgba(255,255,255,0.1); 
+        color: #fff !important; 
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 20px; 
+        padding: 8px 15px !important;
+        transition: all 0.3s;
+    }
+    .nucleo-theme .cart-link:hover {
+        background: #fff;
+        color: #000 !important;
     }
 
-    /* Estilo "Volver a Inicio" y otros links de texto */
-    .nucleo-theme .nav-links a {
-        font-size: 0.7rem !important;
-        text-transform: uppercase;
-        color: #ccc !important;
-        text-align: center;
-        line-height: 1.2;
-        padding: 5px;
-        white-space: pre-wrap; /* Permitir saltos de línea en texto */
-        max-width: 80px;
-    }
+    /* --- Layout General --- */
+    .nucleo-layout-wrapper { display: block; max-width: 100%; margin: 0; padding: 0; }
+    .nucleo-main-content { width: 100%; }
 
-    /* Iconos amarillos/dorados */
-    .nucleo-theme .nav-links i {
-        display: block;
-        font-size: 1.2rem;
-        color: #ffc107; /* Color dorado del icono */
-        margin-bottom: 3px;
-    }
-
-    /* Botón "Salir" (Bordeado) */
-    #nucleo-logout-btn {
-        border: 1px solid #ffc107 !important;
-        padding: 5px 10px !important;
-        border-radius: 5px;
-        font-size: 0.8rem;
-    }
-
-    /* Carrito (Píldora oscura con badge rojo) */
-    .nucleo-theme .cart-link {
-        background: #222 !important;
-        border: 1px solid #333 !important;
-        border-radius: 20px !important;
-        padding: 5px 10px !important;
-        position: relative;
-    }
-    .cart-badge {
-        background-color: red !important;
-        position: absolute;
-        top: -5px;
-        right: -5px;
-    }
-
-    /* 3. HERO BANNER (Imagen y Textos) */
+    /* --- Hero Banner (Cabecera) --- */
     .nucleo-hero-banner {
-        display: flex !important;
-        flex-direction: column !important;
-        height: auto !important;
-        background-color: #000 !important; /* Fondo NEGRO */
-        margin-top: 0 !important;
+        border-radius: 0; 
+        margin-bottom: 0; 
+        height: 380px; 
+        background-color: #000;
+        display: flex; 
+        justify-content: space-between; 
+        overflow: hidden;
         position: relative;
     }
-
-    /* IMAGEN: Arriba y completa */
-    .nucleo-hero-image {
-        order: 1; /* Primero la imagen */
-        width: 100% !important;
-        height: 220px !important; /* Altura fija visible */
-        padding-bottom: 0 !important;
-        background-size: cover !important;
-        background-position: center !important;
-        clip-path: none !important;
+    
+    /* Degradado sobre la imagen para que el texto se lea bien */
+    .nucleo-hero-banner::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 50%; height: 100%;
+        background: linear-gradient(to right, #000 60%, transparent);
+        z-index: 1;
     }
 
-    /* TEXTO: Abajo y fondo negro */
-    .nucleo-hero-text {
-        order: 2; /* Texto abajo */
-        padding: 30px 20px !important;
-        background-color: #000 !important; /* Asegurar fondo negro */
-        text-align: center !important;
-        z-index: 5;
+    .nucleo-hero-text { 
+        padding: 60px; 
+        flex: 1; 
+        z-index: 2; 
+        color: white; 
+        max-width: 600px;
     }
-
-    /* Tipografía específica de la captura */
-    .nucleo-hero-text h2 {
-        color: #888 !important; /* Gris */
-        font-size: 0.9rem !important;
-        letter-spacing: 2px;
-        font-weight: normal;
-        margin-bottom: 10px !important;
+    .nucleo-hero-text h2 { 
+        margin: 0 0 10px; 
+        font-size: 1rem; 
+        text-transform: uppercase; 
+        letter-spacing: 3px; 
+        color: #6f42c1; /* Púrpura Núcleo */
+        font-weight: bold;
     }
-
-    .nucleo-hero-text h1 {
-        color: #fff !important; /* Blanco */
-        font-size: 2.5rem !important;
-        font-weight: 900 !important;
-        margin-bottom: 15px !important;
+    .nucleo-hero-text h1 { 
+        font-size: 3rem; 
+        margin: 0 0 20px; 
+        font-weight: 900; 
+        line-height: 1; 
     }
-
     .nucleo-hero-text p {
-        color: #666 !important; /* Gris oscuro */
-        font-size: 1rem !important;
-        margin-bottom: 25px !important;
+        font-size: 1.1rem;
+        color: #ccc;
+        margin-bottom: 30px;
+    }
+    
+    .nucleo-btn {
+        background: linear-gradient(135deg, #6f42c1, #563d7c); 
+        color: #fff; 
+        border: none; 
+        padding: 12px 30px;
+        border-radius: 30px; 
+        font-weight: bold; 
+        cursor: pointer; 
+        text-transform: uppercase;
+        box-shadow: 0 4px 15px rgba(111, 66, 193, 0.4);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nucleo-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(111, 66, 193, 0.6);
+        background: linear-gradient(135deg, #7b52d1, #64498c); 
     }
 
-    /* 4. BOTÓN "VER CATÁLOGO" (Blanco con texto violeta/negro) */
-    .nucleo-btn {
-        background: #fff !important; /* Fondo Blanco */
-        color: #563d7c !important; /* Texto Violeta oscuro */
-        border-radius: 30px !important;
-        padding: 12px 30px !important;
-        font-weight: bold !important;
-        text-transform: uppercase;
-        font-size: 0.9rem !important;
-        box-shadow: 0 4px 10px rgba(255,255,255,0.2) !important;
-        border: none !important;
-        display: inline-block;
+    /* --- Barra de Título --- */
+    .section-header-nucleo { 
+        margin-bottom: 30px; 
+        border-bottom: 1px solid #e0e0e0; 
+        padding: 40px 40px 15px 40px; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: flex-end; 
+        max-width: 1400px; 
+        margin-left: auto;
+        margin-right: auto;
     }
-}
+    .section-header-nucleo h3 { 
+        margin: 0; 
+        color: #111; 
+        text-transform: uppercase; 
+        font-size: 1.8rem; 
+        font-weight: 900; 
+        letter-spacing: -0.5px;
+    }
+
+    /* --- Grid Productos (Contenedor) --- */
+    .catalogo-grid-nucleo {
+        display: grid; 
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 25px; 
+        padding: 0 40px 60px 40px; 
+        max-width: 1400px; 
+        margin: 0 auto;
+    }
+
+    /* --- TARJETA DE PRODUCTO (Mejorada) --- */
+    .nucleo-theme .tarjeta-producto {
+        border: none; 
+        border-radius: 12px; 
+        background: white; 
+        padding-bottom: 0; /* Quitamos padding bottom para que el botón pegue abajo */
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        overflow: hidden; /* Importante para el border-radius */
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+    
+    /* Efecto Hover en Tarjeta */
+    .nucleo-theme .tarjeta-producto:hover { 
+        transform: translateY(-8px); 
+        box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.05);
+    }
+
+    /* Carrusel de imágenes */
+    .nucleo-theme .product-carousel { 
+        height: 250px; 
+        border-bottom: 1px solid #f0f0f0; 
+        background-color: #fff;
+        position: relative;
+    }
+    
+    .nucleo-theme .carousel-image {
+        padding: 20px; /* Aire para la imagen */
+        object-fit: contain;
+    }
+
+    /* Info del Producto */
+    .nucleo-theme .producto-info { 
+        padding: 20px; 
+        text-align: center; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        flex-grow: 1;
+    }
+    
+    /* Título producto */
+    .nucleo-theme .tarjeta-producto h3 {
+        font-size: 1rem;
+        color: #333;
+        line-height: 1.4;
+        margin-bottom: 10px;
+        font-weight: 600;
+        height: 2.8em; /* Altura fija para 2 líneas */
+        overflow: hidden;
+    }
+
+    /* Precio */
+    .nucleo-theme .producto-precio { 
+        color: #111; 
+        font-size: 1.6rem; 
+        font-weight: 900; 
+        margin-bottom: 15px;
+    }
+
+    /* Acciones (Botón) */
+    .nucleo-theme .producto-acciones {
+        margin-top: auto;
+        width: 100%;
+        padding: 0 20px 20px 20px;
+    }
+
+    .nucleo-theme .boton-agregar {
+        background: #111; 
+        color: white; 
+        border-radius: 8px;
+        text-transform: uppercase; 
+        font-size: 0.9rem; 
+        font-weight: bold;
+        padding: 12px; 
+        width: 100%;
+        border: none;
+        transition: background 0.3s;
+    }
+    .nucleo-theme .boton-agregar:hover {
+        background: #6f42c1; /* Púrpura al pasar mouse */
+    }
+
+
+    /* --- ESTILOS SIDEBAR (MENÚ LATERAL) --- */
+    .nucleo-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); z-index: 2000;
+        opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        backdrop-filter: blur(2px); /* Efecto borroso de fondo */
+    }
+    .nucleo-overlay.active { opacity: 1; visibility: visible; }
+
+    .nucleo-offcanvas {
+        position: fixed; top: 0; left: 0; height: 100%; width: 300px;
+        background: #fff; z-index: 2001;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.77, 0, 0.175, 1);
+        box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        display: flex; flex-direction: column;
+    }
+    .nucleo-offcanvas.active { transform: translateX(0); }
+
+    .nucleo-offcanvas-header {
+        background: #111; color: #fff; padding: 25px 20px;
+        display: flex; justify-content: space-between; align-items: center;
+        /* QUITAMOS LA LÍNEA DEL ENCABEZADO TAMBIÉN */
+        border-bottom: none; 
+    }
+    
+    /* Links del Sidebar (Aquí estaba la línea molesta) */
+    .nucleo-cat-link {
+        display: flex; align-items: center; gap: 15px; padding: 15px 20px;
+        text-decoration: none; color: #444; font-weight: 500; 
+        border-bottom: none; /* <--- IMPORTANTE: Quitamos línea divisoria */
+        cursor: pointer; transition: 0.2s;
+        border-radius: 8px;
+        margin: 5px 10px;
+    }
+    /* Efecto Hover estilo botón suave */
+    .nucleo-cat-link:hover { 
+        background: #f0f0f0; 
+        color: #6f42c1; 
+        transform: translateX(5px);
+    }
+    .nucleo-cat-link img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover;}
+    
+
+    /* --- BARRA HERRAMIENTAS (Buscador/Filtros) --- */
+    .nucleo-toolbar-advanced {
+        display: flex; flex-wrap: wrap; gap: 15px;
+        justify-content: space-between; align-items: center;
+        background: #fff; padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        margin: 20px 40px 30px 40px; 
+        border-left: 5px solid #6f42c1;
+        max-width: 1400px; 
+        margin-left: auto; margin-right: auto;
+    }
+    .nucleo-search-box {
+        display: flex; align-items: center; border: 1px solid #eee;
+        background: #f9f9f9;
+        border-radius: 30px; overflow: hidden; flex-grow: 1; max-width: 400px;
+    }
+    .nucleo-search-box input { border: none; padding: 10px 20px; outline: none; width: 100%; background: transparent; }
+    .nucleo-search-box button { background: #111; color: white; border: none; padding: 10px 20px; cursor: pointer; transition: 0.3s; }
+    .nucleo-search-box button:hover { background: #6f42c1; }
+
+
+    /* --- RESPONSIVE (MÓVIL) --- */
+    @media (max-width: 1024px) {
+        
+        /* 1. CORRECCIÓN NAVBAR: Asegurar que empuje el contenido hacia abajo */
+        .nucleo-theme .navbar {
+            background-color: #000 !important;
+            padding: 10px 15px;
+            height: auto !important; /* Altura automática según contenido */
+            min-height: auto;
+            position: relative !important; /* CLAVE: Para que no flote encima del banner */
+            display: block; /* Asegurar bloque */
+        }
+
+        /* 2. Arreglo de los Enlaces del Navbar en Móvil (Flex Wrap) */
+        .nucleo-theme .nav-links {
+            display: flex !important;
+            flex-wrap: wrap !important; /* Permitir que bajen si no entran */
+            justify-content: center; /* Centrar elementos */
+            gap: 15px !important;
+            padding-bottom: 10px;
+        }
+
+        /* 3. CORRECCIÓN IMAGEN BANNER: Hacerla proporcional para verla completa */
+        .nucleo-hero-banner { 
+            height: auto !important; 
+            flex-direction: column; 
+            margin-top: 0; /* Ya no necesita margen extra si el navbar es relative */
+        }
+
+        .nucleo-hero-image { 
+            width: 100% !important;
+            
+            /* TRUCO PARA VER IMAGEN COMPLETA */
+            height: 0 !important; /* Reseteamos altura fija */
+            padding-bottom: 75%; /* Esto crea un rectángulo proporcional (formato 4:3) más alto */
+            
+            background-size: cover !important; /* Cubrir el área */
+            background-position: center center !important;
+            order: 1; /* Poner la imagen primero, texto después */
+        }
+
+        .nucleo-hero-text { 
+            padding: 30px 20px; 
+            order: 2; 
+            text-align: center; 
+        }
+
+        /* Ajuste Grid Móvil */
+        .catalogo-grid-nucleo { padding: 10px; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        .section-header-nucleo, .nucleo-toolbar-advanced {
+            margin: 15px 10px; padding: 15px; width: auto;
+        }
+        
+        /* Ajuste Tarjeta Móvil */
+        .nucleo-theme .product-carousel { height: 160px; }
+        .nucleo-theme .carousel-image { padding: 10px; }
+        .nucleo-theme .producto-precio { font-size: 1.2rem; margin-bottom: 5px;}
+        .nucleo-theme .producto-info { padding: 10px; }
+        .nucleo-theme .boton-agregar { padding: 8px; font-size: 0.8rem; }
+    }
 </style>
 </head>
 <body class="nucleo-theme">
@@ -160,28 +388,32 @@
     <nav class="navbar">
         <div class="logo">Electrónica Núcleo</div>
         <ul class="nav-links">
-    <li>
-        <a href="index.html" style="display:flex; flex-direction:column; align-items:center;">
-            VOLVER A<br>INICIO
-        </a>
-    </li>
-    
-    <li id="nucleo-auth-links" style="display: flex; align-items: center;">
-        <a href="login-nucleo.html" id="nucleo-login-link" style="color: #ffc107; font-weight: bold; text-align:center;">
-            <i class="fas fa-sign-in-alt"></i><br>INICIAR SESIÓN
-        </a>
+            <li><a href="index.html">Volver a Inicio</a></li>
+            
+            <li id="nucleo-auth-links" style="display: flex; align-items: center; gap: 15px;">
+                <a href="admin-nucleo.html" id="nucleo-admin-link" style="color: #ffc107; font-weight: bold; display:none;">
+                    <i class="fas fa-user-shield"></i> Admin
+                </a>
 
-        <button id="nucleo-logout-btn" style="background: transparent; border: 1px solid #ffc107; color: #ffc107; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-weight: bold; display: none;">
-            <i class="fas fa-sign-out-alt"></i> Salir
-        </button>
-    </li>
+                <span id="nucleo-user-email" style="color: white; font-size: 0.9rem; display: none;"></span>
 
-    <li>
-        <a href="carrito.html" class="cart-link">
-            <i class="fas fa-shopping-cart" style="color: #e91e63;"></i>
-        </a>
-    </li>
-</ul>
+                <a href="login-nucleo.html" id="nucleo-login-link" style="color: #ffc107; font-weight: bold;">
+    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+</a>
+
+                <button id="nucleo-logout-btn" style="background: transparent; border: 1px solid #ffc107; color: #ffc107; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-weight: bold; display: none;">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </button>
+            </li>
+
+            <li id="search-form-nav">
+                <form action="busqueda.html" method="GET">
+                    <input type="text" name="q" id="search-input-nav" placeholder="Buscar...">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </li>
+            <li><a href="carrito.html" class="cart-link"><i class="fas fa-shopping-cart"></i> Carrito</a></li>
+        </ul>
         <div class="hamburger-menu">
             <span></span><span></span><span></span>
         </div>

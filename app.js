@@ -178,7 +178,7 @@ function initializePageLogic()
         // === LÓGICA ESPECÍFICA PARA ELECTRÓNICA NÚCLEO ===
         else if (currentPage === 'checkout-mayorista') {
     console.log("Ejecutando lógica de Checkout Mayorista...");
-    setupCheckoutMayoristaForm();
+    setupCheckoutMayoristaForm(); 
 }
         else if (currentPage === 'productos-nucleo') {
             console.log("Ejecutando lógica específica para Electrónica Núcleo...");
@@ -248,7 +248,8 @@ else if (currentPage === 'categoria-nucleo' || document.getElementById('dynamic-
                          cargarProductosAdmin(),
                          loadHomepageSettingsAdmin(), 
                          loadCategoryBannersAdmin(),
-                         loadPageImagesAdmin()
+                         loadPageImagesAdmin(),
+                         loadSalespeople(null, 'salespeople-list', false)
                     ]).then(() => {
                          setupAddProductForm();
                          setupHomepageSettingsForm(); 
@@ -4608,7 +4609,7 @@ function initializeNucleoAdminPage() {
             e.preventDefault();
             auth.signOut().then(() => window.location.href = 'productos-nucleo.html');
         });
-    }
+    }loadSalespeople(null, 'nucleo-salespeople-list', true);
 }
 
 // --- Función para GUARDAR CATEGORÍA (Faltaba esta lógica) ---
@@ -4785,3 +4786,219 @@ function setupCheckoutMayoristaForm() {
         window.location.href = urlWhatsApp; 
     });
 }
+/* ==========================================================
+   === GESTIÓN DE VENDEDORES (SALESPEOPLE) - NUEVO ===
+   ========================================================== */
+
+// 1. CARGAR LISTA DE VENDEDORES (Para Admin y Checkout)
+async function loadSalespeople(targetSelectId = null, targetListId = null, isNucleoAdmin = false) {
+    try {
+        const doc = await db.collection('config').doc('salespeople').get();
+        let salespeople = [];
+        
+        if (doc.exists && doc.data().names) {
+            salespeople = doc.data().names.sort();
+        }
+
+        // A. Si es para el CHECKOUT (llenar <select>)
+        if (targetSelectId) {
+            const select = document.getElementById(targetSelectId);
+            if (select) {
+                select.innerHTML = '<option value="">Selecciona un vendedor...</option>';
+                salespeople.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    select.appendChild(option);
+                });
+                // Opción por defecto si no tienen vendedor asignado
+                const optionNone = document.createElement('option');
+                optionNone.value = "Sin Vendedor Asignado";
+                optionNone.textContent = "Ninguno / Venta Directa Web";
+                select.appendChild(optionNone);
+            }
+        }
+
+        // B. Si es para el ADMIN GENERAL (llenar <ul>)
+        if (targetListId && !isNucleoAdmin) {
+            const list = document.getElementById(targetListId);
+            if (list) {
+                list.innerHTML = '';
+                salespeople.forEach(name => {
+                    const li = document.createElement('li');
+                    li.style.cssText = "padding: 10px; background: #f9f9f9; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;";
+                    li.innerHTML = `
+                        <span><i class="fas fa-user"></i> ${name}</span>
+                        <button class="boton-eliminar" onclick="deleteSalesperson('${name}')" style="margin:0;">Eliminar</button>
+                    `;
+                    list.appendChild(li);
+                });
+            }
+        }
+
+        // C. Si es para el ADMIN NÚCLEO (llenar <table>)
+        if (targetListId && isNucleoAdmin) {
+            const tbody = document.getElementById(targetListId);
+            if (tbody) {
+                tbody.innerHTML = '';
+                salespeople.forEach(name => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${name}</td>
+                        <td style="text-align: right;">
+                            <button class="action-btn btn-delete" onclick="deleteSalesperson('${name}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+
+    } catch (error) {
+        console.error("Error cargando vendedores:", error);
+    }
+}
+
+// 2. AGREGAR VENDEDOR (Sirve para ambos Admins)
+window.addSalesperson = async function() {
+    // Detectar qué input usar (Admin General o Núcleo)
+    let input = document.getElementById('new-salesperson-name'); // Admin General
+    if (!input) input = document.getElementById('nucleo-salesperson-name'); // Admin Núcleo
+
+    if (!input) return;
+
+    const name = input.value.trim();
+    if (!name) return alert("Escribe un nombre.");
+
+    try {
+        const docRef = db.collection('config').doc('salespeople');
+        const doc = await docRef.get();
+        let currentNames = [];
+
+        if (doc.exists && doc.data().names) {
+            currentNames = doc.data().names;
+        }
+
+        if (currentNames.includes(name)) {
+            return alert("Este vendedor ya existe.");
+        }
+
+        currentNames.push(name);
+        
+        await docRef.set({ names: currentNames }, { merge: true });
+        
+        input.value = '';
+        alert("Vendedor agregado.");
+        
+        // Recargar listas según donde estemos
+        refreshSalespeopleLists();
+
+    } catch (error) {
+        console.error("Error agregando vendedor:", error);
+        alert("Error al guardar.");
+    }
+};
+
+// 3. ELIMINAR VENDEDOR
+window.deleteSalesperson = async function(name) {
+    if(!confirm(`¿Eliminar a ${name} de la lista?`)) return;
+
+    try {
+        const docRef = db.collection('config').doc('salespeople');
+        const doc = await docRef.get();
+        
+        if (doc.exists) {
+            let names = doc.data().names;
+            names = names.filter(n => n !== name);
+            await docRef.update({ names: names });
+            refreshSalespeopleLists();
+        }
+    } catch (error) {
+        console.error("Error eliminando:", error);
+    }
+};
+
+// Función auxiliar para recargar UI
+function refreshSalespeopleLists() {
+    // Intentar recargar lista Admin General
+    if(document.getElementById('salespeople-list')) loadSalespeople(null, 'salespeople-list', false);
+    // Intentar recargar lista Admin Núcleo
+    if(document.getElementById('nucleo-salespeople-list')) loadSalespeople(null, 'nucleo-salespeople-list', true);
+}
+
+// ==========================================================
+// === ACTUALIZACIÓN DEL SETUP DEL CHECKOUT MAYORISTA ===
+// ==========================================================
+
+function setupCheckoutMayoristaForm() {
+    const form = document.getElementById('mayorista-checkout-form');
+    if (!form) return;
+
+    console.log("Checkout Mayorista: Inicializando...");
+    
+    // 1. Cargar vendedores en el select
+    // Usamos la función loadSalespeople que ya definimos arriba en app.js
+    if (typeof loadSalespeople === 'function') {
+        loadSalespeople('cliente-vendedor');
+    }
+
+    // 2. Manejo del Formulario
+    // Clonamos para limpiar listeners previos
+    const newForm = form.cloneNode(true);
+    form.parentNode.replaceChild(newForm, form);
+
+    newForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // Evitamos recarga de página
+
+        // A. Validar Carrito
+        const carrito = getCarritoFromStorage();
+        if (!carrito || carrito.length === 0) {
+            alert("El carrito está vacío. Agrega productos antes de finalizar.");
+            return;
+        }
+
+        // B. Obtener Datos
+        const nombre = document.getElementById('cliente-nombre').value.trim();
+        const apellido = document.getElementById('cliente-apellido').value.trim();
+        const direccion = document.getElementById('cliente-direccion').value.trim();
+        const horario = document.getElementById('cliente-horario').value.trim();
+        const pago = document.getElementById('cliente-pago').value;
+        const vendedor = document.getElementById('cliente-vendedor').value;
+
+        // C. Construir Mensaje
+        let mensaje = `✨ *NUEVO PEDIDO MAYORISTA* ✨\n\n`;
+        mensaje += `👤 *DATOS DEL CLIENTE:*\n`;
+        mensaje += `Nombre: ${nombre} ${apellido}\n`;
+        mensaje += `📍 Dirección: ${direccion}\n`;
+        mensaje += `⏰ Horario: ${horario}\n`;
+        mensaje += `💰 Pago: ${pago}\n`;
+        mensaje += `🤝 *Atendido por:* ${vendedor || 'N/A'}\n`; 
+        mensaje += `--------------------------------\n\n`;
+
+        mensaje += `📦 *DETALLE DEL PEDIDO:*\n`;
+        let total = 0;
+
+        carrito.forEach(item => {
+            const precio = Number(item.precio); 
+            const cantidad = Number(item.cantidad);
+            const subtotal = precio * cantidad;
+            if (!isNaN(subtotal)) total += subtotal;
+
+            const bullet = precio === 0 ? '🔥 RESERVA' : '✅';
+            mensaje += `${bullet} *${item.nombre}*\n`;
+            mensaje += `   Cant: ${cantidad} | Sub: $${subtotal.toFixed(2)}\n`;
+            if (item.nota) mensaje += `   📝 Nota: ${item.nota}\n`;
+        });
+
+        mensaje += `\n--------------------------------\n`;
+        mensaje += `💵 *TOTAL FINAL: $${total.toFixed(2)}*`;
+
+        // D. Redirigir a WhatsApp
+        const numeroWhatsApp = "5493571618367"; 
+        const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${encodeURIComponent(mensaje)}`;
+        
+        console.log("Redirigiendo a:", urlWhatsApp);
+        window.location.href = urlWhatsApp; 
+    });
+}
+// FIN DEL ARCHIVO - Asegúrate de no tener llaves "}" sueltas debajo de esto.

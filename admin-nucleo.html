@@ -94,6 +94,26 @@
     <main class="nucleo-admin-container">
         
         <section class="admin-card">
+    <h3>Gestión de Vendedores</h3>
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <input type="text" id="nucleo-salesperson-name" class="nucleo-input" placeholder="Nombre del Vendedor" style="margin-bottom: 0;">
+        <button type="button" class="nucleo-btn-admin" onclick="addSalesperson()">Agregar</button>
+    </div>
+    
+    <div style="background: #fff; border: 1px solid #eee; border-radius: 4px; padding: 10px;">
+        <table class="nucleo-table" style="margin-top: 0;">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th style="text-align: right;">Acción</th>
+                </tr>
+            </thead>
+            <tbody id="nucleo-salespeople-list">
+                </tbody>
+        </table>
+    </div>
+</section>
+        <section class="admin-card">
             <h3>1. Categorías Núcleo</h3>
             <form id="nucleo-category-form">
                 <input type="hidden" id="nucleo-cat-edit-id">
@@ -203,6 +223,6 @@
         const auth = firebase.auth();
         const ADMIN_EMAIL = 'ortolanimichael@gmail.com';
     </script>
-    <script src="app.js"></script>
+    <script src="app.js?v=2.0"></script>
 </body>
 </html>

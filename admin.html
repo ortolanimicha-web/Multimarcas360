@@ -175,7 +175,28 @@
         </section>
 
         <hr> 
+     <hr>
+<section id="manage-salespeople-container">
+    <h3>Administrar Vendedores</h3>
+    <div class="admin-form">
+        <h4>Agregar Nuevo Vendedor</h4>
+        <div class="form-row" style="align-items: flex-end;">
+            <div class="form-group" style="flex-grow: 1;">
+                <label for="new-salesperson-name">Nombre del Vendedor:</label>
+                <input type="text" id="new-salesperson-name" placeholder="Ej: Juan Pérez">
+            </div>
+            <button type="button" class="admin-button add-button" onclick="addSalesperson()" style="margin-bottom: 15px;">Agregar</button>
+        </div>
         
+        <div style="margin-top: 20px;">
+            <h4>Vendedores Activos</h4>
+            <ul id="salespeople-list" style="list-style: none; padding: 0;">
+                <li style="padding: 10px; background: #fff; border: 1px solid #ddd; margin-bottom: 5px;">Cargando...</li>
+            </ul>
+        </div>
+    </div>
+</section>   
+    
         <section id="manage-categories-container">
              <h3>Administrar Categorías de Productos</h3>
 
@@ -382,7 +403,7 @@
       }
       const ADMIN_EMAIL = 'ortolanimichael@gmail.com';
     </script>
-    <script src="app.js?v=1.25" defer></script> 
+    <script src="app.js?v=2.0" defer></script> 
     <script src="auth.js" defer></script>
 
 </body>

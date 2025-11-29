@@ -15,16 +15,15 @@
             <i class="fas fa-arrow-left"></i> <span class="desktop-text">Volver al Catálogo</span>
         </a>
         <h1>FINALIZAR PEDIDO</h1>
-        <div style="width: 80px;"></div> </header>
+        <div style="width: 80px;"></div> 
+    </header>
 
     <main class="checkout-container">
-        
         <div class="checkout-card">
             <h2 style="font-family: 'Playfair Display'; text-align: center; color: #d4af37;">Datos de Envío y Pago</h2>
             <p style="text-align: center; color: #666; margin-bottom: 2rem;">Completa tus datos para preparar el pedido antes de enviar el WhatsApp.</p>
 
             <form id="mayorista-checkout-form">
-                
                 <div class="form-row">
                     <div class="form-group">
                         <label for="cliente-nombre">Nombre *</label>
@@ -44,6 +43,14 @@
                 <div class="form-group">
                     <label for="cliente-horario">Horario de preferencia para recibir *</label>
                     <input type="text" id="cliente-horario" required placeholder="Ej: De 9 a 13hs o por la tarde">
+                </div>
+
+                <div class="form-group">
+                    <label for="cliente-vendedor">Vendedor que te atendió *</label>
+                    <select id="cliente-vendedor" required style="border: 2px solid #d4af37; background-color: #fffcf5;">
+                        <option value="">Cargando lista...</option>
+                    </select>
+                    <small style="color: #666;">Selecciona quién gestionó tu consulta.</small>
                 </div>
 
                 <div class="form-group">
@@ -67,102 +74,33 @@
                 </button>
             </form>
         </div>
-
     </main>
 
     <footer>
         <p>© 2025 Multimarcas 360 - Área Mayorista</p>
     </footer>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. Verificar Carrito al cargar
-            // Aseguramos que la función exista, si no, leemos manual el storage
-            let carrito = [];
-            try {
-                if (typeof getCarritoFromStorage === 'function') {
-                    carrito = getCarritoFromStorage();
-                } else {
-                    const storage = localStorage.getItem('carrito');
-                    carrito = storage ? JSON.parse(storage) : [];
-                }
-            } catch (e) { console.error("Error leyendo carrito", e); }
-
-            if (!carrito || carrito.length === 0) {
-                alert("El carrito está vacío.");
-                window.location.href = 'mayorista.html';
-                return;
-            }
-
-            // 2. Calcular y mostrar total visualmente
-            const total = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
-            const displayTotal = document.getElementById('checkout-total-display');
-            if(displayTotal) displayTotal.textContent = "$" + total.toFixed(2);
-
-            // 3. LOGICA DE ENVÍO DIRECTA (Sin depender de app.js/Firebase)
-            const form = document.getElementById('mayorista-checkout-form');
-            
-            if (form) {
-                // Eliminamos cualquier listener previo clonando el nodo (opcional, por seguridad)
-                const newForm = form.cloneNode(true);
-                form.parentNode.replaceChild(newForm, form);
-
-                newForm.addEventListener('submit', (e) => {
-                    e.preventDefault(); // Evita recarga
-
-                    // Datos del Cliente
-                    const nombre = document.getElementById('cliente-nombre').value.trim();
-                    const apellido = document.getElementById('cliente-apellido').value.trim();
-                    const direccion = document.getElementById('cliente-direccion').value.trim();
-                    const horario = document.getElementById('cliente-horario').value.trim();
-                    const pago = document.getElementById('cliente-pago').value;
-
-                    // Construcción del Mensaje
-                    let mensaje = `✨ *NUEVO PEDIDO MAYORISTA* ✨\n\n`;
-                    mensaje += `👤 *CLIENTE:*\n${nombre} ${apellido}\n`;
-                    mensaje += `📍 *Dirección:* ${direccion}\n`;
-                    mensaje += `⏰ *Horario:* ${horario}\n`;
-                    mensaje += `💰 *Pago:* ${pago}\n`;
-                    mensaje += `--------------------------------\n\n`;
-                    mensaje += `📦 *DETALLE DEL PEDIDO:*\n`;
-
-                    let totalFinal = 0;
-                    carrito.forEach(item => {
-                        const precio = Number(item.precio);
-                        const cantidad = Number(item.cantidad);
-                        const subtotal = precio * cantidad;
-                        totalFinal += subtotal;
-
-                        // Icono según si es reserva ($0) o compra normal
-                        const bullet = precio === 0 ? '🔥 RESERVA' : '✅';
-                        
-                        mensaje += `${bullet} *${item.nombre}*\n`;
-                        mensaje += `   Cant: ${cantidad} | Sub: $${subtotal.toFixed(2)}\n`;
-                        if (item.nota) mensaje += `   📝 Nota: ${item.nota}\n`;
-                    });
-
-                    mensaje += `\n--------------------------------\n`;
-                    mensaje += `💵 *TOTAL FINAL: $${totalFinal.toFixed(2)}*`;
-
-                    // Enviar a WhatsApp
-                    const numeroWhatsApp = "5493571618367"; 
-                    const url = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${encodeURIComponent(mensaje)}`;
-                    
-                    console.log("Enviando pedido a:", url); // Debug en consola
-                    
-                    // Usar window.open para asegurar compatibilidad móvil
-                    window.open(url, '_blank');
-                    
-                    // Opcional: Vaciar carrito tras éxito (descomentar si deseas)
-                    // localStorage.setItem('carrito', '[]');
-                    // window.location.href = 'index.html'; 
-                });
-            }
-        });
-    </script>
-</body>
+   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script>
+    // Solo inicialización básica
+    const firebaseConfig = {
+        apiKey: "AIzaSyCD4lBf6BA76Oz-SDr4f8eaPA-q7v5AecY",
+        authDomain: "consultoravidal91.firebaseapp.com",
+        projectId: "consultoravidal91",
+        storageBucket: "consultoravidal91.appspot.com",
+        messagingSenderId: "840042202477",
+        appId: "1:840042202477:web:aae77961b4bca465dc4664",
+        measurementId: "G-HP3L0WZ60V"
+    };
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    window.db = firebase.firestore();
+    window.auth = firebase.auth();
+    const ADMIN_EMAIL = 'ortolanimichael@gmail.com'; // Opcional si lo usas aquí
+</script>
+<script src="auth.js"></script>
+<script src="app.js?v=2.4"></script> </body>
 </html>

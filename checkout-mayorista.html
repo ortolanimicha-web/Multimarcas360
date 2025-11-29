@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Pedido Mayorista - Multimarcas 360</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="mayorista-theme">
+
+    <header class="mayorista-header-mini">
+        <a href="mayorista.html">
+            <i class="fas fa-arrow-left"></i> <span class="desktop-text">Volver al Catálogo</span>
+        </a>
+        <h1>FINALIZAR PEDIDO</h1>
+        <div style="width: 80px;"></div> </header>
+
+    <main class="checkout-container">
+        
+        <div class="checkout-card">
+            <h2 style="font-family: 'Playfair Display'; text-align: center; color: #d4af37;">Datos de Envío y Pago</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 2rem;">Completa tus datos para preparar el pedido antes de enviar el WhatsApp.</p>
+
+            <form id="mayorista-checkout-form">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cliente-nombre">Nombre *</label>
+                        <input type="text" id="cliente-nombre" required placeholder="Tu nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="cliente-apellido">Apellido *</label>
+                        <input type="text" id="cliente-apellido" required placeholder="Tu apellido">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="cliente-direccion">Dirección de Entrega (Local o Casa) *</label>
+                    <input type="text" id="cliente-direccion" required placeholder="Calle, número, barrio, ciudad...">
+                </div>
+
+                <div class="form-group">
+                    <label for="cliente-horario">Horario de preferencia para recibir *</label>
+                    <input type="text" id="cliente-horario" required placeholder="Ej: De 9 a 13hs o por la tarde">
+                </div>
+
+                <div class="form-group">
+                    <label for="cliente-pago">Método de Pago *</label>
+                    <select id="cliente-pago" required>
+                        <option value="">Selecciona una opción...</option>
+                        <option value="Efectivo">Efectivo (Contraentrega)</option>
+                        <option value="Transferencia">Transferencia Bancaria</option>
+                        <option value="Deposito">Depósito Bancario</option>
+                        <option value="Acordar">Acordar con el vendedor</option>
+                    </select>
+                </div>
+
+                <div class="checkout-summary">
+                    <p>Total Estimado del Pedido:</p>
+                    <h3 id="checkout-total-display">$0.00</h3>
+                </div>
+
+                <button type="submit" class="btn-whatsapp-final">
+                    <i class="fab fa-whatsapp"></i> ENVIAR PEDIDO POR WHATSAPP
+                </button>
+            </form>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>© 2025 Multimarcas 360 - Área Mayorista</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <script>
+        // Configuración mínima para que funcione getCarritoFromStorage
+        const firebaseConfig = {
+            apiKey: "AIzaSyCD4lBf6BA76Oz-SDr4f8eaPA-q7v5AecY",
+            projectId: "consultoravidal91"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+        var auth = firebase.auth();
+    </script>
+
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+        // Script específico para esta página (para calcular total visual)
+        document.addEventListener('DOMContentLoaded', () => {
+            const carrito = getCarritoFromStorage();
+            if(carrito.length === 0) {
+                alert("El carrito está vacío.");
+                window.location.href = 'mayorista.html';
+                return;
+            }
+            const total = carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+            document.getElementById('checkout-total-display').textContent = "$" + total.toFixed(2);
+        });
+    </script>
+</body>
+</html>

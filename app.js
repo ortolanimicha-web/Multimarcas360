@@ -176,6 +176,10 @@ function initializePageLogic()
         }
         
         // === LÓGICA ESPECÍFICA PARA ELECTRÓNICA NÚCLEO ===
+        else if (currentPage === 'checkout-mayorista') {
+    console.log("Ejecutando lógica de Checkout Mayorista...");
+    setupCheckoutMayoristaForm();
+}
         else if (currentPage === 'productos-nucleo') {
             console.log("Ejecutando lógica específica para Electrónica Núcleo...");
             setupNucleoLogic(); 
@@ -2468,8 +2472,25 @@ function removeListenersPaginaCarrito() {
 }
 function handleFinalizarCompra() {
     const carrito = getCarritoFromStorage();
-    if (carrito.length === 0) return;
+    if (carrito.length === 0) {
+        alert("Tu carrito está vacío.");
+        return;
+    }
 
+    // Detectar si es compra mayorista
+    const esMayorista = carrito.some(item => item.tipo === 'mayorista');
+
+    if (esMayorista) {
+        // SI ES MAYORISTA -> Redirigir al formulario
+        window.location.href = 'checkout-mayorista.html';
+    } else {
+        // SI ES MINORISTA -> Comportamiento clásico (WhatsApp directo)
+        enviarPedidoWhatsAppMinorista(carrito);
+    }
+}
+
+// Función auxiliar para mantener la lógica antigua de minoristas
+function enviarPedidoWhatsAppMinorista(carrito) {
     let mensaje = "¡Hola! Quisiera hacer el siguiente pedido:\n\n";
     let total = 0;
     
@@ -2479,20 +2500,15 @@ function handleFinalizarCompra() {
         
         mensaje += `*Producto:* ${item.nombre}\n`;
         mensaje += `*Cant:* ${item.cantidad} x $${item.precio.toFixed(2)}\n`;
-        
-        // --- AQUÍ AGREGAMOS LA NOTA AL MENSAJE ---
         if (item.nota && item.nota.trim() !== "") {
             mensaje += `*Nota:* ${item.nota}\n`;
         }
-        // -----------------------------------------
-        
         mensaje += `*Subtotal:* $${subtotal.toFixed(2)}\n`;
         mensaje += `-------------------------\n`;
     });
     
     mensaje += `\n*TOTAL DEL PEDIDO: $${total.toFixed(2)}*`;
 
-    // Reemplaza con tu número real
     const numeroWhatsApp = "5493571618367"; 
     const mensajeCodificado = encodeURIComponent(mensaje);
     const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensajeCodificado}`;
@@ -4696,4 +4712,61 @@ window.resetNucleoCategoryForm = () => {
     
     if(btnSave) btnSave.textContent = "Crear Categoría";
     if(btnCancel) btnCancel.style.display = 'none';
-};
+};// --- LÓGICA FORMULARIO CHECKOUT MAYORISTA ---
+function setupCheckoutMayoristaForm() {
+    const form = document.getElementById('mayorista-checkout-form');
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // 1. Obtener datos del formulario
+        const nombre = document.getElementById('cliente-nombre').value.trim();
+        const apellido = document.getElementById('cliente-apellido').value.trim();
+        const direccion = document.getElementById('cliente-direccion').value.trim();
+        const horario = document.getElementById('cliente-horario').value.trim();
+        const pago = document.getElementById('cliente-pago').value;
+
+        // 2. Obtener datos del carrito
+        const carrito = getCarritoFromStorage();
+        if (carrito.length === 0) return;
+
+        // 3. Construir mensaje de WhatsApp
+        let mensaje = `✨ *NUEVO PEDIDO MAYORISTA* ✨\n\n`;
+        
+        mensaje += `👤 *DATOS DEL CLIENTE:*\n`;
+        mensaje += `Nombre: ${nombre} ${apellido}\n`;
+        mensaje += `📍 Dirección: ${direccion}\n`;
+        mensaje += `⏰ Horario Pref.: ${horario}\n`;
+        mensaje += `💰 Método de Pago: ${pago}\n`;
+        mensaje += `--------------------------------\n\n`;
+
+        mensaje += `📦 *DETALLE DEL PEDIDO:*\n`;
+        let total = 0;
+
+        carrito.forEach(item => {
+            const subtotal = item.precio * item.cantidad;
+            total += subtotal;
+            // Emoji indicador: si es reserva (precio 0) usa 🔥, si es normal usa ✅
+            const bullet = item.precio === 0 ? '🔥 RESERVA' : '✅';
+            
+            mensaje += `${bullet} *${item.nombre}*\n`;
+            mensaje += `   Cant: ${item.cantidad} | Sub: $${subtotal.toFixed(2)}\n`;
+            
+            if (item.nota) mensaje += `   📝 Nota: ${item.nota}\n`;
+        });
+
+        mensaje += `\n--------------------------------\n`;
+        mensaje += `💵 *TOTAL FINAL: $${total.toFixed(2)}*`;
+
+        // 4. Enviar
+        const numeroWhatsApp = "5493571618367"; 
+        const mensajeCodificado = encodeURIComponent(mensaje);
+        const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensajeCodificado}`;
+        
+        // Opcional: Vaciar carrito después de enviar (Descomentar si lo deseas)
+        // saveCarritoToStorage([]); 
+
+        window.open(urlWhatsApp, '_blank'); 
+    });
+}

@@ -3476,3 +3476,91 @@ main#search-results-page-container .mensaje-vacio {
     padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer;
 }
 .btn-clear:hover { background-color: #ddd; }
+/* ========================================= */
+/* === ESTILOS CHECKOUT MAYORISTA (NUEVO) === */
+/* ========================================= */
+
+.checkout-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.checkout-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border: 1px solid #eee;
+}
+
+.checkout-card .form-group {
+    margin-bottom: 1.2rem;
+}
+
+.checkout-card label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.checkout-card input, 
+.checkout-card select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box; /* Importante para que no se salga */
+}
+
+.checkout-card input:focus, 
+.checkout-card select:focus {
+    border-color: #d4af37;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.checkout-summary {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 20px 0;
+    border: 1px dashed #d4af37;
+}
+
+.checkout-summary h3 {
+    margin: 5px 0 0 0;
+    color: #d4af37;
+    font-size: 1.8rem;
+}
+
+.btn-whatsapp-final {
+    display: block;
+    width: 100%;
+    background-color: #25D366;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 15px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+}
+
+.btn-whatsapp-final:hover {
+    background-color: #128C7E;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(37, 211, 102, 0.4);
+}
+
+@media (max-width: 600px) {
+    .checkout-card { padding: 1.5rem; }
+    .btn-whatsapp-final { font-size: 1rem; }
+}

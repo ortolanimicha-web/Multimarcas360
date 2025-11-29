@@ -128,6 +128,52 @@
             .ordenamiento-container { justify-content: space-between; padding-top: 5px; }
             .ordenamiento-container select { flex-grow: 1; max-width: 60%; }
         }
+        /* Contenedor del filtro de categoría */
+.filtro-categoria-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f9f9f9;
+    padding: 5px 15px;
+    border-radius: 20px;
+    border: 1px solid #eee;
+}
+
+.filtro-categoria-wrapper label {
+    font-weight: bold;
+    color: #555;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+/* El Select en sí */
+#filter-category-mayorista {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+    font-size: 0.9rem;
+    outline: none;
+    min-width: 180px; /* Ancho mínimo para que se lea bien */
+    cursor: pointer;
+}
+
+#filter-category-mayorista:focus {
+    border-color: #d4af37;
+}
+
+/* Ajuste Responsive para el selector */
+@media (max-width: 768px) {
+    .filtro-categoria-wrapper {
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+    #filter-category-mayorista {
+        flex-grow: 1; /* Que ocupe el espacio restante */
+    }
+}
     </style>
 </head>
 <body class="mayorista-theme">
@@ -165,21 +211,19 @@
             <button class="btn-filtro" data-filter="nexo">Nexo</button>
         </div>
 
+        <div class="filtro-categoria-wrapper" style="background: none; border: none; padding: 0;">
+            <button id="btn-open-filter" class="btn-filtro" style="display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-filter"></i> Filtrar Categorías
+            </button>
+        </div>
+        
         <div class="view-switcher-container" style="display: flex; align-items: center; gap: 8px; margin: 0 10px;">
-            <label style="font-size: 0.85rem; font-weight: bold; color: #555;"><i class="fas fa-eye"></i> Vista:</label>
-            <div class="view-buttons" style="background: #f4f4f4; border-radius: 20px; padding: 2px; border: 1px solid #ddd;">
-                <button class="btn-view" data-view="list" title="Lista Detallada">
-                    <i class="fas fa-list"></i>
-                </button>
-                
-                <button class="btn-view active" data-view="grid" title="Grilla">
-                    <i class="fas fa-th-large"></i>
-                </button>
-                
-                <button class="btn-view" data-view="feed" title="Modo Instagram">
-                    <i class="fas fa-mobile-alt"></i>
-                </button>
-            </div>
+             <label style="font-size: 0.85rem; font-weight: bold; color: #555;"><i class="fas fa-eye"></i> Vista:</label>
+             <div class="view-buttons" style="background: #f4f4f4; border-radius: 20px; padding: 2px; border: 1px solid #ddd;">
+                 <button class="btn-view" data-view="list" title="Lista Detallada"><i class="fas fa-list"></i></button>
+                 <button class="btn-view active" data-view="grid" title="Grilla"><i class="fas fa-th-large"></i></button>
+                 <button class="btn-view" data-view="feed" title="Modo Instagram"><i class="fas fa-mobile-alt"></i></button>
+             </div>
         </div>
 
         <div class="ordenamiento-container">
@@ -196,9 +240,14 @@
             </select>
         </div>
 
-    </div>
-
+    </div> 
     <main>
+        <div id="mayorista-container" class="catalogo-grid-nucleo">
+            <div class="loading-message" style="width:100%; text-align:center; padding:50px; color:#777;">
+                <i class="fas fa-spinner fa-spin"></i> Cargando catálogo completo...
+            </div>
+        </div>
+    </main>
         <div id="mayorista-container" class="catalogo-grid-nucleo">
             <div class="loading-message" style="width:100%; text-align:center; padding:50px; color:#777;">
                 <i class="fas fa-spinner fa-spin"></i> Cargando catálogo completo...
@@ -238,6 +287,22 @@
 
     <script src="auth.js"></script>
     <script src="app.js"></script>
+<div id="filter-overlay" class="filter-overlay"></div>
+    <div id="filter-sidebar" class="filter-sidebar">
+        <div class="filter-header">
+            <h3><i class="fas fa-tags"></i> Categorías</h3>
+            <button id="close-filter" class="close-filter-btn">&times;</button>
+        </div>
+        
+        <div class="filter-body">
+            <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">Selecciona una o más opciones:</p>
+            <div id="filter-checkbox-container" class="filter-list"></div>
+        </div>
 
+        <div class="filter-footer">
+            <button id="btn-apply-filters" class="btn-apply">Aplicar Filtros</button>
+            <button id="btn-clear-filters" class="btn-clear">Limpiar</button>
+        </div>
+    </div>
 </body>
 </html>

@@ -4717,21 +4717,28 @@ function setupCheckoutMayoristaForm() {
     const form = document.getElementById('mayorista-checkout-form');
     if (!form) return;
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
+    console.log("Checkout Mayorista: Formulario detectado.");
 
-        // 1. Obtener datos del formulario
+    form.addEventListener('submit', (e) => {
+        e.preventDefault(); // Evita que la página se recargue
+
+        // 1. Obtener datos del carrito
+        const carrito = getCarritoFromStorage();
+        
+        // Validación de seguridad: Si el carrito está vacío, avisar y detener.
+        if (!carrito || carrito.length === 0) {
+            alert("El carrito está vacío. Agrega productos antes de finalizar.");
+            return;
+        }
+
+        // 2. Obtener datos del formulario
         const nombre = document.getElementById('cliente-nombre').value.trim();
         const apellido = document.getElementById('cliente-apellido').value.trim();
         const direccion = document.getElementById('cliente-direccion').value.trim();
         const horario = document.getElementById('cliente-horario').value.trim();
         const pago = document.getElementById('cliente-pago').value;
 
-        // 2. Obtener datos del carrito
-        const carrito = getCarritoFromStorage();
-        if (carrito.length === 0) return;
-
-        // 3. Construir mensaje de WhatsApp
+        // 3. Construir mensaje de WhatsApp con seguridad de datos
         let mensaje = `✨ *NUEVO PEDIDO MAYORISTA* ✨\n\n`;
         
         mensaje += `👤 *DATOS DEL CLIENTE:*\n`;
@@ -4745,13 +4752,20 @@ function setupCheckoutMayoristaForm() {
         let total = 0;
 
         carrito.forEach(item => {
-            const subtotal = item.precio * item.cantidad;
-            total += subtotal;
-            // Emoji indicador: si es reserva (precio 0) usa 🔥, si es normal usa ✅
-            const bullet = item.precio === 0 ? '🔥 RESERVA' : '✅';
+            // Convertimos a Número para evitar errores si el precio viene como texto "100.00"
+            const precio = Number(item.precio); 
+            const cantidad = Number(item.cantidad);
+            const subtotal = precio * cantidad;
+            
+            // Evitar que el total sea NaN si hay un error de datos
+            if (!isNaN(subtotal)) {
+                total += subtotal;
+            }
+
+            const bullet = precio === 0 ? '🔥 RESERVA' : '✅';
             
             mensaje += `${bullet} *${item.nombre}*\n`;
-            mensaje += `   Cant: ${item.cantidad} | Sub: $${subtotal.toFixed(2)}\n`;
+            mensaje += `   Cant: ${cantidad} | Sub: $${subtotal.toFixed(2)}\n`;
             
             if (item.nota) mensaje += `   📝 Nota: ${item.nota}\n`;
         });
@@ -4759,14 +4773,15 @@ function setupCheckoutMayoristaForm() {
         mensaje += `\n--------------------------------\n`;
         mensaje += `💵 *TOTAL FINAL: $${total.toFixed(2)}*`;
 
-        // 4. Enviar
+        // 4. Enviar (Método compatible con todos los navegadores)
         const numeroWhatsApp = "5493571618367"; 
         const mensajeCodificado = encodeURIComponent(mensaje);
-        const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensajeCodificado}`;
         
-        // Opcional: Vaciar carrito después de enviar (Descomentar si lo deseas)
-        // saveCarritoToStorage([]); 
-
-        window.open(urlWhatsApp, '_blank'); 
+        // Usamos api.whatsapp.com que es más robusto universalmente
+        const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${mensajeCodificado}`;
+        
+        // CAMBIO IMPORTANTE: Usamos window.location.href en lugar de window.open
+        // Esto evita que los bloqueadores de pop-ups de Chrome/Safari impidan el envío.
+        window.location.href = urlWhatsApp; 
     });
 }

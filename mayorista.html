@@ -12,18 +12,84 @@
         /* === Estilos Exclusivos Mayorista (Tema Dorado) === */
         .mayorista-theme { background-color: #fffdf5; }
         
-        .mayorista-header {
-            background: linear-gradient(to right, #111, #333);
-            color: #d4af37; /* Dorado */
-            padding: 3rem 1rem;
-            text-align: center;
-            border-bottom: 4px solid #d4af37;
-            margin-bottom: 0;
+        /* === CABECERA MINI (ESTILO DETALLE) === */
+        .mayorista-header-mini {
+            background: #1a1a1a; /* Fondo Oscuro */
+            color: #d4af37;      /* Texto Dorado */
+            padding: 1rem 1.5rem;
+            border-bottom: 3px solid #d4af37;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            box-sizing: border-box;
         }
-        .mayorista-header h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 2.5rem; }
-        .mayorista-header p { color: #fff; margin-top: 10px; font-size: 1.1rem; }
+
+        .mayorista-header-mini h1 { 
+            margin: 0; 
+            font-family: 'Playfair Display', serif; 
+            font-size: 1.5rem; /* Tamaño base */
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .mayorista-header-mini a { 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 0.9rem; 
+            font-weight: 500;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mayorista-header-mini a:hover { 
+            color: #d4af37; 
+        }
+
+        /* Estilo específico para el botón de carrito */
+        .mayorista-header-mini .cart-link {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+        .mayorista-header-mini .cart-link:hover {
+            background: #333;
+            border-color: #d4af37;
+        }
         
-        /* === NUEVA BARRA DE CONTROLES (Filtros + Ordenar) === */
+        /* Introducción / Título viejo */
+        .mayorista-intro {
+            text-align: center;
+            padding: 2rem 1rem;
+            background-color: #fffdf9;
+        }
+
+        /* === RESPONSIVE (MÓVIL) === */
+        /* Aquí corregimos el error: Ocultamos el texto en pantallas chicas */
+        @media (max-width: 600px) {
+            .mayorista-header-mini {
+                padding: 0.8rem 1rem; /* Menos padding en móvil */
+            }
+            .mayorista-header-mini h1 {
+                font-size: 1.1rem; /* Título más chico para que entre */
+            }
+            /* Ocultar texto "Tienda" y "Carrito" en móvil, dejar solo iconos */
+            .desktop-text {
+                display: none;
+            }
+        }
+        
+        /* === ESTILOS DEL RESTO DE LA PÁGINA (FILTROS, ETC) === */
+        /* ... Mantenemos los estilos de filtros que ya tenías ... */
         .controls-mayorista {
             display: flex;
             flex-wrap: wrap;
@@ -34,166 +100,54 @@
             background: #fff;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             position: sticky;
-            top: 0;
+            top: 60px; /* Debajo del header */
             z-index: 90;
             border-bottom: 1px solid #eee;
         }
-
-        /* Grupo de botones de marcas */
-        .filtros-marcas {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .btn-filtro {
-            padding: 8px 16px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            background: white;
-            cursor: pointer;
-            font-weight: 600;
-            color: #555;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-        }
+        /* (Pega aquí el resto del CSS de filtros si lo borraste, o déjalo como estaba) */
+        .filtros-marcas { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .btn-filtro { padding: 8px 16px; border: 1px solid #ddd; border-radius: 20px; background: white; cursor: pointer; font-weight: 600; color: #555; transition: all 0.3s; font-size: 0.9rem; }
+        .btn-filtro:hover { background: #f0f0f0; color: #333; }
+        .btn-filtro.active { background: #d4af37; color: #000; border-color: #d4af37; box-shadow: 0 2px 5px rgba(212, 175, 55, 0.3); }
+        .ordenamiento-container { display: flex; align-items: center; gap: 10px; }
+        .ordenamiento-container label { font-weight: bold; color: #555; font-size: 0.9rem; white-space: nowrap; }
+        .ordenamiento-container select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background-color: #fff; color: #333; cursor: pointer; font-size: 0.9rem; outline: none; min-width: 160px; }
         
-        .btn-filtro:hover {
-            background: #f0f0f0;
-            color: #333;
-        }
-
-        .btn-filtro.active {
-            background: #d4af37; /* Dorado */
-            color: #000;
-            border-color: #d4af37;
-            box-shadow: 0 2px 5px rgba(212, 175, 55, 0.3);
-        }
-
-        /* Grupo del selector de ordenamiento */
-        .ordenamiento-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .ordenamiento-container label {
-            font-weight: bold;
-            color: #555;
-            font-size: 0.9rem;
-            white-space: nowrap;
-        }
-
-        .ordenamiento-container select {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background-color: #fff;
-            color: #333;
-            cursor: pointer;
-            font-size: 0.9rem;
-            outline: none;
-            min-width: 160px;
-        }
-        .ordenamiento-container select:focus {
-            border-color: #d4af37;
-        }
-
-        /* Estilos de Tarjetas (Overrides para Mayorista) */
-        .mayorista-badge {
-            background-color: #d4af37;
-            color: #000;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            display: inline-block;
-            margin-bottom: 5px;
-        }
-
-        .precio-regular-tachado {
-            text-decoration: line-through;
-            color: #999;
-            font-size: 0.9rem;
-            margin-right: 10px;
-        }
+        /* Estilos Tarjetas */
+        .mayorista-badge { background-color: #d4af37; color: #000; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; display: inline-block; margin-bottom: 5px; }
+        .precio-regular-tachado { text-decoration: line-through; color: #999; font-size: 0.9rem; margin-right: 10px; }
+        .precio-mayorista-final { color: #d4af37; font-weight: 900; font-size: 1.3rem; }
+        .btn-mayorista { background-color: #333 !important; color: #d4af37 !important; border: 1px solid #333 !important; }
+        .btn-mayorista:hover { background-color: #d4af37 !important; color: #000 !important; }
+        .discount-badge { position: absolute; bottom: 10px; left: 10px; background-color: #e91e63; color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .product-carousel { position: relative !important; }
         
-        .precio-mayorista-final {
-            color: #d4af37;
-            font-weight: 900;
-            font-size: 1.3rem;
-        }
-        
-        /* Botón agregar dorado */
-        .btn-mayorista {
-            background-color: #333 !important;
-            color: #d4af37 !important;
-            border: 1px solid #333 !important;
-        }
-        .btn-mayorista:hover {
-            background-color: #d4af37 !important;
-            color: #000 !important;
-        }
-
-        /* === NUEVO: ESTILOS PARA EL BADGE DE DESCUENTO === */
-        .discount-badge {
-            position: absolute;
-            bottom: 10px;       /* Abajo */
-            left: 10px;         /* Izquierda */
-            background-color: #e91e63; /* Rosa Fuerte */
-            color: white;
-            padding: 5px 10px;
-            border-radius: 20px; /* Redondeado */
-            font-size: 0.85rem;
-            font-weight: bold;
-            z-index: 10;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
-
-        /* Aseguramos que el contenedor de la imagen sea relativo */
-        .product-carousel {
-            position: relative !important; 
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            .controls-mayorista {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .filtros-marcas {
-                justify-content: center;
-                padding-bottom: 10px;
-                border-bottom: 1px solid #eee;
-            }
-            .ordenamiento-container {
-                justify-content: space-between;
-                padding-top: 5px;
-            }
-            .ordenamiento-container select {
-                flex-grow: 1;
-                max-width: 60%;
-            }
+            .controls-mayorista { flex-direction: column; align-items: stretch; top: 50px; } /* Ajuste top */
+            .filtros-marcas { justify-content: center; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+            .ordenamiento-container { justify-content: space-between; padding-top: 5px; }
+            .ordenamiento-container select { flex-grow: 1; max-width: 60%; }
         }
     </style>
 </head>
 <body class="mayorista-theme">
 
-    <nav class="navbar">
-        <div class="logo"><a href="index.html" style="color:#333; text-decoration:none;">Volver a Tienda</a></div>
-        <ul class="nav-links">
-            <li><a href="carrito.html" class="cart-link">🛒 Carrito Mayorista</a></li>
-        </ul>
-        <div class="hamburger-menu"><span></span><span></span><span></span></div>
-    </nav>
+    <header class="mayorista-header-mini">
+        <a href="index.html">
+            <i class="fas fa-store"></i> <span class="desktop-text">Tienda</span>
+        </a>
 
-    <header class="mayorista-header">
-        <h1>ZONA MAYORISTA</h1>
-        <p>Precios exclusivos para revendedores y compras por volumen.</p>
-        <p style="font-size: 0.9rem; opacity: 0.8;">Descuento aplicado automáticamente sobre precio de lista.</p>
+        <h1>MAYORISTA</h1>
+
+        <a href="carrito.html" class="cart-link">
+            <i class="fas fa-shopping-cart"></i> <span class="desktop-text">Carrito</span>
+        </a>
     </header>
+
+    <div class="mayorista-intro">
+        <h2 style="font-family:'Playfair Display'; margin:0; color:#111;">Catálogo Completo</h2>
+        <p style="color:#666; font-size:0.9rem;">Precios exclusivos para revendedores.</p>
+    </div>
 
     <div class="controls-mayorista">
         
@@ -215,17 +169,18 @@
             <label style="font-size: 0.85rem; font-weight: bold; color: #555;"><i class="fas fa-eye"></i> Vista:</label>
             <div class="view-buttons" style="background: #f4f4f4; border-radius: 20px; padding: 2px; border: 1px solid #ddd;">
                 <button class="btn-view" data-view="list" title="Lista Detallada">
-        <i class="fas fa-list"></i>
-    </button>
-    
-    <button class="btn-view active" data-view="grid" title="Grilla">
-        <i class="fas fa-th-large"></i>
-    </button>
-    
-    <button class="btn-view" data-view="feed" title="Modo Instagram">
-        <i class="fas fa-mobile-alt"></i>
-    </button>
-</div>
+                    <i class="fas fa-list"></i>
+                </button>
+                
+                <button class="btn-view active" data-view="grid" title="Grilla">
+                    <i class="fas fa-th-large"></i>
+                </button>
+                
+                <button class="btn-view" data-view="feed" title="Modo Instagram">
+                    <i class="fas fa-mobile-alt"></i>
+                </button>
+            </div>
+        </div>
 
         <div class="ordenamiento-container">
             <label for="sort-mayorista"><i class="fas fa-sort"></i> Ordenar:</label>
@@ -245,10 +200,10 @@
 
     <main>
         <div id="mayorista-container" class="catalogo-grid-nucleo">
-    <div class="loading-message" style="width:100%; text-align:center; padding:50px; color:#777;">
-        <i class="fas fa-spinner fa-spin"></i> Cargando catálogo completo...
-    </div>
-</div>
+            <div class="loading-message" style="width:100%; text-align:center; padding:50px; color:#777;">
+                <i class="fas fa-spinner fa-spin"></i> Cargando catálogo completo...
+            </div>
+        </div>
     </main>
 
     <footer>

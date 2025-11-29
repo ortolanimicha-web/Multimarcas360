@@ -4204,9 +4204,6 @@ async function executeMayoristaSearch(searchTerm) {
     try {
         const searchTermLower = searchTerm.toLowerCase();
         
-        // Obtenemos TODOS los productos (igual que en mayorista.html para poder filtrar en cliente)
-        // Nota: Si tienes miles de productos, convendría un índice de búsqueda en backend, 
-        // pero para Firebase básico esto es lo estándar.
         const snapshot = await db.collection('products').get();
 
         const matches = [];
@@ -4217,7 +4214,7 @@ async function executeMayoristaSearch(searchTerm) {
             
             const name = data.name ? data.name.toLowerCase() : '';
             const brand = data.brand ? data.brand.toLowerCase() : '';
-            // Buscar también en descripción si existe
+            
             let description = '';
             if(data.detailSections && data.detailSections.length > 0) {
                  description = data.detailSections.map(s => s.content).join(' ').toLowerCase();
@@ -4228,7 +4225,7 @@ async function executeMayoristaSearch(searchTerm) {
             // Lógica de coincidencia
             if (name.includes(searchTermLower) || brand.includes(searchTermLower) || description.includes(searchTermLower)) {
                 
-                // CALCULAR PRECIO MAYORISTA (Lógica idéntica a mayorista.html)
+                // CALCULAR PRECIO MAYORISTA
                 const precioLista = parseFloat(data.price || 0);
                 let precioMayorista = parseFloat(data.wholesalePrice);
                 
@@ -4260,33 +4257,52 @@ async function executeMayoristaSearch(searchTerm) {
         matches.forEach(prod => {
             const imageUrl = (prod.imageUrls && prod.imageUrls.length > 0) ? prod.imageUrls[0] : (prod.imageUrl || 'https://via.placeholder.com/150');
             
-            // 1. GENERAR HTML DE PROMOS
-let promosHTML = '';
+            // --- 1. DEFINIR VARIABLES FALTANTES (CORRECCIÓN) ---
+            const isNoStock = prod.noStock === true;
+            
+            // Configuración Botón y Badge Stock
+            const stockBadgeHTML = isNoStock ? '<div class="mayorista-stock-badge">SIN STOCK</div>' : '';
+            const btnText = isNoStock ? 'Reservar' : 'Agregar';
+            const btnClass = isNoStock ? 'btn-mayorista-reserva' : 'btn-mayorista';
+            const nombreParaCarrito = isNoStock ? `(RESERVA) ${prod.name}` : `${prod.name} (Mayorista)`;
+            const precioParaCarrito = isNoStock ? 0 : prod.precioMayoristaCalculado;
 
-if (prod.quantityPromos && Array.isArray(prod.quantityPromos) && prod.quantityPromos.length > 0) {
-    promosHTML = '<div class="promo-mini-list">';
-    prod.quantityPromos.forEach(p => {
-        
-        // CÁLCULO DEL PORCENTAJE (Precio Lista vs Precio Promo)
-        let percentOff = 0;
-        if (prod.precioLista > 0) {
-            percentOff = Math.round(((prod.precioLista - p.unitPrice) / prod.precioLista) * 100);
-        }
+            // Badge de descuento
+            let badgeHTML = '';
+            if (prod.precioLista > 0 && prod.precioMayoristaCalculado < prod.precioLista) {
+                const porcentajeOff = Math.round(((prod.precioLista - prod.precioMayoristaCalculado) / prod.precioLista) * 100);
+                if (porcentajeOff > 0) {
+                    badgeHTML = `<div class="discount-badge">-${porcentajeOff}% OFF</div>`;
+                }
+            }
 
-        // HTML actualizado con el badge de porcentaje
-        promosHTML += `
-            <div class="promo-mini-item">
-                <span>Llevando <strong>${p.quantity}+</strong></span>
-                <div style="display:flex; align-items:center; gap:6px;">
-                    ${percentOff > 0 ? `<span class="promo-percent-tag">-${percentOff}%</span>` : ''}
-                    <strong>$${p.unitPrice.toFixed(2)}</strong>
-                </div>
-            </div>`;
-    });
-    promosHTML += '</div>';
-} else {
-    promosHTML = '<div style="height:5px;"></div>';
-}
+            // --- 2. GENERAR HTML DE PROMOS ---
+            let promosHTML = '';
+
+            if (prod.quantityPromos && Array.isArray(prod.quantityPromos) && prod.quantityPromos.length > 0) {
+                promosHTML = '<div class="promo-mini-list">';
+                prod.quantityPromos.forEach(p => {
+                    
+                    // CÁLCULO DEL PORCENTAJE (Precio Lista vs Precio Promo)
+                    let percentOff = 0;
+                    if (prod.precioLista > 0) {
+                        percentOff = Math.round(((prod.precioLista - p.unitPrice) / prod.precioLista) * 100);
+                    }
+
+                    promosHTML += `
+                        <div class="promo-mini-item">
+                            <span>Llevando <strong>${p.quantity}+</strong></span>
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                ${percentOff > 0 ? `<span class="promo-percent-tag">-${percentOff}%</span>` : ''}
+                                <strong>$${p.unitPrice.toFixed(2)}</strong>
+                            </div>
+                        </div>`;
+                });
+                promosHTML += '</div>';
+            } else {
+                promosHTML = '<div style="height:5px;"></div>';
+            }
+
             // Crear tarjeta HTML
             const card = document.createElement('div');
             card.className = 'tarjeta-producto';
@@ -4311,7 +4327,7 @@ if (prod.quantityPromos && Array.isArray(prod.quantityPromos) && prod.quantityPr
                     
                     <div style="margin-bottom: 5px;">
                         <span class="precio-regular-tachado">$${prod.precioLista.toFixed(2)}</span>
-                        <span class="precio-mayorista-final">$${prod.precioCalculadoMayorista.toFixed(2)}</span>
+                        <span class="precio-mayorista-final">$${prod.precioMayoristaCalculado.toFixed(2)}</span>
                     </div>
 
                     ${promosHTML}
@@ -4328,7 +4344,7 @@ if (prod.quantityPromos && Array.isArray(prod.quantityPromos) && prod.quantityPr
                 </div>
             `;
             
-            // Listener Botón Agregar (¡ACTUALIZADO PARA PROMOS!)
+            // Listener Botón Agregar
             const btn = card.querySelector('.boton-agregar');
             const input = card.querySelector('input');
             
@@ -4337,12 +4353,12 @@ if (prod.quantityPromos && Array.isArray(prod.quantityPromos) && prod.quantityPr
                 const qty = parseInt(input.value) || 1;
                 
                 // Calculamos el precio real (Base Mayorista vs Promo por Cantidad)
-                const finalUnitPrice = getPriceForQuantity(prod.precioCalculadoMayorista, qty, prod.quantityPromos);
+                const finalUnitPrice = getPriceForQuantity(prod.precioMayoristaCalculado, qty, prod.quantityPromos);
 
                 const item = {
                     id: prod.id,
                     nombre: btn.dataset.name,
-                    precio: isNoStock ? 0 : parseFloat(finalUnitPrice), // Si es reserva $0, sino precio calculado
+                    precio: isNoStock ? 0 : parseFloat(finalUnitPrice),
                     cantidad: qty,
                     imagen: imageUrl,
                     tipo: 'mayorista'
@@ -4351,7 +4367,7 @@ if (prod.quantityPromos && Array.isArray(prod.quantityPromos) && prod.quantityPr
                 addItemToCart(item, btn, input);
                 
                 // Aviso extra si aplicó promo
-                if (!isNoStock && finalUnitPrice < prod.precioCalculadoMayorista) {
+                if (!isNoStock && finalUnitPrice < prod.precioMayoristaCalculado) {
                     alert(`¡Promo aplicada! Precio unitario reducido a $${finalUnitPrice}`);
                 }
                 if(isNoStock) alert("Producto agregado como RESERVA ($0).");
@@ -4362,7 +4378,7 @@ if (prod.quantityPromos && Array.isArray(prod.quantityPromos) && prod.quantityPr
 
     } catch (error) {
         console.error("Error búsqueda mayorista:", error);
-        container.innerHTML = '<p class="error-message">Error al realizar la búsqueda.</p>';
+        container.innerHTML = '<p class="error-message">Error al realizar la búsqueda. Revisa la consola.</p>';
     }
 }
 // ==========================================================

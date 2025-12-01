@@ -1206,15 +1206,11 @@ async function updateProductsWithCategoryData(categoryId, newCategoryName, newCa
 }
 
 // --- Lógica de Admin (Productos) ---
-// *****************************************************************
-// *** MODIFICADO v1.25: Corrección de columnas en tabla admin ***
-// *****************************************************************
 async function cargarProductosAdmin() {
     const tableBody = document.getElementById('products-table-body');
     const loadingMsg = document.getElementById('loading-products-admin');
     
     if (!tableBody || !loadingMsg) { 
-        console.error("Elementos tabla productos admin no encontrados."); 
         return Promise.reject("Missing table elements"); 
     }
     
@@ -1236,8 +1232,6 @@ async function cargarProductosAdmin() {
             return Promise.resolve();
         }
         
-        console.log(`Admin: ${productDocs.length} productos encontrados.`);
-        
         productDocs.forEach(doc => {
             const product = doc.data(); 
             const productId = doc.id;
@@ -1247,19 +1241,28 @@ async function cargarProductosAdmin() {
             const categoryName = product.categoryName || 'N/A';
             const price = typeof product.price === 'number' ? product.price.toFixed(2) : '0.00';
             
-            // Lógica Precio Mayorista Visual
+            // --- LÓGICA DE ICONOS Y COLORES DE STOCK ---
+            const isNoStock = product.noStock === true;
+            
+            // Si NO hay stock (isNoStock = true) -> Clase Amarilla, Icono Ojo Tachado
+            // Si HAY stock (isNoStock = false) -> Clase Verde, Icono Check
+            const stockBtnClass = isNoStock ? 'btn-stock-off' : 'btn-stock-on';
+            const stockIcon = isNoStock ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-check"></i>';
+            const stockTitle = isNoStock ? 'Sin Stock (Click para Activar)' : 'En Stock (Click para Pausar)';
+            
+            // Overlay rojo sobre la imagen pequeña si no hay stock
+            const imgOverlay = isNoStock 
+                ? '<div style="position:absolute; inset:0; background:rgba(200,0,0,0.5); color:white; font-size:9px; display:flex; justify-content:center; align-items:center; font-weight:bold;">SIN STOCK</div>' 
+                : '';
+
             let wholesaleDisplay = 'Auto (30%)';
             if (product.wholesalePrice && !isNaN(parseFloat(product.wholesalePrice))) {
                 wholesaleDisplay = `$${parseFloat(product.wholesalePrice).toFixed(2)}`;
             }
 
-            // Popularidad
             const popularidad = product.salesCount || 0;
-            
-            // Imagen
             const imageUrl = (product.imageUrls && product.imageUrls[0]) ? product.imageUrls[0] : (product.imageUrl || 'https://via.placeholder.com/60?text=No+Img');
             
-            // Descripción
             let descriptionPreview = 'Sin detalles';
             if(product.detailSections && product.detailSections.length > 0) {
                 descriptionPreview = product.detailSections[0].title + ": " + product.detailSections[0].content.substring(0, 30) + "...";
@@ -1270,9 +1273,14 @@ async function cargarProductosAdmin() {
             const row = document.createElement('tr');
             row.setAttribute('data-product-id', productId);
             
-            // Generar HTML con el orden CORRECTO de las 9 columnas y ESTILO INLINE para forzar ancho de botones
+            // --- HTML ACTUALIZADO CON LOS BOTONES DE NÚCLEO ---
             row.innerHTML = `
-                <td><img src="${imageUrl}" alt="${name}" class="admin-table-thumbnail" onerror="this.onerror=null; this.src='https://via.placeholder.com/60?text=Err';"></td>
+                <td>
+                    <div style="position:relative; width:50px; height:50px; margin:auto;">
+                        <img src="${imageUrl}" class="admin-table-thumbnail" style="width:100%; height:100%;">
+                        ${imgOverlay}
+                    </div>
+                </td>
                 <td>${name}</td>
                 <td>${brand}</td>
                 <td>${categoryName}</td>
@@ -1280,9 +1288,20 @@ async function cargarProductosAdmin() {
                 <td>${wholesaleDisplay}</td>
                 <td style="text-align:center; font-weight:bold; font-size: 1.1em; color: #007bff;">${popularidad}</td>
                 <td style="font-size: 0.85rem; color:#666;">${descriptionPreview}</td>
-                <td style="white-space: nowrap; min-width: 160px; text-align:center;"> <div style="display: flex; gap: 5px; justify-content: center;">
-                        <button class="edit-btn admin-button edit-button" data-id="${productId}" style="margin:0; padding: 5px 10px;">Editar</button>
-                        <button class="delete-btn admin-button cancel-button" data-id="${productId}" style="margin:0; padding: 5px 10px;">Eliminar</button>
+                <td style="white-space: nowrap; min-width: 140px; text-align:center;"> 
+                    <div class="actions-column">
+                        
+                        <button class="action-btn btn-edit edit-btn" data-id="${productId}" title="Editar">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        
+                        <button class="action-btn ${stockBtnClass}" onclick="toggleMainAdminStock('${productId}', ${isNoStock})" title="${stockTitle}">
+                            ${stockIcon}
+                        </button>
+
+                        <button class="action-btn btn-delete delete-btn" data-id="${productId}" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </div>
                 </td>
             `;
@@ -1293,8 +1312,6 @@ async function cargarProductosAdmin() {
         return Promise.resolve();
     } catch (error) {
         console.error("Error GRAVE cargando productos en admin: ", error);
-        displayError(document.getElementById('list-products-container'), 'Error al cargar lista de productos. Verifica ÍNDICES (link en consola F12).');
-        if (loadingMsg) loadingMsg.style.display = 'none';
         return Promise.reject(error);
     }
 }
@@ -4932,27 +4949,49 @@ function refreshSalespeopleLists() {
 
 function setupCheckoutMayoristaForm() {
     const form = document.getElementById('mayorista-checkout-form');
+    // Elemento visual del total
+    const displayTotal = document.getElementById('checkout-total-display'); 
+    
     if (!form) return;
 
     console.log("Checkout Mayorista: Inicializando...");
     
     // 1. Cargar vendedores en el select
-    // Usamos la función loadSalespeople que ya definimos arriba en app.js
     if (typeof loadSalespeople === 'function') {
         loadSalespeople('cliente-vendedor');
     }
 
-    // 2. Manejo del Formulario
-    // Clonamos para limpiar listeners previos
+    // --- NUEVO: CALCULAR TOTAL VISUAL AL CARGAR LA PÁGINA ---
+    const carrito = getCarritoFromStorage();
+    let totalVisual = 0;
+
+    if (carrito && carrito.length > 0) {
+        carrito.forEach(item => {
+            const precio = Number(item.precio);
+            const cantidad = Number(item.cantidad);
+            // Validamos que sean números para evitar errores (NaN)
+            if (!isNaN(precio) && !isNaN(cantidad)) {
+                totalVisual += (precio * cantidad);
+            }
+        });
+    }
+
+    // Actualizamos el H3 con el total calculado
+    if (displayTotal) {
+        displayTotal.textContent = `$${totalVisual.toFixed(2)}`;
+    }
+    // ---------------------------------------------------------
+
+    // 2. Manejo del Formulario (Envío a WhatsApp)
     const newForm = form.cloneNode(true);
     form.parentNode.replaceChild(newForm, form);
 
     newForm.addEventListener('submit', (e) => {
-        e.preventDefault(); // Evitamos recarga de página
+        e.preventDefault(); 
 
         // A. Validar Carrito
-        const carrito = getCarritoFromStorage();
-        if (!carrito || carrito.length === 0) {
+        const carritoActual = getCarritoFromStorage();
+        if (!carritoActual || carritoActual.length === 0) {
             alert("El carrito está vacío. Agrega productos antes de finalizar.");
             return;
         }
@@ -4978,7 +5017,7 @@ function setupCheckoutMayoristaForm() {
         mensaje += `📦 *DETALLE DEL PEDIDO:*\n`;
         let total = 0;
 
-        carrito.forEach(item => {
+        carritoActual.forEach(item => {
             const precio = Number(item.precio); 
             const cantidad = Number(item.cantidad);
             const subtotal = precio * cantidad;
@@ -4997,8 +5036,35 @@ function setupCheckoutMayoristaForm() {
         const numeroWhatsApp = "5493571618367"; 
         const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${encodeURIComponent(mensaje)}`;
         
-        console.log("Redirigiendo a:", urlWhatsApp);
         window.location.href = urlWhatsApp; 
     });
 }
 // FIN DEL ARCHIVO - Asegúrate de no tener llaves "}" sueltas debajo de esto.
+// --- NUEVA LÓGICA STOCK PARA ADMIN GENERAL ---
+window.toggleMainAdminStock = async (id, currentStatus) => {
+    // currentStatus: true = Sin Stock, false = Con Stock
+    const newStatus = !currentStatus; 
+
+    // Preparamos datos
+    let updateData = {
+        noStock: newStatus
+    };
+
+    // Si volvemos a tener stock, reiniciamos el contador de reservas
+    if (currentStatus === true) {
+        updateData.reservationCount = 0; 
+        console.log(`Stock reactivado para ${id}. Reiniciando contador.`);
+    }
+
+    try {
+        // Actualizar en Firebase
+        await db.collection('products').doc(id).update(updateData);
+        
+        // Recargar la tabla del Admin General visualmente
+        await cargarProductosAdmin(); 
+        
+    } catch (error) {
+        console.error("Error cambiando estado de stock:", error);
+        alert("Error al actualizar el stock: " + error.message);
+    }
+};

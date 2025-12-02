@@ -3564,3 +3564,86 @@ main#search-results-page-container .mensaje-vacio {
     .checkout-card { padding: 1.5rem; }
     .btn-whatsapp-final { font-size: 1rem; }
 }
+/* ============================================== */
+/* === ESTILOS BOTONES DE ACCIÓN (TIPO NÚCLEO) === */
+/* ============================================== */
+
+/* Estilo base del botón cuadrado */
+.action-btn {
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 2px;
+    font-size: 1rem;
+    transition: background-color 0.2s, transform 0.1s;
+    text-decoration: none;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+/* Colores Específicos */
+.btn-edit {
+    background-color: #007bff !important; /* Azul (Editar) */
+}
+
+.btn-delete {
+    background-color: #dc3545 !important; /* Rojo (Eliminar) */
+}
+
+/* Estados de Stock */
+.btn-stock-on {
+    background-color: #28a745 !important; /* Verde (Hay Stock) */
+}
+
+.btn-stock-off {
+    background-color: #ffc107 !important; /* Amarillo (Sin Stock) */
+    color: #333 !important; /* Texto oscuro para contraste */
+}
+
+/* Ajuste para la columna de acciones en la tabla */
+.actions-column {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}/* --- BOTÓN VISIBILIDAD MAYORISTA --- */
+.btn-wholesale-visible {
+    background-color: #6f42c1 !important; /* Violeta: Visible */
+    color: white !important;
+}
+.btn-wholesale-visible:hover {
+    background-color: #5a32a3 !important;
+}
+
+.btn-wholesale-hidden {
+    background-color: #6c757d !important; /* Gris: Oculto */
+    color: white !important;
+    opacity: 0.8;
+}
+.btn-wholesale-hidden:hover {
+    background-color: #5a6268 !important;
+}/* --- BOTÓN VISIBILIDAD MAYORISTA --- */
+.btn-wholesale-visible {
+    background-color: #6f42c1 !important; /* Violeta: Visible */
+    color: white !important;
+}
+.btn-wholesale-visible:hover {
+    background-color: #5a32a3 !important;
+}
+
+.btn-wholesale-hidden {
+    background-color: #6c757d !important; /* Gris: Oculto */
+    color: white !important;
+    opacity: 0.8;
+}
+.btn-wholesale-hidden:hover {
+    background-color: #5a6268 !important;
+}

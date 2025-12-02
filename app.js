@@ -952,13 +952,42 @@ async function loadCategoriesAdmin() {
             const parentName = parentId ? (categoryNameMap.get(parentId) || 'ID: ' + parentId) : '--';
 
             const row = document.createElement('tr');
-            row.setAttribute('data-category-id', categoryId);
+            row.setAttribute('data-product-id', productId);
+            
             row.innerHTML = `
-                <td><img src="${imageUrl}" alt="${name}" class="admin-table-thumbnail" onerror="this.onerror=null; this.src='https://via.placeholder.com/60?text=Err';"></td>
+                <td>
+                    <div style="position:relative; width:50px; height:50px; margin:auto;">
+                        <img src="${imageUrl}" class="admin-table-thumbnail" style="width:100%; height:100%;">
+                        ${imgOverlay}
+                    </div>
+                </td>
                 <td>${name}</td>
                 <td>${brand}</td>
-                <td>${parentName}</td>
-                <td><button class="edit-category-btn admin-button edit-button" data-id="${categoryId}">Editar</button><button class="delete-category-btn admin-button cancel-button" data-id="${categoryId}">Eliminar</button></td>
+                <td>${categoryName}</td>
+                <td>$${price}</td>
+                <td>${wholesaleDisplay}</td>
+                <td style="text-align:center; font-weight:bold; font-size: 1.1em; color: #007bff;">${popularidad}</td>
+                <td style="font-size: 0.85rem; color:#666;">${descriptionPreview}</td>
+                <td style="white-space: nowrap; min-width: 160px; text-align:center;"> 
+                    <div class="actions-column">
+                        
+                        <button class="action-btn btn-edit edit-btn" data-id="${productId}" title="Editar">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        
+                        <button class="action-btn ${stockBtnClass}" onclick="toggleMainAdminStock('${productId}', ${isNoStock})" title="${stockTitle}">
+                            ${stockIcon}
+                        </button>
+
+                        <button class="action-btn ${wholesaleBtnClass}" onclick="toggleWholesaleVisibility('${productId}', ${isHiddenWholesale})" title="${wholesaleTitle}">
+                            ${wholesaleIcon}
+                        </button>
+
+                        <button class="action-btn btn-delete delete-btn" data-id="${productId}" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
             `;
             tableBody.appendChild(row);
         });
@@ -1241,14 +1270,18 @@ async function cargarProductosAdmin() {
             
             // --- LÓGICA DE ICONOS Y COLORES DE STOCK ---
             const isNoStock = product.noStock === true;
-            
-            // Si NO hay stock (isNoStock = true) -> Clase Amarilla, Icono Ojo Tachado
-            // Si HAY stock (isNoStock = false) -> Clase Verde, Icono Check
             const stockBtnClass = isNoStock ? 'btn-stock-off' : 'btn-stock-on';
             const stockIcon = isNoStock ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-check"></i>';
             const stockTitle = isNoStock ? 'Sin Stock (Click para Activar)' : 'En Stock (Click para Pausar)';
-            
-            // Overlay rojo sobre la imagen pequeña si no hay stock
+
+            // --- NUEVO: LÓGICA VISIBILIDAD MAYORISTA ---
+            const isHiddenWholesale = product.hideInWholesale === true; // Si es true, está oculto
+            const wholesaleBtnClass = isHiddenWholesale ? 'btn-wholesale-hidden' : 'btn-wholesale-visible';
+            // Icono: "M" tachada si oculto, "M" normal si visible
+            const wholesaleIcon = isHiddenWholesale ? '<i class="fas fa-store-slash"></i>' : '<i class="fas fa-store"></i>'; 
+            const wholesaleTitle = isHiddenWholesale ? 'Oculto en Mayorista (Click para Mostrar)' : 'Visible en Mayorista (Click para Ocultar)';
+            // ---------------------------------------------
+
             const imgOverlay = isNoStock 
                 ? '<div style="position:absolute; inset:0; background:rgba(200,0,0,0.5); color:white; font-size:9px; display:flex; justify-content:center; align-items:center; font-weight:bold;">SIN STOCK</div>' 
                 : '';
@@ -1271,7 +1304,7 @@ async function cargarProductosAdmin() {
             const row = document.createElement('tr');
             row.setAttribute('data-product-id', productId);
             
-            // --- HTML ACTUALIZADO CON LOS BOTONES DE NÚCLEO ---
+            // --- HTML ACTUALIZADO CON EL NUEVO BOTÓN ---
             row.innerHTML = `
                 <td>
                     <div style="position:relative; width:50px; height:50px; margin:auto;">
@@ -1286,7 +1319,7 @@ async function cargarProductosAdmin() {
                 <td>${wholesaleDisplay}</td>
                 <td style="text-align:center; font-weight:bold; font-size: 1.1em; color: #007bff;">${popularidad}</td>
                 <td style="font-size: 0.85rem; color:#666;">${descriptionPreview}</td>
-                <td style="white-space: nowrap; min-width: 140px; text-align:center;"> 
+                <td style="white-space: nowrap; min-width: 160px; text-align:center;"> 
                     <div class="actions-column">
                         
                         <button class="action-btn btn-edit edit-btn" data-id="${productId}" title="Editar">
@@ -1295,6 +1328,10 @@ async function cargarProductosAdmin() {
                         
                         <button class="action-btn ${stockBtnClass}" onclick="toggleMainAdminStock('${productId}', ${isNoStock})" title="${stockTitle}">
                             ${stockIcon}
+                        </button>
+
+                        <button class="action-btn ${wholesaleBtnClass}" onclick="toggleWholesaleVisibility('${productId}', ${isHiddenWholesale})" title="${wholesaleTitle}">
+                            ${wholesaleIcon}
                         </button>
 
                         <button class="action-btn btn-delete delete-btn" data-id="${productId}" title="Eliminar">
@@ -3570,19 +3607,26 @@ async function setupMayoristaLogic() {
 
         // === 2. FUNCIÓN DE RENDERIZADO PRINCIPAL ===
         const applyFiltersAndRender = () => {
-            container.innerHTML = '';
-            
-            // A) FILTRADO
-            let filtered = allProductsCache.filter(p => {
-                // 1. Filtro Marca
-                const matchBrand = (currentBrandFilter === 'all') || (p.brand === currentBrandFilter);
+                container.innerHTML = '';
                 
-                // 2. Filtro Categoría (MÚLTIPLE)
-                // Si el array está vacío, muestra todas. Si tiene elementos, busca si la categoría del producto está en el array.
-                const matchCategory = (selectedCategories.length === 0) || selectedCategories.includes(p.categoryName);
-                
-                return matchBrand && matchCategory;
-            });
+                // A) FILTRADO
+                let filtered = allProductsCache.filter(p => {
+                    
+                    // --- NUEVO: FILTRO DE VISIBILIDAD ---
+                    // Si hideInWholesale es true, NO lo mostramos en esta lista
+                    if (p.hideInWholesale === true) {
+                        return false; 
+                    }
+                    // ------------------------------------
+
+                    // 1. Filtro Marca
+                    const matchBrand = (currentBrandFilter === 'all') || (p.brand === currentBrandFilter);
+                    
+                    // 2. Filtro Categoría (MÚLTIPLE)
+                    const matchCategory = (selectedCategories.length === 0) || selectedCategories.includes(p.categoryName);
+                    
+                    return matchBrand && matchCategory;
+                });
 
             // B) ORDENAMIENTO
             switch (currentSortOrder) {
@@ -5065,7 +5109,28 @@ window.toggleMainAdminStock = async (id, currentStatus) => {
         console.error("Error cambiando estado de stock:", error);
         alert("Error al actualizar el stock: " + error.message);
     }
-};// ==========================================
+};
+// --- NUEVA LÓGICA VISIBILIDAD MAYORISTA ---
+window.toggleWholesaleVisibility = async (id, currentStatus) => {
+    // currentStatus: true = Está oculto, false = Está visible
+    const newStatus = !currentStatus; 
+
+    try {
+        // Actualizar en Firebase
+        await db.collection('products').doc(id).update({
+            hideInWholesale: newStatus
+        });
+        
+        // Recargar la tabla visualmente
+        console.log(`Visibilidad Mayorista actualizada para ${id}: ${newStatus ? 'Oculto' : 'Visible'}`);
+        await cargarProductosAdmin(); 
+        
+    } catch (error) {
+        console.error("Error cambiando visibilidad mayorista:", error);
+        alert("Error al actualizar: " + error.message);
+    }
+};
+// ==========================================
 // === SISTEMA DE ESTADÍSTICAS (TRACKING) ===
 // ==========================================
 function registrarVisita(pagina) {
@@ -5090,3 +5155,23 @@ function registrarVisita(pagina) {
         .then(() => console.log(`Visita registrada en: ${pagina}`))
         .catch(err => console.error("Error registrando visita:", err));
 }
+// --- NUEVA LÓGICA VISIBILIDAD MAYORISTA ---
+window.toggleWholesaleVisibility = async (id, currentStatus) => {
+    // currentStatus: true = Está oculto, false = Está visible
+    const newStatus = !currentStatus; 
+
+    try {
+        // Actualizar en Firebase
+        await db.collection('products').doc(id).update({
+            hideInWholesale: newStatus
+        });
+        
+        // Recargar la tabla visualmente
+        console.log(`Visibilidad Mayorista actualizada para ${id}: ${newStatus ? 'Oculto' : 'Visible'}`);
+        await cargarProductosAdmin(); 
+        
+    } catch (error) {
+        console.error("Error cambiando visibilidad mayorista:", error);
+        alert("Error al actualizar: " + error.message);
+    }
+};

@@ -125,7 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- Función separada para la lógica de inicialización de página ---
 function initializePageLogic()
  {
-    
+    // 1. RASTREO DE VISITAS (NUEVO)
+    const pageNameForStats = currentPage || 'index'; // Si es vacío es index
+    registrarVisita(pageNameForStats);
     // === NUEVO: Inicializar Carrito Lateral en TODAS las páginas ===
     setupSideCart(); 
     // ==============================================================
@@ -5067,4 +5069,28 @@ window.toggleMainAdminStock = async (id, currentStatus) => {
         console.error("Error cambiando estado de stock:", error);
         alert("Error al actualizar el stock: " + error.message);
     }
-};
+};// ==========================================
+// === SISTEMA DE ESTADÍSTICAS (TRACKING) ===
+// ==========================================
+function registrarVisita(pagina) {
+    // Evitamos contar visitas si es el Admin el que navega
+    // (Opcional: quita este if si quieres contar tus propias visitas)
+    /* if (auth.currentUser && auth.currentUser.email === ADMIN_EMAIL) {
+        console.log("Visita de admin no registrada.");
+        return;
+    }
+    */
+
+    // Referencia al documento de estadísticas
+    const statsRef = db.collection('stats').doc('visitas_globales');
+
+    // Usamos increment(1) para sumar atómicamente
+    const updateData = {};
+    updateData[pagina] = firebase.firestore.FieldValue.increment(1);
+    updateData['total_general'] = firebase.firestore.FieldValue.increment(1);
+    updateData['ultima_visita'] = firebase.firestore.FieldValue.serverTimestamp();
+
+    statsRef.set(updateData, { merge: true })
+        .then(() => console.log(`Visita registrada en: ${pagina}`))
+        .catch(err => console.error("Error registrando visita:", err));
+}

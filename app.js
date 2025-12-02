@@ -123,40 +123,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // --- Función separada para la lógica de inicialización de página ---
-function initializePageLogic()
- {
-    // 1. RASTREO DE VISITAS (NUEVO)
-    const pageNameForStats = currentPage || 'index'; // Si es vacío es index
-    registrarVisita(pageNameForStats);
-    // === NUEVO: Inicializar Carrito Lateral en TODAS las páginas ===
-    setupSideCart(); 
-    // ==============================================================
+function initializePageLogic() {
+    // 1. DEFINICIÓN DE VARIABLES CRÍTICAS (MOVIDO AL INICIO)
+    const pathname = window.location.pathname;
+    const pathParts = pathname.split('/').filter(part => part !== '');
+    const rawPageName = pathParts.length > 0 ? pathParts[pathParts.length - 1] : 'index';
+    const currentPage = rawPageName.replace('.html', '');
 
-    // Lógica Común
+    console.log("Página actual detectada (normalizada):", currentPage);
+
+    // 2. RASTREO DE VISITAS Y CARRITO
+    const pageNameForStats = currentPage || 'index';
+    registrarVisita(pageNameForStats);
+    
+    // Inicializar Carrito Lateral en TODAS las páginas
+    setupSideCart();
+
+    // 3. LÓGICA COMÚN DE UI
     if (typeof actualizarContadorCarrito === 'function') {
         actualizarContadorCarrito();
     }
     setupSearchForm();
     setupHamburgerMenu();
 
-    // Lógica Específica
-    const pathname = window.location.pathname; 
-    const pathParts = pathname.split('/').filter(part => part !== '');
-    const rawPageName = pathParts.length > 0 ? pathParts[pathParts.length - 1] : 'index';
-    const currentPage = rawPageName.replace('.html', '');
-
-    console.log("Página actual detectada (normalizada):", currentPage); 
-
+    // 4. ENRUTADOR DE LÓGICA ESPECÍFICA
     try {
         const catalogoContainerCliente = document.getElementById('catalogo-container');
-        
+
         // === ACTUALIZACIÓN PARA NÚCLEO (SEPARADO) ===
         // Detectamos si estamos en alguna de las páginas de categoría GENÉRICAS
         const isCategoryPage = catalogoContainerCliente &&
-                                (currentPage === 'productos-marykay' ||
-                                 currentPage === 'productos-biogreen' ||
-                                 currentPage === 'productos-arbell' ||
-                                 currentPage === 'productos-nexo'); 
+            (currentPage === 'productos-marykay' ||
+                currentPage === 'productos-biogreen' ||
+                currentPage === 'productos-arbell' ||
+                currentPage === 'productos-nexo');
 
         if (isCategoryPage) {
             let brand = null;
@@ -176,45 +176,45 @@ function initializePageLogic()
                 });
             }
         }
-        
+
         // === LÓGICA ESPECÍFICA PARA ELECTRÓNICA NÚCLEO ===
         else if (currentPage === 'checkout-mayorista') {
-    console.log("Ejecutando lógica de Checkout Mayorista...");
-    setupCheckoutMayoristaForm(); 
-}
+            console.log("Ejecutando lógica de Checkout Mayorista...");
+            setupCheckoutMayoristaForm();
+        } 
         else if (currentPage === 'productos-nucleo') {
             console.log("Ejecutando lógica específica para Electrónica Núcleo...");
-            setupNucleoLogic(); 
+            setupNucleoLogic();
         }
 
         // Páginas de Catálogo Productos Cliente (SOLO Novedades ahora)
         else if (catalogoContainerCliente && currentPage !== 'admin' && currentPage.startsWith('productos-')) {
             const productosContainerCliente = document.getElementById('productos-container') || catalogoContainerCliente;
-            
+
             let brandFilter = null;
             if (currentPage === 'productos-novedades') brandFilter = 'novedades';
 
             if (brandFilter) {
                 console.log("Cargando productos cliente (vista plana) para marca:", brandFilter);
-                 auth.onAuthStateChanged(user => {
-                     if (user) {
-                         console.log("Auth listo para productos cliente (plano), cargando...");
-                         cargarProductosCliente(brandFilter, productosContainerCliente);
-                     }
-                 });
-            } else if (!isCategoryPage && currentPage !== 'productos-nucleo') { 
-                 console.warn("No se pudo determinar la marca para filtrar productos en:", pathname);
+                auth.onAuthStateChanged(user => {
+                    if (user) {
+                        console.log("Auth listo para productos cliente (plano), cargando...");
+                        cargarProductosCliente(brandFilter, productosContainerCliente);
+                    }
+                });
+            } else if (!isCategoryPage && currentPage !== 'productos-nucleo') {
+                console.warn("No se pudo determinar la marca para filtrar productos en:", pathname);
             }
         }
         // PÁGINA UNIVERSAL DE CATEGORÍA NÚCLEO
-else if (currentPage === 'categoria-nucleo' || document.getElementById('dynamic-cat-title')) {
+        else if (currentPage === 'categoria-nucleo' || document.getElementById('dynamic-cat-title')) {
             console.log("✅ Página de Categoría Universal detectada (por ID o Nombre).");
-            
+
             const params = new URLSearchParams(window.location.search);
             const catId = params.get('id');
-            const container = document.getElementById('catalogo-container');
             const titleH1 = document.getElementById('dynamic-cat-title');
-            
+            const container = document.getElementById('catalogo-container');
+
             // Verificamos si loadUniversalCategoryLogic existe antes de llamarla
             if (typeof loadUniversalCategoryLogic === 'function') {
                 if (catId) {
@@ -223,8 +223,8 @@ else if (currentPage === 'categoria-nucleo' || document.getElementById('dynamic-
                 } else {
                     // Si NO hay ID (abriste el archivo directo), mostramos aviso
                     console.warn("No se detectó ID en la URL");
-                    if(titleH1) titleH1.textContent = "Bienvenido al Catálogo";
-                    if(container) {
+                    if (titleH1) titleH1.textContent = "Bienvenido al Catálogo";
+                    if (container) {
                         container.innerHTML = `
                             <div style="text-align:center; padding: 40px;">
                                 <i class="fas fa-search" style="font-size: 3rem; color: #6f42c1; margin-bottom: 15px;"></i>
@@ -241,44 +241,44 @@ else if (currentPage === 'categoria-nucleo' || document.getElementById('dynamic-
         }
         // Página de Admin General
         else if (currentPage === 'admin') {
-             console.log("Ejecutando lógica para admin.html.");
-             auth.onAuthStateChanged(user => {
+            console.log("Ejecutando lógica para admin.html.");
+            auth.onAuthStateChanged(user => {
                 if (user && user.email === ADMIN_EMAIL) {
                     console.log("Admin verificado en admin.html.");
                     Promise.all([
-                         loadCategoriesAdmin(),
-                         cargarProductosAdmin(),
-                         loadHomepageSettingsAdmin(), 
-                         loadCategoryBannersAdmin(),
-                         loadPageImagesAdmin(),
-                         loadSalespeople(null, 'salespeople-list', false)
+                        loadCategoriesAdmin(),
+                        cargarProductosAdmin(),
+                        loadHomepageSettingsAdmin(),
+                        loadCategoryBannersAdmin(),
+                        loadPageImagesAdmin(),
+                        loadSalespeople(null, 'salespeople-list', false)
                     ]).then(() => {
-                         setupAddProductForm();
-                         setupHomepageSettingsForm(); 
-                         setupCategoryForm();
-                         setupCategoryBannersForm();
-                         setupPageImagesForm();
-                         console.log("Componentes de admin inicializados.");
+                        setupAddProductForm();
+                        setupHomepageSettingsForm();
+                        setupCategoryForm();
+                        setupCategoryBannersForm();
+                        setupPageImagesForm();
+                        console.log("Componentes de admin inicializados.");
                     }).catch(adminInitError => {
-                         console.error("Error al inicializar componentes de admin:", adminInitError);
-                         displayError(document.querySelector('.admin-container'), "Error al cargar datos del panel.");
+                        console.error("Error al inicializar componentes de admin:", adminInitError);
+                        displayError(document.querySelector('.admin-container'), "Error al cargar datos del panel.");
                     });
                 } else if (user) {
-                     console.warn('Acceso denegado a admin.html (onAuthStateChanged no es admin):', user.email || user.uid);
-                     const adminMain = document.querySelector('.admin-container');
-                     if (adminMain) adminMain.innerHTML = '<h2>Acceso Denegado</h2><p>Debes ser administrador.</p>';
+                    console.warn('Acceso denegado a admin.html (onAuthStateChanged no es admin):', user.email || user.uid);
+                    const adminMain = document.querySelector('.admin-container');
+                    if (adminMain) adminMain.innerHTML = '<h2>Acceso Denegado</h2><p>Debes ser administrador.</p>';
                 } else {
-                     console.warn('Acceso denegado a admin.html (onAuthStateChanged no hay usuario). Redirigiendo a login...');
-                     window.location.href = 'login.html'; 
+                    console.warn('Acceso denegado a admin.html (onAuthStateChanged no hay usuario). Redirigiendo a login...');
+                    window.location.href = 'login.html';
                 }
             });
         }
         // Página de Admin Núcleo
         else if (currentPage === 'admin-nucleo') {
-             console.log("Ejecutando lógica para admin-nucleo.html.");
-             if (typeof initializeNucleoAdminPage === 'function') {
-                 initializeNucleoAdminPage();
-             }
+            console.log("Ejecutando lógica para admin-nucleo.html.");
+            if (typeof initializeNucleoAdminPage === 'function') {
+                initializeNucleoAdminPage();
+            }
         }
 
         // Página del Carrito
@@ -287,48 +287,49 @@ else if (currentPage === 'categoria-nucleo' || document.getElementById('dynamic-
             const contenedorCarritoHTML = document.getElementById('carrito-container');
             if (contenedorCarritoHTML) {
                 renderizarCarrito();
-            } else { console.warn("Contenedor del carrito no encontrado."); }
+            } else {
+                console.warn("Contenedor del carrito no encontrado.");
+            }
         }
         // Página de Búsqueda
         else if (currentPage === 'busqueda') {
             console.log("Ejecutando lógica para busqueda.html");
-             auth.onAuthStateChanged(user => {
+            auth.onAuthStateChanged(user => {
                 if (user) {
                     console.log("Auth listo en busqueda.html, ejecutando búsqueda...");
                     executeSearchPageQuery();
                 }
-             });
+            });
         }
-        
+
         // Página de Detalle de Producto
         else if (currentPage === 'producto-detalle') {
             console.log("Ejecutando lógica para producto-detalle.html");
             const params = new URLSearchParams(window.location.search);
-            const productId = params.get('id'); 
-            
+            const productId = params.get('id');
+
             if (!productId) {
-                 console.error("No se proporcionó ID de producto en la URL.");
-                 displayError(document.querySelector('.detalle-producto-container'), "Error: No se especificó ningún producto.");
-                 const loadingMsg = document.querySelector('.detalle-producto-container .loading-message');
-                 if(loadingMsg) loadingMsg.style.display = 'none';
-                 return;
+                console.error("No se proporcionó ID de producto en la URL.");
+                displayError(document.querySelector('.detalle-producto-container'), "Error: No se especificó ningún producto.");
+                const loadingMsg = document.querySelector('.detalle-producto-container .loading-message');
+                if (loadingMsg) loadingMsg.style.display = 'none';
+                return;
             }
-            
+
             auth.onAuthStateChanged(user => {
                 if (user) {
                     console.log(`Auth listo en detalle.html, cargando producto ID: ${productId}`);
-                    loadProductDetails(productId); 
+                    loadProductDetails(productId);
                 }
-             });
+            });
         }
-// --- NUEVO: Página Detalle Núcleo (PEGA ESTO AQUÍ) ---
+        // Página Detalle Núcleo
         else if (currentPage === 'nucleo-detalle') {
             console.log("Ejecutando lógica para nucleo-detalle.html");
             const params = new URLSearchParams(window.location.search);
             const productId = params.get('id');
-            
+
             if (productId) {
-                // Llamamos a la nueva función de carga específica
                 loadNucleoProductDetailsPage(productId);
             } else {
                 console.error("No ID provided for Nucleo detail");
@@ -337,32 +338,32 @@ else if (currentPage === 'categoria-nucleo' || document.getElementById('dynamic-
         // Página de Inicio
         else if (currentPage === 'inicio') {
             console.log("Ejecutando lógica para inicio.html");
-             auth.onAuthStateChanged(user => {
+            auth.onAuthStateChanged(user => {
                 if (user) {
                     console.log("Auth listo en inicio.html, cargando carrusel...");
                     loadAndStartHeroCarousel();
                 } else {
                     console.warn("Auth.onAuthStateChanged en inicio.html: Usuario aún no disponible. Mostrando fallback.");
-                    showStaticHeroContent(); 
+                    showStaticHeroContent();
                 }
-             });
+            });
         }
         // Página Oportunidad MK
         else if (currentPage === 'oportunidad-mk') {
-             console.log("Ejecutando lógica para oportunidad-mk.html");
-             startOportunidadCarousel();
+            console.log("Ejecutando lógica para oportunidad-mk.html");
+            startOportunidadCarousel();
         }
         // Página Quiero Ser Consultora
         else if (currentPage === 'quiero-ser-consultora') {
-             console.log("Ejecutando lógica para quiero-ser-consultora.html");
-             auth.onAuthStateChanged(user => {
-                 if (user) {
-                     console.log("Auth listo en Consultora, cargando imagen...");
-                     loadConsultoraImage(); 
-                 } else {
-                     console.warn("Auth aún no listo para cargar imagen de Consultora.");
-                 }
-             });
+            console.log("Ejecutando lógica para quiero-ser-consultora.html");
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    console.log("Auth listo en Consultora, cargando imagen...");
+                    loadConsultoraImage();
+                } else {
+                    console.warn("Auth aún no listo para cargar imagen de Consultora.");
+                }
+            });
         }
         // Lógica para la página de Línea de Color
         else if (currentPage === 'linea-de-color-marykay') {
@@ -374,48 +375,43 @@ else if (currentPage === 'categoria-nucleo' || document.getElementById('dynamic-
             });
         }
         // Página Mayorista
-        else if (currentPage === 'mayorista')
-            
-             {
+        else if (currentPage === 'mayorista') {
             console.log("Ejecutando lógica para Mayorista...");
             setupMayoristaLogic();
             setupMayoristaSearchForm();
         }
-        // Página de RESULTADOS Búsqueda Mayorista (NUEVO)
+        // Página de RESULTADOS Búsqueda Mayorista
         else if (currentPage === 'mayorista-busqueda') {
             console.log("Ejecutando búsqueda mayorista...");
             setupMayoristaSearchForm(); // Permitir buscar de nuevo
-            
+
             const params = new URLSearchParams(window.location.search);
             const query = params.get('q');
-            
-            if(query) {
+
+            if (query) {
                 executeMayoristaSearch(query);
             } else {
                 document.getElementById('mayorista-search-results').innerHTML = '<p class="mensaje-vacio">Escribe algo para buscar.</p>';
             }
-        }
+        } 
         else if (currentPage === 'mayorista-detalle') {
             console.log("Ejecutando lógica para Detalle Mayorista...");
             const params = new URLSearchParams(window.location.search);
             const productId = params.get('id');
-            
+
             if (productId) {
-                // Esta función debe estar definida al final de tu archivo app.js
                 loadMayoristaProductDetails(productId);
             } else {
                 console.error("No se encontró ID de producto en la URL");
                 document.getElementById('may-loading').textContent = "Error: Falta el ID del producto.";
             }
-        }
-        
-        
+        } 
         else {
             console.log("Página no requiere lógica especial:", currentPage);
         }
     } catch (pageLogicError) {
-         console.error(`Error en lógica de ${currentPage}:`, pageLogicError);
-         displayError(document.querySelector('main'), "Ocurrió un error inesperado.");
+        console.error(`Error en lógica de ${currentPage}:`, pageLogicError);
+        displayError(document.querySelector('main'), "Ocurrió un error inesperado.");
     }
 }
 

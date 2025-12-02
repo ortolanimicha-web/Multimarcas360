@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Tráfico - Multimarcas 360</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body { background-color: #f4f6f9; font-family: 'Roboto', sans-serif; }
+        .analytics-container { max-width: 1000px; margin: 40px auto; padding: 20px; }
+        .stat-card {
+            background: white; padding: 25px; border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px;
+            border-left: 5px solid #28a745;
+        }
+        .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .stat-header h2 { margin: 0; color: #333; }
+        
+        .big-number-box {
+            text-align: center; padding: 30px; background: #28a745; color: white;
+            border-radius: 8px; margin-bottom: 30px;
+        }
+        .big-number { font-size: 4rem; font-weight: 900; }
+        .big-label { font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        table.stats-table { width: 100%; border-collapse: collapse; }
+        table.stats-table th { background: #333; color: white; padding: 15px; text-align: left; }
+        table.stats-table td { padding: 15px; border-bottom: 1px solid #eee; font-size: 1.1rem; }
+        table.stats-table tr:hover { background-color: #f9f9f9; }
+        
+        .bar-container { background: #eee; width: 100%; height: 10px; border-radius: 5px; margin-top: 5px; overflow: hidden; }
+        .bar-fill { height: 100%; background: #28a745; width: 0%; transition: width 1s ease; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar" style="background:#000;">
+        <div class="logo" style="color:white; font-weight:bold;">PANEL ANALÍTICAS</div>
+        <ul class="nav-links">
+            <li><a href="admin-nucleo.html" style="color:#ffc107;">Volver a Admin</a></li>
+        </ul>
+    </nav>
+
+    <main class="analytics-container">
+        
+        <div class="big-number-box">
+            <div id="total-visitas" class="big-number">0</div>
+            <div class="big-label">Visitas Totales Históricas</div>
+        </div>
+
+        <section class="stat-card">
+            <div class="stat-header">
+                <h2><i class="fas fa-eye"></i> Desglose por Página</h2>
+                <button onclick="cargarEstadisticas()" style="padding:10px 15px; cursor:pointer;"><i class="fas fa-sync"></i> Actualizar</button>
+            </div>
+            
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Página / Sección</th>
+                        <th>Visitas</th>
+                        <th>Popularidad</th>
+                    </tr>
+                </thead>
+                <tbody id="stats-body">
+                    <tr><td colspan="3">Cargando datos...</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        // CONFIGURACIÓN FIREBASE (Misma que usas en tu proyecto)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCD4lBf6BA76Oz-SDr4f8eaPA-q7v5AecY",
+            authDomain: "consultoravidal91.firebaseapp.com",
+            projectId: "consultoravidal91",
+            storageBucket: "consultoravidal91.firebasestorage.app",
+            messagingSenderId: "840042202477",
+            appId: "1:840042202477:web:aae77961b4bca465dc4664",
+            measurementId: "G-HP3L0WZ60V"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // FUNCIÓN CARGAR DATOS
+        function cargarEstadisticas() {
+            const tbody = document.getElementById('stats-body');
+            const totalDisplay = document.getElementById('total-visitas');
+
+            db.collection('stats').doc('visitas_globales').get().then(doc => {
+                if (!doc.exists) {
+                    tbody.innerHTML = '<tr><td colspan="3">Aún no hay datos registrados. Navega por la web para generar estadísticas.</td></tr>';
+                    return;
+                }
+
+                const data = doc.data();
+                const totalGeneral = data.total_general || 0;
+                totalDisplay.textContent = totalGeneral;
+
+                // Convertir objeto a array para ordenar
+                let pages = [];
+                for (const [key, value] of Object.entries(data)) {
+                    if (key !== 'total_general' && key !== 'ultima_visita') {
+                        pages.push({ name: key, count: value });
+                    }
+                }
+
+                // Ordenar de mayor a menor
+                pages.sort((a, b) => b.count - a.count);
+
+                tbody.innerHTML = '';
+                pages.forEach(p => {
+                    // Traducir nombres técnicos a nombres amigables
+                    let friendlyName = p.name;
+                    if (p.name === 'index') friendlyName = '🏠 Inicio (Index)';
+                    if (p.name === 'productos-nucleo') friendlyName = '⚡ Electrónica Núcleo';
+                    if (p.name === 'mayorista') friendlyName = '📦 Zona Mayorista';
+                    if (p.name === 'carrito') friendlyName = '🛒 Carrito de Compras';
+
+                    // Calcular porcentaje para la barra
+                    let percent = totalGeneral > 0 ? (p.count / totalGeneral) * 100 : 0;
+
+                    const row = `
+                        <tr>
+                            <td><strong>${friendlyName}</strong></td>
+                            <td>${p.count}</td>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <span style="font-size:0.8rem; width:40px;">${Math.round(percent)}%</span>
+                                    <div class="bar-container">
+                                        <div class="bar-fill" style="width: ${percent}%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            }).catch(error => {
+                console.error("Error:", error);
+                tbody.innerHTML = '<tr><td colspan="3" style="color:red;">Error al cargar datos. Verifica tu conexión.</td></tr>';
+            });
+        }
+
+        // Cargar al iniciar
+        document.addEventListener('DOMContentLoaded', cargarEstadisticas);
+    </script>
+</body>
+</html>

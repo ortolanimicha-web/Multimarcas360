@@ -3647,3 +3647,99 @@ main#search-results-page-container .mensaje-vacio {
 .btn-wholesale-hidden:hover {
     background-color: #5a6268 !important;
 }
+/* ========================================= */
+/* === BARRA DE HERRAMIENTAS ADMIN (NUEVO) === */
+/* ========================================= */
+
+.admin-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    background-color: #fff;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Buscador */
+.admin-search-box {
+    display: flex;
+    align-items: center;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0 10px;
+    flex-grow: 1; /* Ocupa el espacio disponible */
+    min-width: 200px;
+}
+.admin-search-box i { color: #777; margin-right: 8px; }
+.admin-search-box input {
+    border: none;
+    background: transparent;
+    padding: 10px 0;
+    width: 100%;
+    outline: none;
+    font-size: 0.95rem;
+}
+
+/* Selectores */
+#admin-category-filter, 
+#admin-sort-select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 0.95rem;
+    min-width: 180px;
+}
+
+#admin-category-filter:focus, 
+#admin-sort-select:focus,
+.admin-search-box:focus-within {
+    border-color: #e91e63;
+    box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.1);
+}
+
+@media (max-width: 768px) {
+    .admin-toolbar { flex-direction: column; align-items: stretch; }
+}
+/* ================================================= */
+/* === FIX: TABLA DE PRODUCTOS ADMIN (Uniforme)  === */
+/* ================================================= */
+
+/* 1. Alinear verticalmente todo al centro */
+#products-table td {
+    vertical-align: middle !important;
+    padding: 10px 5px; /* Un poco más de aire */
+}
+
+/* 2. Definir un ancho máximo para la columna Nombre */
+#products-table td:nth-child(2) {
+    max-width: 220px; /* Ajusta este valor si quieres más/menos ancho */
+    min-width: 150px;
+}
+
+/* 3. Magia para cortar el texto largo (subtítulo/descripción) */
+#products-table td:nth-child(2) small {
+    display: -webkit-box;        /* Necesario para cortar por líneas */
+    -webkit-line-clamp: 3;       /* Muestra MÁXIMO 3 líneas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;            /* Oculta lo que sobre */
+    text-overflow: ellipsis;     /* Pone "..." al final */
+    white-space: normal;         /* Permite saltos de línea normales dentro del límite */
+    line-height: 1.2em;          /* Altura de línea compacta */
+    max-height: 3.6em;           /* 1.2em * 3 líneas = 3.6em altura máxima */
+}
+
+/* 4. Asegurar que el título (Nombre) tampoco rompa si es muy largo */
+#products-table td:nth-child(2) div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: bold;
+    margin-bottom: 4px;
+}

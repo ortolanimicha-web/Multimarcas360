@@ -923,67 +923,61 @@ async function updateParentCategoryDropdown(selectedBrand, categoryToSelect = nu
 async function loadCategoriesAdmin() {
     const tableBody = document.getElementById('categories-table-body');
     const loadingMsg = document.getElementById('loading-categories-admin');
-    if (!tableBody || !loadingMsg) { console.error("Elementos tabla categorías no encontrados."); return Promise.reject("Missing table elements"); }
-    loadingMsg.style.display = 'block'; loadingMsg.textContent = 'Cargando categorías...'; tableBody.innerHTML = '';
+    
+    if (!tableBody || !loadingMsg) return;
+    
+    loadingMsg.style.display = 'block'; 
+    loadingMsg.textContent = 'Cargando categorías...'; 
+    tableBody.innerHTML = '';
     
     try {
         const categoriesRef = db.collection('categories');
         
+        // Mapa para identificar nombres de padres
         const allCategoriesSnap = await categoriesRef.get();
         const categoryNameMap = new Map();
         allCategoriesSnap.forEach(doc => {
             categoryNameMap.set(doc.id, doc.data().name);
         });
 
-        console.log("Admin: Leyendo categorías de:", categoriesRef.path);
         const querySnapshot = await categoriesRef.orderBy('brand').orderBy('name').get();
 
         loadingMsg.style.display = 'none';
+        
         if (querySnapshot.empty) {
-            tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay categorías creadas.</td></tr>'; return Promise.resolve();
+            tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay categorías creadas.</td></tr>'; 
+            return;
         }
         
         querySnapshot.forEach(doc => {
-            const category = doc.data(); const categoryId = doc.id;
-            const name = category.name || 'N/D'; const brand = category.brand || 'N/D';
+            const category = doc.data(); 
+            const categoryId = doc.id;
+            const name = category.name || 'N/D'; 
+            const brand = category.brand || 'N/D';
             const imageUrl = category.imageUrl || 'https://via.placeholder.com/60?text=No+Img';
             
             const parentId = category.parentId;
-            const parentName = parentId ? (categoryNameMap.get(parentId) || 'ID: ' + parentId) : '--';
+            const parentName = parentId ? (categoryNameMap.get(parentId) || 'ID: ' + parentId) : '-- Principal --';
 
             const row = document.createElement('tr');
-            row.setAttribute('data-product-id', productId);
             
+            // --- VERSIÓN CORREGIDA DE LA TABLA ---
             row.innerHTML = `
                 <td>
-                    <div style="position:relative; width:50px; height:50px; margin:auto;">
-                        <img src="${imageUrl}" class="admin-table-thumbnail" style="width:100%; height:100%;">
-                        ${imgOverlay}
-                    </div>
+                    <img src="${imageUrl}" class="admin-table-thumbnail" style="width:50px; height:50px; object-fit:cover; margin:auto; display:block;">
                 </td>
                 <td>${name}</td>
                 <td>${brand}</td>
-                <td>${categoryName}</td>
-                <td>$${price}</td>
-                <td>${wholesaleDisplay}</td>
-                <td style="text-align:center; font-weight:bold; font-size: 1.1em; color: #007bff;">${popularidad}</td>
-                <td style="font-size: 0.85rem; color:#666;">${descriptionPreview}</td>
-                <td style="white-space: nowrap; min-width: 160px; text-align:center;"> 
+                <td>${parentName}</td>
+                <td style="text-align:center;">-</td>
+                <td style="text-align:center;">-</td>
+                
+                <td style="white-space: nowrap; text-align:center;"> 
                     <div class="actions-column">
-                        
-                        <button class="action-btn btn-edit edit-btn" data-id="${productId}" title="Editar">
+                        <button class="action-btn btn-edit edit-category-btn" data-id="${categoryId}" title="Editar">
                             <i class="fas fa-pen"></i>
                         </button>
-                        
-                        <button class="action-btn ${stockBtnClass}" onclick="toggleMainAdminStock('${productId}', ${isNoStock})" title="${stockTitle}">
-                            ${stockIcon}
-                        </button>
-
-                        <button class="action-btn ${wholesaleBtnClass}" onclick="toggleWholesaleVisibility('${productId}', ${isHiddenWholesale})" title="${wholesaleTitle}">
-                            ${wholesaleIcon}
-                        </button>
-
-                        <button class="action-btn btn-delete delete-btn" data-id="${productId}" title="Eliminar">
+                        <button class="action-btn btn-delete delete-category-btn" data-id="${categoryId}" title="Eliminar">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -991,14 +985,12 @@ async function loadCategoriesAdmin() {
             `;
             tableBody.appendChild(row);
         });
-        addCategoryButtonListeners();
-        console.log(`Admin: ${querySnapshot.size} categorías cargadas.`);
-        return Promise.resolve();
+        
+        addCategoryButtonListeners(); // Reactivar listeners de botones
+        
     } catch (error) {
-        console.error("Error GRAVE al cargar categorías admin: ", error);
-        displayError(document.getElementById('list-categories-container'), 'Error al cargar categorías. Verifica permisos e ÍNDICES (link en consola F12).');
-        if(loadingMsg) loadingMsg.style.display = 'none';
-        return Promise.reject(error);
+        console.error("Error cargando categorías admin: ", error);
+        loadingMsg.textContent = 'Error al cargar. Revisa consola.';
     }
 }
 function setupCategoryForm() {
@@ -1232,109 +1224,115 @@ async function updateProductsWithCategoryData(categoryId, newCategoryName, newCa
     }
 }
 
-// --- Lógica de Admin (Productos) ---
+;
+// --- FUNCIÓN RECUPERADA: Cargar Productos en Admin ---
 async function cargarProductosAdmin() {
     const tableBody = document.getElementById('products-table-body');
     const loadingMsg = document.getElementById('loading-products-admin');
-    
-    if (!tableBody || !loadingMsg) { 
-        return Promise.reject("Missing table elements"); 
-    }
-    
-    loadingMsg.style.display = 'block'; 
-    loadingMsg.textContent = 'Cargando...'; 
+    const searchInput = document.getElementById('admin-search-input');
+    const categoryFilter = document.getElementById('admin-category-filter');
+    const sortSelect = document.getElementById('admin-sort-select');
+
+    if (!tableBody || !loadingMsg) return;
+
+    loadingMsg.style.display = 'block';
     tableBody.innerHTML = '';
-    
+
     try {
-        console.log("Admin: Leyendo todos los productos...");
-        const querySnapshot = await db.collection('products')
-                                    .orderBy('brand')
-                                    .orderBy('name')
-                                    .get();
+        // 1. Obtener todos los productos
+        const snapshot = await db.collection('products').get();
+        let products = [];
+        
+        snapshot.forEach(doc => {
+            if (doc.id.startsWith('--config-')) return;
+            products.push({ id: doc.id, ...doc.data() });
+        });
+
+        // 2. Filtrar
+        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+        const catFilterVal = categoryFilter ? categoryFilter.value : 'all';
+
+        let filtered = products.filter(p => {
+            const matchesSearch = (p.name || '').toLowerCase().includes(searchTerm);
+            const matchesCat = catFilterVal === 'all' || (p.categoryName === catFilterVal) || (p.categoryId === catFilterVal);
+            return matchesSearch && matchesCat;
+        });
+
+        // 3. Ordenar
+        const sortVal = sortSelect ? sortSelect.value : 'newest';
+        filtered.sort((a, b) => {
+            if (sortVal === 'name-asc') return (a.name || '').localeCompare(b.name || '');
+            if (sortVal === 'name-desc') return (b.name || '').localeCompare(a.name || '');
+            if (sortVal === 'price-asc') return (a.price || 0) - (b.price || 0);
+            if (sortVal === 'price-desc') return (b.price || 0) - (a.price || 0);
+            if (sortVal === 'newest') return (b.createdAtNumerico || 0) - (a.createdAtNumerico || 0);
+            if (sortVal === 'oldest') return (a.createdAtNumerico || 0) - (b.createdAtNumerico || 0);
+            if (sortVal === 'best-seller') return (b.salesCount || 0) - (a.salesCount || 0);
+            return 0;
+        });
+
         loadingMsg.style.display = 'none';
-        const productDocs = querySnapshot.docs.filter(doc => !doc.id.startsWith('--config-'));
-        
-        if (productDocs.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay productos agregados.</td></tr>'; 
-            return Promise.resolve();
+
+        if (filtered.length === 0) {
+            document.getElementById('admin-no-results').style.display = 'block';
+            return;
+        } else {
+            document.getElementById('admin-no-results').style.display = 'none';
         }
-        
-        productDocs.forEach(doc => {
-            const product = doc.data(); 
-            const productId = doc.id;
+
+        // 4. Renderizar
+        filtered.forEach(p => {
+            const isNoStock = p.noStock === true;
+            const isHiddenWholesale = p.hideInWholesale === true;
             
-            const name = product.name || 'N/D';
-            const brand = product.brand || 'N/D';
-            const categoryName = product.categoryName || 'N/A';
-            const price = typeof product.price === 'number' ? product.price.toFixed(2) : '0.00';
-            
-            // --- LÓGICA DE ICONOS Y COLORES DE STOCK ---
-            const isNoStock = product.noStock === true;
+            // Configurar botones visuales
             const stockBtnClass = isNoStock ? 'btn-stock-off' : 'btn-stock-on';
             const stockIcon = isNoStock ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-check"></i>';
-            const stockTitle = isNoStock ? 'Sin Stock (Click para Activar)' : 'En Stock (Click para Pausar)';
+            const stockTitle = isNoStock ? 'Sin Stock (Click para activar)' : 'En Stock (Click para pausar)';
+            const imgOverlay = isNoStock ? '<div style="position:absolute; inset:0; background:rgba(200,0,0,0.5); color:white; font-size:10px; display:flex; justify-content:center; align-items:center; font-weight:bold;">SIN STOCK</div>' : '';
 
-            // --- NUEVO: LÓGICA VISIBILIDAD MAYORISTA ---
-            const isHiddenWholesale = product.hideInWholesale === true; // Si es true, está oculto
             const wholesaleBtnClass = isHiddenWholesale ? 'btn-wholesale-hidden' : 'btn-wholesale-visible';
-            // Icono: "M" tachada si oculto, "M" normal si visible
-            const wholesaleIcon = isHiddenWholesale ? '<i class="fas fa-store-slash"></i>' : '<i class="fas fa-store"></i>'; 
-            const wholesaleTitle = isHiddenWholesale ? 'Oculto en Mayorista (Click para Mostrar)' : 'Visible en Mayorista (Click para Ocultar)';
-            // ---------------------------------------------
+            const wholesaleIcon = isHiddenWholesale ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+            const wholesaleTitle = isHiddenWholesale ? 'Oculto en Mayorista' : 'Visible en Mayorista';
 
-            const imgOverlay = isNoStock 
-                ? '<div style="position:absolute; inset:0; background:rgba(200,0,0,0.5); color:white; font-size:9px; display:flex; justify-content:center; align-items:center; font-weight:bold;">SIN STOCK</div>' 
-                : '';
-
-            let wholesaleDisplay = 'Auto (30%)';
-            if (product.wholesalePrice && !isNaN(parseFloat(product.wholesalePrice))) {
-                wholesaleDisplay = `$${parseFloat(product.wholesalePrice).toFixed(2)}`;
-            }
-
-            const popularidad = product.salesCount || 0;
-            const imageUrl = (product.imageUrls && product.imageUrls[0]) ? product.imageUrls[0] : (product.imageUrl || 'https://via.placeholder.com/60?text=No+Img');
-            
-            let descriptionPreview = 'Sin detalles';
-            if(product.detailSections && product.detailSections.length > 0) {
-                descriptionPreview = product.detailSections[0].title + ": " + product.detailSections[0].content.substring(0, 30) + "...";
-            } else if (product.description) { 
-                descriptionPreview = product.description.substring(0, 30) + "...";
-            }
+            // Precios
+            const price = parseFloat(p.price || 0).toFixed(2);
+            let wholesalePrice = parseFloat(p.wholesalePrice);
+            if (isNaN(wholesalePrice)) wholesalePrice = (p.price * 0.70);
+            const wholesaleDisplay = `$${wholesalePrice.toFixed(2)}`;
 
             const row = document.createElement('tr');
-            row.setAttribute('data-product-id', productId);
-            
-            // --- HTML ACTUALIZADO CON EL NUEVO BOTÓN ---
             row.innerHTML = `
                 <td>
                     <div style="position:relative; width:50px; height:50px; margin:auto;">
-                        <img src="${imageUrl}" class="admin-table-thumbnail" style="width:100%; height:100%;">
+                        <img src="${p.imageUrl || ''}" class="admin-table-thumbnail" style="width:100%; height:100%;">
                         ${imgOverlay}
                     </div>
                 </td>
-                <td>${name}</td>
-                <td>${brand}</td>
-                <td>${categoryName}</td>
+                <td><div style="font-weight:bold;">${p.name}</div><small style="color:#777;">${p.subtitle || ''}</small></td>
+                <td>${p.brand}</td>
+                <td>${p.categoryName || '-'}</td>
                 <td>$${price}</td>
-                <td>${wholesaleDisplay}</td>
-                <td style="text-align:center; font-weight:bold; font-size: 1.1em; color: #007bff;">${popularidad}</td>
-                <td style="font-size: 0.85rem; color:#666;">${descriptionPreview}</td>
-                <td style="white-space: nowrap; min-width: 160px; text-align:center;"> 
+                <td style="color:#d4af37; font-weight:bold;">${wholesaleDisplay}</td>
+                <td style="text-align:center;">${p.salesCount || 0}</td>
+                <td style="font-size:0.8rem; color:#666; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                    ${p.description || (p.detailSections ? 'Ver detalles...' : '-')}
+                </td>
+                <td>
                     <div class="actions-column">
-                        
-                        <button class="action-btn btn-edit edit-btn" data-id="${productId}" title="Editar">
+                        <button class="action-btn btn-edit edit-btn" data-id="${p.id}" title="Editar">
                             <i class="fas fa-pen"></i>
                         </button>
                         
-                        <button class="action-btn ${stockBtnClass}" onclick="toggleMainAdminStock('${productId}', ${isNoStock})" title="${stockTitle}">
+                        <button class="action-btn ${stockBtnClass}" onclick="toggleMainAdminStock('${p.id}', ${isNoStock})" title="${stockTitle}">
                             ${stockIcon}
                         </button>
 
-                        <button class="action-btn ${wholesaleBtnClass}" onclick="toggleWholesaleVisibility('${productId}', ${isHiddenWholesale})" title="${wholesaleTitle}">
+                        <button class="action-btn ${wholesaleBtnClass}" onclick="toggleWholesaleVisibility('${p.id}', ${isHiddenWholesale})" title="${wholesaleTitle}">
                             ${wholesaleIcon}
                         </button>
 
-                        <button class="action-btn btn-delete delete-btn" data-id="${productId}" title="Eliminar">
+                        <button class="action-btn btn-delete delete-btn" data-id="${p.id}" title="Eliminar">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -1343,11 +1341,19 @@ async function cargarProductosAdmin() {
             tableBody.appendChild(row);
         });
         
+        // Agregar listeners para la barra de herramientas (solo una vez)
+        if (!searchInput.dataset.listening) {
+            searchInput.dataset.listening = "true";
+            searchInput.addEventListener('input', cargarProductosAdmin);
+            categoryFilter.addEventListener('change', cargarProductosAdmin);
+            sortSelect.addEventListener('change', cargarProductosAdmin);
+        }
+        
         addAdminButtonListeners();
-        return Promise.resolve();
+
     } catch (error) {
-        console.error("Error GRAVE cargando productos en admin: ", error);
-        return Promise.reject(error);
+        console.error("Error cargando productos admin:", error);
+        loadingMsg.textContent = "Error al cargar productos.";
     }
 }
 function setupAddProductForm() {

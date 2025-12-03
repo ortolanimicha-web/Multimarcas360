@@ -342,6 +342,27 @@
 
              <div id="list-products-container">
                  <h4>Productos Existentes</h4>
+                 
+                 <div class="admin-toolbar">
+                     <div class="admin-search-box">
+                         <i class="fas fa-search"></i>
+                         <input type="text" id="admin-search-input" placeholder="Buscar por nombre...">
+                     </div>
+                     
+                     <select id="admin-category-filter">
+                         <option value="all">Todas las Categorías</option>
+                         </select>
+
+                     <select id="admin-sort-select">
+                         <option value="name-asc">Nombre (A-Z)</option>
+                         <option value="name-desc">Nombre (Z-A)</option>
+                         <option value="price-asc">Precio (Menor a Mayor)</option>
+                         <option value="price-desc">Precio (Mayor a Menor)</option>
+                         <option value="newest">Más Nuevos</option>
+                         <option value="oldest">Más Viejos</option>
+                         <option value="best-seller">Más Vendidos (Popularidad)</option>
+                     </select>
+                 </div>
                  <p id="loading-products-admin" style="text-align:center; color:#777;">Cargando...</p>
                  <div class="table-container">
                      <table id="products-table">
@@ -353,12 +374,17 @@
                                  <th>Categoría</th>
                                  <th>Precio Lista</th>
                                  <th>P. Mayorista</th>
-                                 <th>Clics (Popularidad)</th> <th>Descripción</th>
-                                 <th>Acciones</th> </tr>
+                                 <th>Clics (Popularidad)</th> 
+                                 <th>Descripción</th>
+                                 <th>Acciones</th> 
+                            </tr>
                          </thead>
                          <tbody id="products-table-body">
                              </tbody>
                      </table>
+                     <p id="admin-no-results" style="display:none; text-align:center; padding:20px; color:#666;">
+                         No se encontraron productos con estos filtros.
+                     </p>
                  </div>
              </div>
         </section>

@@ -10,7 +10,7 @@
     
     <style>
         body { background-color: #f4f6f9; font-family: 'Roboto', sans-serif; }
-        .analytics-container { max-width: 1000px; margin: 40px auto; padding: 20px; }
+        .analytics-container { max-width: 1200px; margin: 40px auto; padding: 20px; } /* Hice más ancho el container */
         .stat-card {
             background: white; padding: 25px; border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px;
@@ -28,11 +28,16 @@
 
         table.stats-table { width: 100%; border-collapse: collapse; }
         table.stats-table th { background: #333; color: white; padding: 15px; text-align: left; }
-        table.stats-table td { padding: 15px; border-bottom: 1px solid #eee; font-size: 1.1rem; }
+        table.stats-table td { padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 0.95rem; color: #555; }
         table.stats-table tr:hover { background-color: #f9f9f9; }
         
         .bar-container { background: #eee; width: 100%; height: 10px; border-radius: 5px; margin-top: 5px; overflow: hidden; }
         .bar-fill { height: 100%; background: #28a745; width: 0%; transition: width 1s ease; }
+
+        /* Estilos para la tabla de logs */
+        .log-date { font-weight: bold; color: #28a745; }
+        .log-ip { font-family: monospace; background: #eee; padding: 2px 5px; border-radius: 4px; }
+        .scroll-table { overflow-x: auto; max-height: 500px; overflow-y: auto; }
     </style>
 </head>
 <body>
@@ -53,7 +58,7 @@
 
         <section class="stat-card">
             <div class="stat-header">
-                <h2><i class="fas fa-eye"></i> Desglose por Página</h2>
+                <h2><i class="fas fa-chart-pie"></i> Desglose por Página</h2>
                 <button onclick="cargarEstadisticas()" style="padding:10px 15px; cursor:pointer;"><i class="fas fa-sync"></i> Actualizar</button>
             </div>
             
@@ -71,6 +76,28 @@
             </table>
         </section>
 
+        <section class="stat-card" style="border-left-color: #007bff;">
+            <div class="stat-header">
+                <h2><i class="fas fa-list-alt"></i> Registro de Actividad (Últimas 100 visitas)</h2>
+            </div>
+            
+            <div class="scroll-table">
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha y Hora</th>
+                            <th>IP Usuario</th>
+                            <th>Página Visitada</th>
+                            <th>Usuario (Email)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-body">
+                        <tr><td colspan="4">Cargando logs de acceso...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
     </main>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -78,7 +105,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
-        // CONFIGURACIÓN FIREBASE (Misma que usas en tu proyecto)
+        // CONFIGURACIÓN FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyCD4lBf6BA76Oz-SDr4f8eaPA-q7v5AecY",
             authDomain: "consultoravidal91.firebaseapp.com",
@@ -91,47 +118,37 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // FUNCIÓN CARGAR DATOS
+        // FUNCIÓN CARGAR ESTADÍSTICAS GENERALES (Tu código original mejorado)
         function cargarEstadisticas() {
             const tbody = document.getElementById('stats-body');
             const totalDisplay = document.getElementById('total-visitas');
 
             db.collection('stats').doc('visitas_globales').get().then(doc => {
                 if (!doc.exists) {
-                    tbody.innerHTML = '<tr><td colspan="3">Aún no hay datos registrados. Navega por la web para generar estadísticas.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="3">Sin datos registrados aún.</td></tr>';
                     return;
                 }
-
                 const data = doc.data();
                 const totalGeneral = data.total_general || 0;
                 totalDisplay.textContent = totalGeneral;
 
-                // Convertir objeto a array para ordenar
                 let pages = [];
                 for (const [key, value] of Object.entries(data)) {
                     if (key !== 'total_general' && key !== 'ultima_visita') {
                         pages.push({ name: key, count: value });
                     }
                 }
-
-                // Ordenar de mayor a menor
                 pages.sort((a, b) => b.count - a.count);
 
                 tbody.innerHTML = '';
                 pages.forEach(p => {
-                    // Traducir nombres técnicos a nombres amigables
-                    let friendlyName = p.name;
-                    if (p.name === 'index') friendlyName = '🏠 Inicio (Index)';
-                    if (p.name === 'productos-nucleo') friendlyName = '⚡ Electrónica Núcleo';
-                    if (p.name === 'mayorista') friendlyName = '📦 Zona Mayorista';
-                    if (p.name === 'carrito') friendlyName = '🛒 Carrito de Compras';
-
-                    // Calcular porcentaje para la barra
                     let percent = totalGeneral > 0 ? (p.count / totalGeneral) * 100 : 0;
-
+                    // Limpieza de nombres
+                    let name = p.name.replace('.html', '').replace('productos-', 'Prod: ').toUpperCase();
+                    
                     const row = `
                         <tr>
-                            <td><strong>${friendlyName}</strong></td>
+                            <td><strong>${name}</strong></td>
                             <td>${p.count}</td>
                             <td>
                                 <div style="display:flex; align-items:center; gap:10px;">
@@ -145,14 +162,60 @@
                     `;
                     tbody.innerHTML += row;
                 });
-            }).catch(error => {
-                console.error("Error:", error);
-                tbody.innerHTML = '<tr><td colspan="3" style="color:red;">Error al cargar datos. Verifica tu conexión.</td></tr>';
             });
         }
 
-        // Cargar al iniciar
-        document.addEventListener('DOMContentLoaded', cargarEstadisticas);
+        // NUEVA FUNCIÓN: CARGAR LOGS DETALLADOS (IPs)
+        function cargarLogsDetallados() {
+            const logsBody = document.getElementById('logs-body');
+
+            // Consultamos la colección 'visitas_logs', ordenada por fecha, limite 100
+            db.collection('visitas_logs')
+                .orderBy('fecha', 'desc')
+                .limit(100)
+                .get()
+                .then(snapshot => {
+                    if (snapshot.empty) {
+                        logsBody.innerHTML = '<tr><td colspan="4">No hay registros de IPs todavía. Navega por la web para generar datos.</td></tr>';
+                        return;
+                    }
+
+                    logsBody.innerHTML = '';
+                    snapshot.forEach(doc => {
+                        const log = doc.data();
+                        
+                        // Formatear Fecha
+                        let fechaStr = "---";
+                        if (log.fecha && log.fecha.toDate) {
+                            fechaStr = log.fecha.toDate().toLocaleString('es-AR');
+                        }
+
+                        // Formatear Página
+                        let paginaClean = log.pagina.replace('.html','').replace('/','');
+                        if(paginaClean === '') paginaClean = 'Inicio (Raíz)';
+
+                        const row = `
+                            <tr>
+                                <td class="log-date">${fechaStr}</td>
+                                <td><span class="log-ip">${log.ip || 'N/D'}</span></td>
+                                <td>${paginaClean}</td>
+                                <td>${log.userEmail || 'Anónimo'}</td>
+                            </tr>
+                        `;
+                        logsBody.innerHTML += row;
+                    });
+                })
+                .catch(error => {
+                    console.error("Error cargando logs:", error);
+                    logsBody.innerHTML = '<tr><td colspan="4" style="color:red;">Error al cargar logs (¿Falta índice en Firebase?). Abre la consola F12.</td></tr>';
+                });
+        }
+
+        // Cargar todo al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarEstadisticas();
+            cargarLogsDetallados();
+        });
     </script>
 </body>
 </html>

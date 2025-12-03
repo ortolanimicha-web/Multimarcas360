@@ -5134,44 +5134,43 @@ window.toggleWholesaleVisibility = async (id, currentStatus) => {
 // === SISTEMA DE ESTADÍSTICAS (TRACKING) ===
 // ==========================================
 function registrarVisita(pagina) {
-    // Evitamos contar visitas si es el Admin el que navega
-    // (Opcional: quita este if si quieres contar tus propias visitas)
-    /* if (auth.currentUser && auth.currentUser.email === ADMIN_EMAIL) {
-        console.log("Visita de admin no registrada.");
-        return;
-    }
-    */
-
-    // Referencia al documento de estadísticas
+    // 1. Lógica existente: Sumar contadores generales (Rápido y liviano)
     const statsRef = db.collection('stats').doc('visitas_globales');
-
-    // Usamos increment(1) para sumar atómicamente
     const updateData = {};
     updateData[pagina] = firebase.firestore.FieldValue.increment(1);
     updateData['total_general'] = firebase.firestore.FieldValue.increment(1);
     updateData['ultima_visita'] = firebase.firestore.FieldValue.serverTimestamp();
 
     statsRef.set(updateData, { merge: true })
-        .then(() => console.log(`Visita registrada en: ${pagina}`))
-        .catch(err => console.error("Error registrando visita:", err));
-}
-// --- NUEVA LÓGICA VISIBILIDAD MAYORISTA ---
-window.toggleWholesaleVisibility = async (id, currentStatus) => {
-    // currentStatus: true = Está oculto, false = Está visible
-    const newStatus = !currentStatus; 
+        .catch(err => console.error("Error sumando contador:", err));
 
-    try {
-        // Actualizar en Firebase
-        await db.collection('products').doc(id).update({
-            hideInWholesale: newStatus
+    // 2. NUEVA LÓGICA: Registrar IP y Detalles (Log Histórico)
+    // Usamos un servicio externo porque JS en el navegador no ve la IP directamente
+    fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+            const userIp = data.ip;
+            const logData = {
+                pagina: pagina,
+                ip: userIp,
+                fecha: firebase.firestore.FieldValue.serverTimestamp(), // Hora del servidor
+                userAgent: navigator.userAgent, // Info del navegador/dispositivo
+                userEmail: (auth.currentUser && !auth.currentUser.isAnonymous) ? auth.currentUser.email : 'Anónimo'
+            };
+
+            // Guardamos en una colección DIFERENTE para no saturar el contador
+            db.collection('visitas_logs').add(logData)
+                .then(() => console.log(`Log detallado guardado: ${userIp} en ${pagina}`))
+                .catch(err => console.error("Error guardando log de IP:", err));
+        })
+        .catch(error => {
+            console.error("No se pudo obtener la IP:", error);
+            // Si falla la IP, guardamos el log sin IP para no perder el dato de fecha/hora
+             db.collection('visitas_logs').add({
+                pagina: pagina,
+                ip: 'No detectada',
+                fecha: firebase.firestore.FieldValue.serverTimestamp(),
+                userEmail: (auth.currentUser && !auth.currentUser.isAnonymous) ? auth.currentUser.email : 'Anónimo'
+            });
         });
-        
-        // Recargar la tabla visualmente
-        console.log(`Visibilidad Mayorista actualizada para ${id}: ${newStatus ? 'Oculto' : 'Visible'}`);
-        await cargarProductosAdmin(); 
-        
-    } catch (error) {
-        console.error("Error cambiando visibilidad mayorista:", error);
-        alert("Error al actualizar: " + error.message);
-    }
-};
+}

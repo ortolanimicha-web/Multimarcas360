@@ -1298,7 +1298,7 @@ async function cargarProductosAdmin() {
             // Precios
             const price = parseFloat(p.price || 0).toFixed(2);
             let wholesalePrice = parseFloat(p.wholesalePrice);
-            if (isNaN(wholesalePrice)) wholesalePrice = (p.price * 0.70);
+            if (isNaN(wholesalePrice)) wholesalePrice = (p.price * 0.85); // 15% OFF
             const wholesaleDisplay = `$${wholesalePrice.toFixed(2)}`;
 
             const row = document.createElement('tr');
@@ -1424,6 +1424,8 @@ function setupAddProductForm() {
         const categoryImageUrl = selectedCategoryOption?.dataset.imageUrl || '';
         const priceString = document.getElementById('product-price').value;
         const imageUrlsString = document.getElementById('product-image-urls').value.trim();
+        const wholesaleString = document.getElementById('product-wholesale-price').value;
+        const wholesalePrice = wholesaleString ? parseFloat(wholesaleString) : null;
         // --- NUEVO: Capturar la fecha ---
 const createdAtInput = document.getElementById('product-created-at');
 let createdAtTimestamp = Date.now(); // Por defecto: ahora mismo
@@ -1463,6 +1465,7 @@ if (createdAtInput.value) {
     categoryName: categoryName.startsWith('--') ? '' : categoryName,
     categoryImageUrl: categoryImageUrl,
     price,
+    wholesalePrice: wholesalePrice,
     imageUrls: urls,
     imageUrl: urls[0] || '', 
     detailSections: detailSections,
@@ -1627,6 +1630,7 @@ async function startEditProduct(productId) {
             brandSelect.value = product.brand || '';
             document.getElementById('product-price').value = product.price || 0;
             document.getElementById('product-image-urls').value = (product.imageUrls || []).join('\n');
+            document.getElementById('product-wholesale-price').value = product.wholesalePrice || '';
             // --- NUEVO: Cargar la fecha existente en el input ---
 const createdAtInput = document.getElementById('product-created-at');
 if (product.createdAtNumerico) {
@@ -3597,8 +3601,8 @@ async function setupMayoristaLogic() {
             const precioLista = parseFloat(data.price || 0);
             let precioMayorista = parseFloat(data.wholesalePrice);
             if (!precioMayorista || isNaN(precioMayorista)) {
-                precioMayorista = precioLista * 0.70; 
-            }
+    precioMayorista = precioLista * 0.85; // 15% OFF
+}
 
             allProductsCache.push({ 
                 id: doc.id, 
@@ -3841,8 +3845,8 @@ async function loadMayoristaProductDetails(productId) {
         let precioMayorista = parseFloat(prod.wholesalePrice);
         
         if (!precioMayorista || isNaN(precioMayorista)) {
-            precioMayorista = precioLista * 0.70; 
-        }
+    precioMayorista = precioLista * 0.85; // 15% OFF
+}
 
         const diferenciaAhorro = precioLista - precioMayorista;
 
@@ -4320,8 +4324,8 @@ async function executeMayoristaSearch(searchTerm) {
                 let precioMayorista = parseFloat(data.wholesalePrice);
                 
                 if (!precioMayorista || isNaN(precioMayorista)) {
-                    precioMayorista = precioLista * 0.70; // 30% OFF automático
-                }
+    precioMayorista = precioLista * 0.85; // 15% OFF
+}
 
                 matches.push({
                     id: doc.id,
